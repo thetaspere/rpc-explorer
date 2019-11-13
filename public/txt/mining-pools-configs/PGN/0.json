@@ -1,0 +1,76 @@
+{
+	 "coinbase_tags" : {
+		 "f2pool" : {
+			"name" : "f2pool",
+            "link" : "https://www.f2pool.com/"
+		 },
+		 "PPfbwWx2NSTgrzRxKpS1whdmW6Kzz96eMa" : {
+            "name" : "f2pool",
+            "link" : "http://www.f2pool.com/"
+        },
+        "beepool" : {
+			"name" : "beepool",
+            "link" : "https://beepool.org/coindetail/pgn"
+		 },
+		 "PHuM79hGeQhb7ngpS3ieQtTr6PUPmZUXE7" : {
+            "name" : "beepool",
+            "link" : "https://beepool.org/coindetail/pgn"
+        },
+        "gos.cx" : {
+			"name" : "gos",
+            "link" : "https://gos.cx/site/GetCoin?c=PGN"
+		 },
+		 "PX3yrMEN5g4Lqtyy4KQof4BW3HhyZupFcv" : {
+            "name" : "gos",
+            "link" : "https://gos.cx/site/GetCoin?c=PGN"
+        },
+        "zergpool.com" : {
+			"name" : "zergpool.com",
+            "link" : "http://zergpool.com/site/mining?algo=x21s"
+		 },
+		 "PUvsAso3PDof18LHDa6bbAnoHNK25z9Pur" : {
+            "name" : "https://bsod.pw/",
+            "link" : "https://bsod.pw/en/pool/dashboard/PGN/"
+        },
+		 "PEpvk6U27mpv4hN78kJGZsNhWvSateE866" : {
+            "name" : "zpool",
+            "link" : "https://zpool.ca/"
+        },
+		 "PH8oFea93Pg6Sv9sGhyHTQTuJmgH8xLCjT" : {
+            "name" : "nlpool",
+            "link" : "https://www.nlpool.nl/"
+        },
+		 "PJYHL8dx98GrwL4KVnGTa6VqcTA7Y28L99" : {
+            "name" : "blockmasters",
+            "link" : "http://blockmasters.co/"
+        },
+		 "P8mqcfyGjdm8VbnZmRnRvncc5QiQGGLrfL" : {
+            "name" : "pool.pigeoncoin.org (official)",
+            "link" : "https://pool.pigeoncoin.org/site/mining"
+        },
+		 "PJSRjS3DQyEiNAHqvAEcpZ7xDD15wyGJSz" : {
+            "name" : "ahashpool",
+            "link" : "https://www.ahashpool.com/"
+        },
+		 "PDPrY6dKrSaeawX7BBTnBx6Fs96Fvex6bt" : {
+            "name" : "blazepool",
+            "link" : "http://blazepool.com/"
+        },
+		 "PW76j822rG47RdZpyyYhMau9F1beXUMp3z" : {
+            "name" : "powerpool.money",
+            "link" : "http://powerpool.money/site/mining"
+        },
+        "PNPBbfVWcZFAMymbddgqK8v7RZHqqyaj6v" : {
+            "name" : "blockcrushers.xyz",
+            "link" : "https://blockcrushers.xyz/site/mining"
+        },
+        "PKvn6CQTQSucGsimJvQWEcPkQ6d7vHK5kj" : {
+            "name" : "pool.rig.tokyo",
+            "link" : "https://pool.rig.tokyo/site/mining"
+        },
+        "PNa29dGbZva4riKeMBikHENfYy9aSLEhCU" : {
+            "name" : "fairpool.pro",
+            "link" : "https://fairpool.pro/"
+        }
+	 }
+}
