@@ -201,6 +201,7 @@ function addThousandsSeparators(x) {
 function formatExchangedCurrency(amount, exchangeType, symbol="$", decimal=2) {
 	if (global.exchangeRates != null && global.exchangeRates[exchangeType.toLowerCase()] != null) {
 		var dec = new Decimal(amount);
+		dec = dec.times(global.exchangeRates[exchangeType.toLowerCase()]);
 		return symbol + Number(dec).toFixed(decimal);
 	}
 
