@@ -157,13 +157,13 @@ module.exports = {
 		}
 	},
 	blockRewardFunction:function(blockHeight) {
-		var eras = [ new Decimal8(50) ];
+		var eras = [ new Decimal8(5000) ];
 		for (var i = 1; i < 34; i++) {
 			var previous = eras[i - 1];
 			eras.push(new Decimal8(previous).dividedBy(2));
 		}
 
-		var index = Math.floor(blockHeight / 210000);
+		var index = Math.floor(blockHeight / 2100000);
 
 		return eras[index];
 	}
