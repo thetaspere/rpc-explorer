@@ -1,33 +1,17 @@
 {
-	 "coinbase_tags" : {
-		 "f2pool" : {
-			"name" : "f2pool",
-            "link" : "https://www.f2pool.com/"
-		 },
+	"payout_addresses" : {
 		 "PPfbwWx2NSTgrzRxKpS1whdmW6Kzz96eMa" : {
             "name" : "f2pool",
             "link" : "http://www.f2pool.com/"
         },
-        "beepool" : {
-			"name" : "beepool",
-            "link" : "https://beepool.org/coindetail/pgn"
-		 },
 		 "PHuM79hGeQhb7ngpS3ieQtTr6PUPmZUXE7" : {
             "name" : "beepool",
             "link" : "https://beepool.org/coindetail/pgn"
         },
-        "gos.cx" : {
-			"name" : "gos",
-            "link" : "https://gos.cx/site/GetCoin?c=PGN"
-		 },
 		 "PX3yrMEN5g4Lqtyy4KQof4BW3HhyZupFcv" : {
             "name" : "gos",
             "link" : "https://gos.cx/site/GetCoin?c=PGN"
         },
-        "zergpool.com" : {
-			"name" : "zergpool.com",
-            "link" : "http://zergpool.com/site/mining?algo=x21s"
-		 },
 		 "PUvsAso3PDof18LHDa6bbAnoHNK25z9Pur" : {
             "name" : "https://bsod.pw/",
             "link" : "https://bsod.pw/en/pool/dashboard/PGN/"
@@ -71,6 +55,9 @@
         "PNa29dGbZva4riKeMBikHENfYy9aSLEhCU" : {
             "name" : "fairpool.pro",
             "link" : "https://fairpool.pro/"
-        }
-	 }
+        }		
+	},
+	"coinbase_tags" : {
+		 
+	}
 }
