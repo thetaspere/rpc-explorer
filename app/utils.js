@@ -198,13 +198,13 @@ function addThousandsSeparators(x) {
 	return parts.join(".");
 }
 
-function formatExchangedCurrency(amount, exchangeType) {
+function formatExchangedCurrency(amount, exchangeType, symbol="$", decimal=2) {
 	if (global.exchangeRates != null && global.exchangeRates[exchangeType.toLowerCase()] != null) {
 		var dec = new Decimal(amount);
 		dec = dec.times(global.exchangeRates[exchangeType.toLowerCase()]);
-		var exchangedAmt = parseFloat(Math.round(dec * 100) / 100).toFixed(2);
+		var exchangedAmt = parseFloat(Math.round(dec * 100) / 100).toFixed(decimal);
 
-		return "$" + addThousandsSeparators(exchangedAmt);
+		return symbol + addThousandsSeparators(exchangedAmt);
 	}
 
 	return "";

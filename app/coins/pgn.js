@@ -140,13 +140,13 @@ module.exports = {
 
 			var exchangedCurrencies = ["BTC", "USD", "CNY"];
 
-			if (responseBody.bpi) {
+			if (responseBody.market_data) {
 				var exchangeRates = {};
 
 				for (var i = 0; i < exchangedCurrencies.length; i++) {
 					var currency = exchangedCurrencies[i].toLowerCase();
 					if (responseBody.market_data.current_price[currency]) {
-						exchangeRates[currency] = responseBody.market_data.current_price[exchangedCurrencies[i]];
+						exchangeRates[currency] = responseBody.market_data.current_price[currency];
 					}
 				}
 
