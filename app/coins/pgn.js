@@ -33,19 +33,27 @@ var currencyUnits = [
 	},
 	{
 		type:"exchanged",
+		name:"BTC",
+		multiplier:"btc",
+		values:["btc"],
+		decimalPlaces:8,
+		symbol:"฿"
+	},
+	{
+		type:"exchanged",
 		name:"USD",
 		multiplier:"usd",
 		values:["usd"],
-		decimalPlaces:2,
+		decimalPlaces:8,
 		symbol:"$"
 	},
 	{
 		type:"exchanged",
-		name:"EUR",
-		multiplier:"eur",
+		name:"CHY",
+		multiplier:"cny",
 		values:["eur"],
-		decimalPlaces:2,
-		symbol:"€"
+		decimalPlaces:4,
+		symbol:"¥"
 	},
 ];
 
