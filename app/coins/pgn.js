@@ -139,7 +139,7 @@ module.exports = {
 		{name: "Discord", url:"https://discord.gg/SZcf63h", imgUrl:"/img/logo/discord.svg"},
 		{name: "Twitter", url:"https://twitter.com/Pigeoncoin", imgUrl:"/img/logo/twitter.svg"},
 		{name: "Offiical Pool", url:"https://pool.pigeoncoin.org/", imgUrl:"/img/logo/pgn.svg"},
-		{name: "Github", url:"https://github.com/Pigeoncoin", imgUrl:"/img/logo/github.pgn"}
+		{name: "Github", url:"https://github.com/Pigeoncoin", imgUrl:"/img/logo/github.png"}
 	],
 	exchangeRateData:{
 		jsonUrl:"https://api.coingecko.com/api/v3/coins/pigeoncoin?localization=false",
