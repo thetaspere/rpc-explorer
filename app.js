@@ -347,7 +347,7 @@ app.use(function(req, res, next) {
 			req.session.uiTheme = cookieValue;
 
 		} else {
-			req.session.uiTheme = "dark";
+			req.session.uiTheme = "";
 		}
 	} else {
 		req.session.uiTheme = "dark";
