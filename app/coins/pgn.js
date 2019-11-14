@@ -133,6 +133,14 @@ module.exports = {
 		}
 		
 	],
+	
+	relatedSites : [
+		{name: "Official Website", url:"https://pigeoncoin.org/", imgUrl:"/img/logo/pgn.svg"},
+		{name: "Discord", url:"https://discord.gg/SZcf63h", imgUrl:"/img/logo/discord.svg"},
+		{name: "Twitter", url:"https://twitter.com/Pigeoncoin", imgUrl:"/img/logo/twitter.svg"},
+		{name: "Offiical Pool", url:"https://pool.pigeoncoin.org/", imgUrl:"/img/logo/pgn.svg"},
+		{name: "Github", url:"https://github.com/Pigeoncoin", imgUrl:"/img/logo/github.pgn"}
+	],
 	exchangeRateData:{
 		jsonUrl:"https://api.coingecko.com/api/v3/coins/pigeoncoin?localization=false",
 		responseBodySelectorFunction:function(responseBody) {

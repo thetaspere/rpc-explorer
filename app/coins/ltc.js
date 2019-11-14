@@ -128,6 +128,10 @@ module.exports = {
 			referenceUrl: "https://medium.com/@SatoshiLite/satoshilite-1e2dad89a017"
 		}
 	],
+	relatedSites : [
+		{name: "Bitcoin Explorer", url:"https://btc.chaintools.io", imgUrl:"/img/logo/btc.svg"},
+		{name: "LND Admin", url:"https://lnd-admin.chaintools.io", imgUrl:"/img/logo/lnd-admin.png"},
+	],
 	exchangeRateData:{
 		jsonUrl:"https://api.coinmarketcap.com/v1/ticker/Litecoin/",
 		exchangedCurrencyName:"usd",
