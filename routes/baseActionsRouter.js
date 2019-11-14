@@ -19,97 +19,16 @@ var coins = require("./../app/coins.js");
 var config = require("./../app/config.js");
 var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
+var Session = require("./session.js");
 
 const forceCsrf = csurf({ ignoreMethods: [] });
 
 router.get("/", function(req, res, next) {
-	if (req.session.host == null || req.session.host.trim() == "") {
-		if (req.cookies['rpc-host']) {
-			res.locals.host = req.cookies['rpc-host'];
-		}
-
-		if (req.cookies['rpc-port']) {
-			res.locals.port = req.cookies['rpc-port'];
-		}
-
-		if (req.cookies['rpc-username']) {
-			res.locals.username = req.cookies['rpc-username'];
-		}
-
-		res.render("connect");
-		res.end();
-
+	var session = new Session(req,res,next);
+	if(session.isRenderConnect()) {
 		return;
 	}
-
-	res.locals.homepage = true;
-
-	var promises = [];
-
-	promises.push(coreApi.getMempoolInfo());
-	promises.push(coreApi.getMiningInfo());
-
-	coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
-		res.locals.getblockchaininfo = getblockchaininfo;
-
-		if (getblockchaininfo.chain !== 'regtest') {
-			var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
-
-			promises.push(coreApi.getTxCountStats(targetBlocksPerDay / 4, -targetBlocksPerDay, "latest"));
-
-			var chainTxStatsIntervals = [ targetBlocksPerDay, targetBlocksPerDay * 7, targetBlocksPerDay * 30, targetBlocksPerDay * 365 ]
-				.filter(numBlocks => numBlocks <= getblockchaininfo.blocks);
-
-			res.locals.chainTxStatsLabels = [ "24 hours", "1 week", "1 month", "1 year" ]
-				.slice(0, chainTxStatsIntervals.length)
-				.concat("All time");
-
-			for (var i = 0; i < chainTxStatsIntervals.length; i++) {
-				promises.push(coreApi.getChainTxStats(chainTxStatsIntervals[i]));
-			}
-		}
-
-		var blockHeights = [];
-		if (getblockchaininfo.blocks) {
-			for (var i = 0; i < 10; i++) {
-				blockHeights.push(getblockchaininfo.blocks - i);
-			}
-		}
-
-		if (getblockchaininfo.chain !== 'regtest') {
-			promises.push(coreApi.getChainTxStats(getblockchaininfo.blocks - 1));
-		}
-
-		coreApi.getBlocksByHeight(blockHeights).then(function(latestBlocks) {
-			res.locals.latestBlocks = latestBlocks;
-
-			Promise.all(promises).then(function(promiseResults) {
-				res.locals.mempoolInfo = promiseResults[0];
-				res.locals.miningInfo = promiseResults[1];
-
-				if (getblockchaininfo.chain !== 'regtest') {
-					res.locals.txStats = promiseResults[2];
-
-					var chainTxStats = [];
-					for (var i = 0; i < res.locals.chainTxStatsLabels.length; i++) {
-						chainTxStats.push(promiseResults[i + 3]);
-					}
-
-					res.locals.chainTxStats = chainTxStats;
-				}
-
-				res.render("index");
-
-				next();
-			});
-		});
-	}).catch(function(err) {
-		res.locals.userMessage = "Error loading recent blocks: " + err;
-
-		res.render("index");
-
-		next();
-	});
+	session.renderHome();
 });
 
 router.get("/node-status", function(req, res, next) {
