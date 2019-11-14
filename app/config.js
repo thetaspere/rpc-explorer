@@ -151,7 +151,7 @@ module.exports = {
 			dropdowns:[
 				{
 					title:"Related Sites",
-					links: coins[currentCoin]
+					links: coins[currentCoin].relatedSites
 				}
 			]
 		}
