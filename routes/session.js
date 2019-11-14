@@ -1,7 +1,7 @@
 var coreApi = require("./../app/api/coreApi.js");
 class Session {
 	constructor(req, res, next) {
-		this.req = reg;
+		this.req = req;
 		this.res = res;
 		this.next = next;
 	}
@@ -85,7 +85,7 @@ class Session {
 
 					self.res.render("index");
 
-					next();
+					self.next();
 				});
 			});
 		}).catch(function(err) {
@@ -93,7 +93,7 @@ class Session {
 
 			self.res.render("index");
 
-			next();
+			self.next();
 		});
 	}
 }
