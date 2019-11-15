@@ -23,6 +23,20 @@ var Session = require("./session.js");
 
 const forceCsrf = csurf({ ignoreMethods: [] });
 
+var routing = function(path, method, sessionMethod, hashNext = true) {
+	if(hashNext) {
+		router[method](path, (req, res, next) => {
+			var session = new Session(req, res, next);
+			session[sessionMethod]();
+		});
+	} else {
+		router[method](path, (req, res) => {
+			var session = new Session(req, res);
+			session[sessionMethod]();
+		});
+	}
+}
+
 router.get("/", function(req, res, next) {
 	var session = new Session(req,res,next);
 	if(session.isRenderConnect()) {
@@ -1131,5 +1145,5 @@ router.get("/fun", function(req, res, next) {
 
 	next();
 });
-
+routing("/ext/summary", "get", "getNetworkSummary", false);
 module.exports = router;

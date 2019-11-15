@@ -5,12 +5,13 @@
   "private": false,
   "bin": "bin/cli.js",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node --max_old_space_size=8096 ./bin/www",
     "refresh-mining-pool-configs": "node ./bin/refresh-mining-pool-configs.js"
   },
   "keywords": [
     "bitcoin",
     "litecoin",
+    "pigeoncoin",
     "blockchain"
   ],
   "author": "Dan Janosik <dan@47.io>",

@@ -71,7 +71,7 @@ See `btc-rpc-explorer --help` for the full list of CLI options.
 
 # Support
 
-* [3NPGpNyLLmVKCEcuipBs7G4KpQJoJXjDGe](bitcoin:3NPGpNyLLmVKCEcuipBs7G4KpQJoJXjDGe)
+* [3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq](bitcoin:3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq)
 
 
 [npm-ver-img]: https://img.shields.io/npm/v/btc-rpc-explorer.svg?style=flat

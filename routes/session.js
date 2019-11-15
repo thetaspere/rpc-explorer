@@ -96,6 +96,61 @@ class Session {
 			self.next();
 		});
 	}
+	
+	getNetworkSummary() {
+		var promises = [];
+
+		promises.push(coreApi.getMempoolInfo());
+		promises.push(coreApi.getMiningInfo());
+		var self = this;
+		var result = {};
+		coreApi.getBlockchainInfo().then(function(getblockchaininfo) {
+			result.getblockchaininfo = getblockchaininfo;
+
+			if (getblockchaininfo.chain !== 'regtest') {
+				var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
+
+				promises.push(coreApi.getTxCountStats(targetBlocksPerDay / 4, -targetBlocksPerDay, "latest"));
+
+				var chainTxStatsIntervals = [ targetBlocksPerDay, targetBlocksPerDay * 7, targetBlocksPerDay * 30, targetBlocksPerDay * 365 ]
+					.filter(numBlocks => numBlocks <= getblockchaininfo.blocks);
+
+				result.chainTxStatsLabels = [ "24 hours", "1 week", "1 month", "1 year" ]
+					.slice(0, chainTxStatsIntervals.length)
+					.concat("All time");
+
+				for (var i = 0; i < chainTxStatsIntervals.length; i++) {
+					promises.push(coreApi.getChainTxStats(chainTxStatsIntervals[i]));
+				}
+			}
+			Promise.all(promises).then(function(promiseResults) {
+				result.mempoolInfo = promiseResults[0];
+				result.miningInfo = promiseResults[1];
+
+				if (getblockchaininfo.chain !== 'regtest') {
+					result.txStats = promiseResults[2];
+
+					var chainTxStats = [];
+					for (var i = 0; i < self.res.locals.chainTxStatsLabels.length; i++) {
+						chainTxStats.push(promiseResults[i + 3]);
+					}
+
+					result.chainTxStats = chainTxStats;
+				}
+				self.res.send(result);
+				if(self.next) {
+					self.next();
+				}
+			});
+		}).catch(function(err) {
+			result.userMessage = "Error loading recent blocks: " + err;
+
+			self.res.send(result);
+			if(self.next) {
+				self.next();
+			}
+		});
+	}
 }
 
 module.exports = Session;
