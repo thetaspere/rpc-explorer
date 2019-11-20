@@ -11,7 +11,6 @@ var config = require("./config.js");
 var coins = require("./coins.js");
 var coinConfig = coins[config.coin];
 var redisCache = require("./redisCache.js");
-var $ = require('jQuery');
 
 
 var exponentScales = [
