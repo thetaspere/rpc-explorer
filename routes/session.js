@@ -131,7 +131,7 @@ class Session {
 					result.txStats = promiseResults[2];
 
 					var chainTxStats = [];
-					for (var i = 0; i < self.res.locals.chainTxStatsLabels.length; i++) {
+					for (var i = 0; i < result.chainTxStatsLabels.length; i++) {
 						chainTxStats.push(promiseResults[i + 3]);
 					}
 

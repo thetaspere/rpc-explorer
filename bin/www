@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 var debug = require('debug')('www');
 var app = require('../app');
+var https = require("https");
+var fs = require("fs");
+var helmet = require("helmet");
 
 const v8 = require('v8');
 v8.setFlagsFromString("--max_old_space_size=" + (process.env.BTCEXP_OLD_SPACE_MAX_SIZE || 1024));
@@ -16,3 +19,16 @@ var server = app.listen(app.get('port'), app.get('host'), function() {
 		app.onStartup();
 	}
 });
+if(process.env.BTCEXP_HTTPS) {
+	var options = {
+		
+	}
+	app.use(helmet());
+	if(process.env.BTCEXP_HTTPS_KEY) {
+		options = {
+			key: fs.readFileSync(process.env.BTCEXP_HTTPS_KEY),
+			cert: fs.readFileSync(process.env.BTCEXP_HTTPS_CERT)
+		}
+	}
+	https.createServer(options, app).listen(process.env.BTCEXP_HTTPS_PORT || 443);
+}

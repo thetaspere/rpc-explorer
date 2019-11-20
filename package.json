@@ -31,6 +31,7 @@
     "csurf": "^1.10.0",
     "debug": "~4.1.1",
     "decimal.js": "10.1.1",
+    "helmet": "^3.21.2",
     "dotenv": "^8.1.0",
     "electrum-client": "github:chaintools/node-electrum-client#43a999036f9c5",
     "express": "^4.17.1",

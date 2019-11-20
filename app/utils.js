@@ -11,6 +11,7 @@ var config = require("./config.js");
 var coins = require("./coins.js");
 var coinConfig = coins[config.coin];
 var redisCache = require("./redisCache.js");
+var $ = require('jQuery');
 
 
 var exponentScales = [
@@ -553,48 +554,47 @@ function buildQrCodeUrl(str, results) {
 	});
 }
 
-function updateElementValue(id, value) {
-	var element = $(`#${id}`);
-	if(element) {
-		element.text(value);
+function getStatsSummary(json) {
+	var hashrateData = formatLargeNumber(json.miningInfo.networkhashps, 3);
+	var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
+	var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
+	var difficultyData = formatLargeNumber(json.getblockchaininfo.difficulty, 3);
+	var sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
+	var price = `${formatExchangedCurrency(1.0, "btc", "฿", 8)}/${formatExchangedCurrency(1.0, "usd", "$", 6)}`
+	mempoolBytesData[1].abbreviation = mempoolBytesData[1].abbreviation ? mempoolBytesData[1].abbreviation : "";
+	return {
+		hashrate : { 
+			rate : hashrateData[0],
+			unit : ` ${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`
+		},
+		txcount : json.txStats.totalTxCount.toLocaleString(),
+		mempool : {
+			count : json.mempoolInfo.size.toLocaleString(),
+			size : `(${mempoolBytesData[0]} ${mempoolBytesData[1].abbreviation}B)`
+		},
+		chainwork : {
+			num : chainworkData[0],
+			exp : chainworkData[1].exponent
+		},
+		diif : {
+			num : difficultyData[0],
+			exp : difficultyData[1].exponent
+		},
+		chainSize : `${sizeData[0]} ${sizeData[1].abbreviation}B`,
+		price : price
 	}
-}
-
-function updateElementAttr(id, attrName, value) {
-	var element = $(`#${id}`);
-	if(element) {
-		element.attr(attrName, value);
-	}
-}
-
-function updateStats() {
-	$.ajax({url: '/ext/summary', success: function(json){
-		var hashrateData = formatLargeNumber(json.miningInfo.networkhashps, 3);
-		var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
-		var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
-		var difficultyData = formatLargeNumber(json.getblockchaininfo.difficulty, 3);
-		var sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
-		var price = `${formatExchangedCurrency(1.0, "btc", "฿", 8)}/${formatExchangedCurrency(1.0, "usd", "$", 6)}`
-		updateElementValue("hashrate", hashrateData[0]);
-		updateElementAttr("hashUnit", "data-original-title", `${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`);
-		updateElementValue("txStats", json.txStats.totalTxCount.toLocaleString());
-		updateElementValue("mempoolCount", json.mempoolInfo.size.toLocaleString() + " tx");
-		updateElementValue("mempoolSize", `(${mempoolBytesData[0]} ${mempoolBytesData[1].abbreviation}B)`);
-		updateElementValue("chainworkNum", chainworkData[0]);
-		updateElementValue("chainworkExp", chainworkData[1].exponent);
-		updateElementValue("diffNum", difficultyData[0]);
-		updateElementValue("diffExp", difficultyData[1].exponent);
-		updateElementValue("chainSize", `${sizeData[0]} ${sizeData[1].abbreviation}B`);
-		updateElementValue("price", price);
-	}});
-}
-
-function homePageRoutineScript() {
-	$(document).ready(function(){
-		setInterval( function() {
-          update_stats();
-        }, 60000);
-	});
+	/*
+	updateElementValue("hashrate", hashrateData[0]);
+	updateElementAttr("hashUnit", "data-original-title", `${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`);
+	updateElementValue("txStats", json.txStats.totalTxCount.toLocaleString());
+	updateElementValue("mempoolCount", json.mempoolInfo.size.toLocaleString() + " tx");
+	updateElementValue("mempoolSize", `(${mempoolBytesData[0]} ${mempoolBytesData[1].abbreviation}B)`);
+	updateElementValue("chainworkNum", chainworkData[0]);
+	updateElementValue("chainworkExp", chainworkData[1].exponent);
+	updateElementValue("diffNum", difficultyData[0]);
+	updateElementValue("diffExp", difficultyData[1].exponent);
+	updateElementValue("chainSize", `${sizeData[0]} ${sizeData[1].abbreviation}B`);
+	updateElementValue("price", price);*/
 }
 
 
@@ -626,5 +626,5 @@ module.exports = {
 	logError: logError,
 	buildQrCodeUrls: buildQrCodeUrls,
 	ellipsize: ellipsize,
-	homePageRoutineScript: homePageRoutineScript
+	getStatsSummary: getStatsSummary
 };

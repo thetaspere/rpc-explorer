@@ -14,7 +14,6 @@ block content
 				li If you just started your node, it may still be initializing.
 				li If your node is already initialized, check your RPC connection info.
 	else
-		- utils.homePageRoutineScript();
 		if (config.demoSite && session.hideHomepageBanner != "true")
 			div(class="alert alert-primary alert-dismissible shadow-sm mb-4", role="alert")
 				span
@@ -87,7 +86,7 @@ block content
 
 						p(class="lead")
 							span(id="hashrate") #{hashrateData[0]} 
-							span(id="hashUnit").border-dotted(title=`${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`, data-toggle="tooltip") #{hashrateData[1].abbreviation}H/s
+							span.border-dotted(id="hashUnit" title=`${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`, data-toggle="tooltip") #{hashrateData[1].abbreviation}H/s
 
 					if (txStats)
 						div(class=networkSummaryColumnClass)
@@ -107,7 +106,7 @@ block content
 						span(class="font-weight-bold") Unconfirmed Transactions
 
 						p(class="lead") 
-						    label(id="mempoolCount") #{mempoolInfo.size.toLocaleString()} tx 
+							label(id="mempoolCount") #{mempoolInfo.size.toLocaleString()} tx 
 							- var mempoolBytesData = utils.formatLargeNumber(mempoolInfo.usage, 2);
 							small(id="mempoolSize" class="text-muted font-weight-light") (#{mempoolBytesData[0]} #{mempoolBytesData[1].abbreviation}B)
 
