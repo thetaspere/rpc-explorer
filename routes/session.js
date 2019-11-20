@@ -1,4 +1,5 @@
 var coreApi = require("./../app/api/coreApi.js");
+var utils = require("./../app/utils.js");
 class Session {
 	constructor(req, res, next) {
 		this.req = req;
@@ -137,7 +138,7 @@ class Session {
 
 					result.chainTxStats = chainTxStats;
 				}
-				self.res.send(result);
+				self.res.send(utils.getStatsSummary(result));
 				if(self.next) {
 					self.next();
 				}
