@@ -575,7 +575,7 @@ function getStatsSummary(json) {
 			num : chainworkData[0],
 			exp : chainworkData[1].exponent
 		},
-		diif : {
+		diff : {
 			num : difficultyData[0],
 			exp : difficultyData[1].exponent
 		},
