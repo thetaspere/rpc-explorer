@@ -51,8 +51,13 @@ global.appVersion = package_json.version;
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
 
 var baseActionsRouter = require('./routes/baseActionsRouter');
-
 var app = express();
+
+if(process.env.BTCEXP_HTTPS) {
+   var helmet = require("helmet");
+   app.use(helmet());
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
