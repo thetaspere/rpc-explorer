@@ -20,7 +20,6 @@ var config = require("./../app/config.js");
 var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
 var Session = require("./session.js");
-var Restfull = require('./routes/restfullRouter.js');
 
 const forceCsrf = csurf({ ignoreMethods: [] });
 
@@ -1147,7 +1146,4 @@ router.get("/fun", function(req, res, next) {
 	next();
 });
 routing("/ext/summary", "get", "getNetworkSummary", false);
-if(coins[config.coin].api) {
-	var restfullAPI = new Restfull(app, coins[config.coin].api());
-}
 module.exports = router;
