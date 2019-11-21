@@ -46,11 +46,13 @@ var coreApi = require("./app/api/coreApi.js");
 var auth = require('./app/auth.js');
 
 var package_json = require('./package.json');
+var Restfull = require('./routes/restfullRouter.js');
 global.appVersion = package_json.version;
 
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
 
 var baseActionsRouter = require('./routes/baseActionsRouter');
+
 var app = express();
 
 if(process.env.BTCEXP_HTTPS) {
@@ -89,7 +91,9 @@ app.use(session({
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+if(coins[config.coin].api) {
+	var restfullAPI = new Restfull(app, coins[config.coin].api);
+}
 process.on("unhandledRejection", (reason, p) => {
 	debugLog("Unhandled Rejection at: Promise", p, "reason:", reason, "stack:", (reason != null ? reason.stack : "null"));
 });

@@ -12,7 +12,8 @@ class CoinBase {
 			exchangeRateData:{
 				jsonUrl:this.priceApiUrl,
 				responseBodySelectorFunction:this.responseBodySelectorFunction
-			}	
+			},
+			api : this.coinApi
 		};
 	}
 	responseBodySelectorFunction(responseBody) {
@@ -32,6 +33,34 @@ class CoinBase {
 		}
 		
 		return null;
+	}
+	
+	coinApi() {
+		return {
+			base_uri : "/api/",
+			limit : {
+				 windowMs: 15 * 60 * 1000, // 15 minutes
+				 max: 100, // limit each IP to 100 requests per windowMs
+				 message: "Too calls from this IP with 15 mins, please try again after 15 mins"
+			},
+			api_map : [
+				{
+					name : "getblockcount",
+					uri : "getblockcount",
+					api_source : "core",
+					description : "Get current block height"
+				},
+				{
+					name : "getaddressbalance", 
+					uri : "getaddressbalance",
+					api_source : "address",
+					params : [{
+						name : "address",
+						type : "string"
+					}]
+				}
+			]
+		}
 	}
 	
 	addProperties(properties) {
