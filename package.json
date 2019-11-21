@@ -1,6 +1,6 @@
 {
-  "name": "btc-rpc-explorer",
-  "version": "1.1.2",
+  "name": "pgn-rpc-explorer",
+  "version": "1.2.0",
   "description": "Explorer for Bitcoin and RPC-compatible blockchains",
   "private": false,
   "bin": "bin/cli.js",
@@ -14,7 +14,7 @@
     "pigeoncoin",
     "blockchain"
   ],
-  "author": "Dan Janosik <dan@47.io>",
+  "author": "Tri Nguyen",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "dotenv": "^8.1.0",
     "electrum-client": "github:chaintools/node-electrum-client#43a999036f9c5",
     "express": "^4.17.1",
+    "express-rate-limit": "^5.0.0",
     "express-session": "1.16.1",
     "jstransformer-markdown-it": "^2.1.0",
     "lru-cache": "5.1.1",
