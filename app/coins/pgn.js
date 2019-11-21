@@ -1,6 +1,6 @@
 var Decimal = require("decimal.js");
 Decimal8 = Decimal.clone({ precision:8, rounding:8 });
-
+var CoinBase = require("./base.js");
 var currencyUnits = [
 	{
 		type:"native",
@@ -57,9 +57,8 @@ var currencyUnits = [
 	},
 ];
 
-module.exports = {
-	name:"Pigeoncoin",
-	ticker:"PGN",
+var Pigeoncoin = new CoinBase("Pigeoncoin", "PGN", "pigeoncoin");
+Pigeoncoin.addProperties({
 	logoUrl:"/img/logo/pgn.svg",
 	siteTitle:"Pigeoncoin Explorer",
 	siteDescriptionHtml:"<b>PGN Explorer</b> is <a href='https://github.com/pigeoncoin/pgn-rpc-explorer). If you run your own [Pigeoncoin Full Node](https://github.com/Pigeoncoin/pigeoncoin/releases), **PGN Explorer** can easily run alongside it, communicating via RPC calls. See the project [ReadMe](https://github.com/pigeoncoin/pgn-rpc-explorer) for a list of features and instructions for running.",
@@ -76,7 +75,7 @@ module.exports = {
 	currencyUnitsByName:{"PGN":currencyUnits[0], "mPGN":currencyUnits[1], "pits":currencyUnits[2], "pig":currencyUnits[3]},
 	baseCurrencyUnit:currencyUnits[3],
 	defaultCurrencyUnit:currencyUnits[0],
-	feeSatoshiPerByteBucketMaxima: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 75, 100, 150],
+	//feeSatoshiPerByteBucketMaxima: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 75, 100, 150],
 	genesisBlockHash: "000000f049bef9fec0179131874c54c76c0ff59f695db30a4f0da52072c99492",
 	genesisCoinbaseTransactionId: "f0cc5f92b11a6655a4939fc239e8bf960cd0453b87b5a0820ab36904279341a5",
 	genesisCoinbaseTransaction: {
@@ -141,29 +140,6 @@ module.exports = {
 		{name: "Offiical Pool", url:"https://pool.pigeoncoin.org/", imgUrl:"/img/logo/pgn.svg"},
 		{name: "Github", url:"https://github.com/Pigeoncoin", imgUrl:"/img/logo/github.png"}
 	],
-	exchangeRateData:{
-		jsonUrl:"https://api.coingecko.com/api/v3/coins/pigeoncoin?localization=false",
-		responseBodySelectorFunction:function(responseBody) {
-			//console.log("Exchange Rate Response: " + JSON.stringify(responseBody));
-
-			var exchangedCurrencies = ["BTC", "USD", "CNY"];
-
-			if (responseBody.market_data) {
-				var exchangeRates = {};
-
-				for (var i = 0; i < exchangedCurrencies.length; i++) {
-					var currency = exchangedCurrencies[i].toLowerCase();
-					if (responseBody.market_data.current_price[currency]) {
-						exchangeRates[currency] = responseBody.market_data.current_price[currency];
-					}
-				}
-
-				return exchangeRates;
-			}
-			
-			return null;
-		}
-	},
 	blockRewardFunction:function(blockHeight) {
 		var eras = [ new Decimal8(5000) ];
 		for (var i = 1; i < 34; i++) {
@@ -175,4 +151,6 @@ module.exports = {
 
 		return eras[index];
 	}
-};
+});
+
+module.exports = Pigeoncoin.properties;
