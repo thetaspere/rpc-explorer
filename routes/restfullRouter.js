@@ -3,12 +3,12 @@ var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
 
 class RestfullRouter {
-	constructor(expressApp, apiProperties) {
+	constructor(expressApp, router, apiProperties) {
 		var limiter = rateLimit(apiProperties.limit);
 		expressApp.use(apiProperties.base_uri, limiter);
 		var self = this;
-		apiProperties.api_map.foreach(api => {
-			expressApp.use(`${apiProperties.base_uri}${api.uri}`, (req, res, next) => {
+		apiProperties.api_map.forEach(api => {
+			router.get(`${apiProperties.base_uri}${api.uri}`, (req, res, next) => {
 				var paramValues = [];
 				for(var paramIndex in api.params) {
 					var param = api.params[paramIndex];
