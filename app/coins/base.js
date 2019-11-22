@@ -49,7 +49,8 @@ class CoinBase {
 					uri : "getblockcount",
 					api_source : "core",
 					method : "getBlockCount",
-					description : "Get current block height"
+					description : "Get current block height",
+					"return" : "block height as number"
 				},
 				{
 					name : "getaddressbalance", 
@@ -57,8 +58,11 @@ class CoinBase {
 					api_source : "getAddressBalance",
 					params : [{
 						name : "address",
-						type : "string"
-					}]
+						type : "string",
+						description : "public wallet address"
+					}],
+					description : "Get current balance for specified address",
+					"return" : "Json Object of address balance in following format: {'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}"
 				}
 			]
 		}
