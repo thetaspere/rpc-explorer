@@ -12,7 +12,7 @@ class RestfullRouter {
 				var paramValues = [];
 				for(var paramIndex in api.params) {
 					var param = api.params[paramIndex];
-					var paramValue = req.params(param.name);
+					var paramValue = req.params[param.name];
 					paramValue = self.checkAndParseParams(param.type, paramValue);
 					if(paramValue) {
 						paramValues.push(paramValue);
