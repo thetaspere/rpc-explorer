@@ -93,6 +93,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 if(coins[config.coin].api) {
 	var rateLimit = require("express-rate-limit");
+	var limiter = rateLimit(apiProperties.limit);
 	var apiProperties = coins[config.coin].api();
 	var apiRounter = express.Router();
 	app.use(apiProperties.base_uri, limiter);
