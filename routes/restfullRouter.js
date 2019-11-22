@@ -48,6 +48,9 @@ class RestfullRouter {
 	
 	getAddressBalance(addresses) {
 		return new Promise((resolve, reject) =>{
+			if(!addresses || addresses.length === 0) {
+				return resolve({});
+			}
 			var promises = [];
 			for(var index in addresses) {
 				promises.push(coreApi.getAddress(addresses[index]));
@@ -55,7 +58,7 @@ class RestfullRouter {
 			Promise.all(promises).then(validatedAddresses => {
 				promises = [];
 				for(var i in validatedAddresses) {
-					promise.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
+					promises.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
 				}
 				Promise.all(promises).then(balances => {
 					var result = {};
