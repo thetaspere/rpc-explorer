@@ -960,5 +960,6 @@ module.exports = {
 	getPeerSummary: getPeerSummary,
 	getChainTxStats: getChainTxStats,
 	getMempoolDetails: getMempoolDetails,
-	getTxCountStats: getTxCountStats
+	getTxCountStats: getTxCountStats,
+	getBlockCount : getBlockCount
 };

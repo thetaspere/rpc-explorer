@@ -6,7 +6,7 @@ class RestfullRouter {
 	constructor(router, apiProperties) {
 		var self = this;
 		apiProperties.api_map.forEach(api => {
-			router.get(`${api.uri}`, (req, res, next) => {
+			router.get(`/${api.uri}`, (req, res, next) => {
 				var paramValues = [];
 				for(var paramIndex in api.params) {
 					var param = api.params[paramIndex];
