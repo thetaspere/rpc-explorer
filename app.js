@@ -416,7 +416,7 @@ if(coins[config.coin].api) {
 	var limiter = rateLimit(apiProperties.limit);
 	var apiRounter = express.Router();
 	app.use(apiProperties.base_uri, limiter);
-	var restfullAPI = new Restfull(apiRounter, coins[config.coin].api());
+	var restfullAPI = new Restfull(apiRounter, limiter);
 	app.use(apiProperties.base_uri, apiRounter);
 }
 
