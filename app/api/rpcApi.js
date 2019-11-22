@@ -29,6 +29,10 @@ function getBlockchainInfo() {
 	return getRpcData("getblockchaininfo");
 }
 
+function getBlockCount() {
+	return getRpcData("getblockcount");
+}
+
 function getNetworkInfo() {
 	return getRpcData("getnetworkinfo");
 }
@@ -337,5 +341,6 @@ module.exports = {
 	getRpcMethodHelp: getRpcMethodHelp,
 	getAddress: getAddress,
 	getPeerInfo: getPeerInfo,
-	getChainTxStats: getChainTxStats
+	getChainTxStats: getChainTxStats,
+	getBlockCount : getBlockCount
 };

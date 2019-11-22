@@ -148,7 +148,7 @@ function getBlockchainInfo() {
 }
 
 function getBlockCount() {
-	return tryCacheThenRpcApi(miscCache, "getblockcount", 10000, rpcApi.getBlockchainInfo);
+	return tryCacheThenRpcApi(miscCache, "getblockcount", 10000, rpcApi.getBlockCount);
 }
 
 function getNetworkInfo() {
