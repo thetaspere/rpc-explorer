@@ -48,6 +48,7 @@ class CoinBase {
 					name : "getblockcount",
 					uri : "getblockcount",
 					api_source : "core",
+					method : "getBlockCount",
 					description : "Get current block height"
 				},
 				{

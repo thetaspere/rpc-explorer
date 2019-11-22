@@ -3,9 +3,7 @@ var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
 
 class RestfullRouter {
-	constructor(expressApp, router, apiProperties) {
-		var limiter = rateLimit(apiProperties.limit);
-		expressApp.use(apiProperties.base_uri, limiter);
+	constructor(router, apiProperties) {
 		var self = this;
 		apiProperties.api_map.forEach(api => {
 			router.get(`${apiProperties.base_uri}${api.uri}`, (req, res, next) => {
@@ -17,8 +15,16 @@ class RestfullRouter {
 					paramValues.push(paramValue);
 				}
 				var method = api.method ? api.method : api.name
-				var result = self.triggerApiCall(api.api_source, method, paramValues);
-				res.send(result);
+				self.triggerApiCall(api.api_source, method, paramValues).then(result => {
+					res.send(result);
+					next();
+				}).catch(e => {
+					console.err(e);
+					res.send("");
+					next();
+				});
+				
+				
 			});
 		})
 	}
@@ -26,9 +32,9 @@ class RestfullRouter {
 	triggerApiCall(type, apiMethod, paramValues) {
 		switch(type) {
 		case "core": 
-			return coreApi[method].call(null, paramValues);
+			return coreApi[apiMethod].call(null, paramValues);
 		case "address": 
-			return addressApi[method].call(null, paramValues);
+			return addressApi[apiMethod].call(null, paramValues);
 		}
 	}
 	

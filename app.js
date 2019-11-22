@@ -92,7 +92,12 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 if(coins[config.coin].api) {
-	var restfullAPI = new Restfull(app, express.Router(), coins[config.coin].api());
+	var rateLimit = require("express-rate-limit");
+	var apiProperties = coins[config.coin].api();
+	var apiRounter = express.Router();
+	app.use(apiProperties.base_uri, limiter);
+	var restfullAPI = new Restfull(apiRounter, coins[config.coin].api());
+	app.use(apiProperties.base_uri, apiRounter);
 }
 process.on("unhandledRejection", (reason, p) => {
 	debugLog("Unhandled Rejection at: Promise", p, "reason:", reason, "stack:", (reason != null ? reason.stack : "null"));
