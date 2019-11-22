@@ -54,7 +54,7 @@ class CoinBase {
 				{
 					name : "getaddressbalance", 
 					uri : "getaddressbalance",
-					api_source : "address",
+					api_source : "getAddressBalance",
 					params : [{
 						name : "address",
 						type : "string"

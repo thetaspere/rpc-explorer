@@ -196,7 +196,12 @@ function getAddressTxids(addrScripthash) {
 	});
 }
 
-function getAddressBalance(addrScripthash) {
+
+function getAddressBalance(addrScripthash, scriptPubkey) {
+	if(!addrScripthash) {
+		var addrScripthash = hexEnc.stringify(sha256(hexEnc.parse(scriptPubkey)));
+		addrScripthash = addrScripthash.match(/.{2}/g).reverse().join("");
+	}
 	return new Promise(function(resolve, reject) {
 		runOnAllServers(function(electrumClient) {
 			return electrumClient.blockchainScripthash_getBalance(addrScripthash);
@@ -234,5 +239,6 @@ function getAddressBalance(addrScripthash) {
 
 module.exports = {
 	connectToServers: connectToServers,
-	getAddressDetails: getAddressDetails
+	getAddressDetails: getAddressDetails,
+	getAddressBalance : getAddressBalance
 };
