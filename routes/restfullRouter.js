@@ -12,7 +12,7 @@ class RestfullRouter {
 				var paramValues = [];
 				for(var paramIndex in api.params) {
 					var param = api.params[paramIndex];
-					var paramValue = req.param(param.name);
+					var paramValue = req.params(param.name);
 					paramValue = self.checkAndParseParams(param.type, paramValue);
 					if(paramValue) {
 						paramValues.push(paramValue);
@@ -60,7 +60,7 @@ class RestfullRouter {
 			Promise.all(promises).then(validatedAddresses => {
 				promises = [];
 				for(var i in validatedAddresses) {
-					if(validatedAddresses[i].isValid) {
+					if(validatedAddresses[i].isvalid) {
 						promises.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
 					}
 				}
