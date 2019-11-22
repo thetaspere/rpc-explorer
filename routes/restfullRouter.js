@@ -14,7 +14,9 @@ class RestfullRouter {
 					var param = api.params[paramIndex];
 					var paramValue = req.param(param.name);
 					paramValue = self.checkAndParseParams(param.type, paramValue);
-					paramValues.push(paramValue);
+					if(paramValue) {
+						paramValues.push(paramValue);
+					}
 				}
 				var method = api.method ? api.method : api.name
 				self.triggerApiCall(api.api_source, method, paramValues).then(result => {
@@ -58,18 +60,24 @@ class RestfullRouter {
 			Promise.all(promises).then(validatedAddresses => {
 				promises = [];
 				for(var i in validatedAddresses) {
-					promises.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
-				}
-				Promise.all(promises).then(balances => {
-					var result = {};
-					for(var j in balances) {
-						result[addresses[j]] = balances[j];
+					if(validatedAddresses[i].isValid) {
+						promises.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
 					}
-					resolve(result);
-				}).catch(err => {
-					utils.logError("23t07ug2wghefud", err);
+				}
+				if(promises.length > 0) {
+					Promise.all(promises).then(balances => {
+						var result = {};
+						for(var j in balances) {
+							result[addresses[j]] = balances[j].result;
+						}
+						resolve(result);
+					}).catch(err => {
+						utils.logError("23t07ug2wghefud", err);
+						resolve({});
+					});
+				} else {
 					resolve({});
-				});
+				}
 			}).catch(err => {
 				utils.logError("23t07ug2wghefud", err);
 				resolve({});

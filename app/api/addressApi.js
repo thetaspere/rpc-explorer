@@ -113,5 +113,6 @@ function getAddressBalance(address, scriptPubkey) {
 module.exports = {
 	getSupportedAddressApis: getSupportedAddressApis,
 	getCurrentAddressApiFeatureSupport: getCurrentAddressApiFeatureSupport,
-	getAddressDetails: getAddressDetails
+	getAddressDetails: getAddressDetails,
+	getAddressBalance : getAddressBalance
 };
