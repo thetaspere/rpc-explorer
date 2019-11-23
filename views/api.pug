@@ -10,5 +10,7 @@ block content
 	
 	hr
 	div(class="row")
-		div(class="col-sm-4") coming
+		div(class="col-sm-4") 
+		each item, index in APIS
+			li(class="nav-item") item.name
 		div(class="col-sm-8") soon

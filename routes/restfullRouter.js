@@ -3,6 +3,9 @@ var addressApi = require("./../app/api/addressApi.js");
 //var sha256 = require("crypto-js/sha256");
 //var hexEnc = require("crypto-js/enc-hex");
 var utils = require('./../app/utils.js');
+var PageRender = require('./../app/pageRender.js');
+var coins = require("./../app/coins.js");
+var config = require("./../app/config.js");
 
 class RestfullRouter {
 	constructor(router, apiProperties) {
@@ -35,13 +38,13 @@ class RestfullRouter {
 				
 			});
 		});
+		var pageRender = new PageRender(router, "/", "api");
+		pageRender.prepareRender(this.infoPageContent.bind(this));
 		this.info(router);
 	}
 	
-	info(router) {
-		router.get("/", (req, res, next) => {
-			res.render("api");
-		});
+	infoPageContent() {
+		return {APIS : coins[config.coin].api().api_map};
 	}
 	
 	triggerApiCall(type, apiMethod, paramValues) {
