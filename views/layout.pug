@@ -25,7 +25,7 @@ html(lang="en")
 			title Explorer
 	- utils.formatLargeNumber(10000000, 3);		
 	body(class="bg-dark")
-		nav(class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top")
+		nav(class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top")
 			div(class="container")
 				a(class="navbar-brand", href="/")
 					span
@@ -50,9 +50,10 @@ html(lang="en")
 										span  Tools
 									div(class="dropdown-menu shadow", aria-label="Tools Items")
 										each item in config.siteTools
-											a(class="dropdown-item", href=item.url)
-												i(class=item.fontawesome, style="width: 20px; margin-right: 10px;")
-												span  #{item.name}
+											if(item.enabled)
+												a(class="dropdown-item", href=item.url)
+													i(class=item.fontawesome, style="width: 20px; margin-right: 10px;")
+													span  #{item.name}
 
 							if (config.site.header.dropdowns)
 								each dropdown, ddIndex in config.site.header.dropdowns
