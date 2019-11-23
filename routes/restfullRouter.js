@@ -34,7 +34,14 @@ class RestfullRouter {
 				
 				
 			});
-		})
+		});
+		this.info(router);
+	}
+	
+	info(router) {
+		router.get("/", (req, res, next) => {
+			res.render("api");
+		});
 	}
 	
 	triggerApiCall(type, apiMethod, paramValues) {
