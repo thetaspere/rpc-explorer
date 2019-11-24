@@ -1,4 +1,7 @@
 function displayAPIInfo(id, api) {
+	if(!(api instanceof Object)) {
+		api = JSON.parse(api);
+	}
 	var infoHtml = `<li>${api.description}</li>`;
 	if(api.params) {
 		infoHtml += "<li> Parameters:<ul>";

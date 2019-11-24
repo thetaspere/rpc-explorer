@@ -1,20 +1,20 @@
-  GNU nano 2.5.3                                                 File: views/api.pug
-
 extends layout
 
 block headContent
         title Restfull API information
 
 block content
-		script(src="/js/api.js")
+        script(src="/js/api.js")
         h1.h3 Restfull API information
         hr
         div(class="row")
-                div(class="col-md-4")
-                        ul(class="nav-item")
-                                each item, index in APIS
-                                        li
-                                                a(class="nav-link", href="javascript:displayAPIInfo('api_info_display', #{item})", role="button")
-                                                        span #{item.name}
-                div(class="col-md-8")
-                	ul(class="list-unstyled" id="api_info_display")
+           div(class="col-md-4")
+               ul(class="nav-item")
+                  each item, index in APIS
+                      - var itemObj = JSON.stringify(item);
+                      - var hrefAction = `javascript:displayAPIInfo('api_info_display', ${itemObj})`
+                      li
+                           a(class="nav-link", href=hrefAction, role="button")
+                              span #{item.name} 
+           div(class="col-md-8")
+               ul(class="list-unstyled" id="api_info_display")

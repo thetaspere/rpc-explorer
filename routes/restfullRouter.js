@@ -43,7 +43,8 @@ class RestfullRouter {
 	}
 	
 	infoPageContent() {
-		return {APIS : coins[config.coin].api().api_map};
+		var apiMap = coins[config.coin].api().api_map;
+		return {APIS : apiMap};
 	}
 	
 	triggerApiCall(type, apiMethod, paramValues) {

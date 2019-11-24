@@ -62,7 +62,8 @@ class CoinBase {
 						description : "public wallet address"
 					}],
 					description : "Get current balance for specified address",
-					"return" : "Json Object of address balance in following format: {'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}"
+					"return" : "Json Object of address balance in following format: " +
+							"<ul><li>{'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}</ul></li>"
 				}
 			]
 		}
