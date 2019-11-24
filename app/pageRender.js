@@ -1,12 +1,9 @@
 
 class PageRender {
 	contructor(router, pageUri, pageName) {
-		this.req = req;
-		this.res = res;
-		this.next = next;
-		this.router = this.router;
-		this.pageUri = this.pageUri;
-		this.pageName = this.pageName;
+		this.router = router;
+		this.pageUri = pageUri;
+		this.pageName = pageName;
 	}
 	
 	prepareRender(generateContent, ...args) {
@@ -15,7 +12,7 @@ class PageRender {
 				var contentValues = generateContent.call(null, args);
 				res.locals = contentValues;
 			}
-			res.render(pageName);
+			res.render(this.pageName);
 		});
 	}
 }

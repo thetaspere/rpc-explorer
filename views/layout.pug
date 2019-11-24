@@ -200,47 +200,13 @@ html(lang="en")
 		script(src="/js/popper.min.js", integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut")
 		script(src="/js/bootstrap.min.js", integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM")
 		script(defer, src="/js/fontawesome.min.js", integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7")
-
 		script(src="/js/highlight.min.js", integrity="sha384-xLrpH5gNLD6HMLgeDH1/p4FXigQ8T9mgNm+EKtCSXL0OJ5i1bnSi57dnwFuUMM9/")
-		- var backendUtils = utils;
+		script(src="/js/utils.js")
 		script.
-			function updateElementValue(id, value) {
-				var element = $(`#${id}`);
-				if(element && element.length > 0) {
-					element.text(value);
-				}
-			}
-			function updateElementAttr(id, attrName, value) {
-				var element = $(`#${id}`);
-				if(element && element.length > 0) {
-					element.attr(attrName, value);
-				}
-			}
-			function updateStats() {
-				$.ajax({url: '/ext/summary', success: function(json){
-					updateElementValue("hashrate", json.hashrate.rate);
-					updateElementAttr("hashUnit", "data-original-title", json.hashrate.unit);
-					updateElementValue("txStats", json.txcount);
-					updateElementValue("mempoolCount", json.mempool.count + " tx");
-					updateElementValue("mempoolSize", json.mempool.size);
-					updateElementValue("chainworkNum", json.chainwork.num);
-					updateElementValue("chainworkExp", json.chainwork.exp);
-					updateElementValue("diffNum", json.diff.num);
-					updateElementValue("diffExp", json.diff.exp);
-					updateElementValue("chainSize", json.chainSize);
-					updateElementValue("price", json.price);
-				}});
-			}
 			$(document).ready(function() {
 				$('[data-toggle="tooltip"]').tooltip();
 				$('[data-toggle="popover"]').popover({html:true, container:"body"});
-				setInterval( function() {
-					var checkEle = $("#hashrate");
-					console.log("hashrate element %d", checkEle.length);
-					if(checkEle && checkEle.length > 0) {
-						updateStats();
-					}
-				}, 60000);
+				updateStats();
 			});
 
 			hljs.initHighlightingOnLoad();

@@ -5,12 +5,11 @@ block headContent
 	
 block content
 	h1.h3 Restfull API information
-		br
-		small(class="monospace") #{address}
-	
 	hr
 	div(class="row")
-		div(class="col-sm-4") 
-		each item, index in APIS
-			li(class="nav-item") item.name
-		div(class="col-sm-8") soon
+		div(class="col-md-4") 
+			each item, index in APIS
+				ul(class="nav-item")
+					a(class="nav-link", href="javascript:void(0)", role="button")
+						span #{item.name}
+		div(class="col-md-8") soon

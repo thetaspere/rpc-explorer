@@ -40,7 +40,6 @@ class RestfullRouter {
 		});
 		var pageRender = new PageRender(router, "/", "api");
 		pageRender.prepareRender(this.infoPageContent.bind(this));
-		this.info(router);
 	}
 	
 	infoPageContent() {
