@@ -79,7 +79,7 @@ class RestfullRouter {
 					Promise.all(promises).then(utxos => {
 						var result = {};
 						for(var j in utxos) {
-							result[addresses[j]] = utxos[j];
+							result[addresses[j]] = utxos[j].result;
 						}
 						resolve(result);
 					}).catch(err => {

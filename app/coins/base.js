@@ -76,7 +76,7 @@ class CoinBase {
 					}],
 					description : "Get list of unspent transactions meta data for specified address",
 					"return" : "Json Object of address utxo in following format: " +
-							"<ul><li>{'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}</ul></li>"
+							"<ul><li>{'address' : {'tx_hash' : txid, 'tx_pos' : index, 'height' : block_height, 'value' : satoshi_amount}}</ul></li>"
 				}
 			]
 		}
