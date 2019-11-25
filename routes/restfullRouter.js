@@ -43,8 +43,9 @@ class RestfullRouter {
 	}
 	
 	infoPageContent() {
-		var apiMap = coins[config.coin].api().api_map;
-		return {APIS : apiMap};
+		var api = coins[config.coin].api();
+		return {APIS : api.api_map,
+				baseUri : api.base_uri};
 	}
 	
 	triggerApiCall(type, apiMethod, paramValues) {
@@ -56,6 +57,43 @@ class RestfullRouter {
 		default :
 			return this[type](paramValues);
 		}
+	}
+	
+	getAddressUTXOs(addresses) {
+		return new Promise((resolve, reject) =>{
+			if(!addresses || addresses.length === 0) {
+				return resolve({});
+			}
+			var promises = [];
+			for(var index in addresses) {
+				promises.push(coreApi.getAddress(addresses[index]));
+			}
+			Promise.all(promises).then(validatedAddresses => {
+				promises = [];
+				for(var i in validatedAddresses) {
+					if(validatedAddresses[i].isvalid) {
+						promises.push(addressApi.getAddressUTXOs(addresses[i], validatedAddresses[i].scriptPubKey));
+					}
+				}
+				if(promises.length > 0) {
+					Promise.all(promises).then(utxos => {
+						var result = {};
+						for(var j in utxos) {
+							result[addresses[j]] = utxos[j];
+						}
+						resolve(result);
+					}).catch(err => {
+						utils.logError("23t07ug2wghefud", err);
+						resolve({});
+					});
+				} else {
+					resolve({});
+				}
+			}).catch(err => {
+				utils.logError("23t07ug2wghefud", err);
+				resolve({});
+			});
+		});
 	}
 	
 	getAddressBalance(addresses) {

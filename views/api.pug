@@ -11,8 +11,8 @@ block content
            div(class="col-md-4")
                ul(class="nav-item")
                   each item, index in APIS
-                      - var itemObj = JSON.stringify(item);
-                      - var hrefAction = `javascript:displayAPIInfo('api_info_display', ${itemObj})`
+                      - var itemObj = JSON.stringify(item); console.log(baseUri);
+                      - var hrefAction = `javascript:displayAPIInfo('api_info_display', ${itemObj}, ${baseUri})`
                       li
                            a(class="nav-link", href=hrefAction, role="button")
                               span #{item.name} 

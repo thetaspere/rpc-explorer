@@ -64,6 +64,19 @@ class CoinBase {
 					description : "Get current balance for specified address",
 					"return" : "Json Object of address balance in following format: " +
 							"<ul><li>{'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}</ul></li>"
+				},
+				{
+					name : "getaddressutxos", 
+					uri : "getaddressutxos",
+					api_source : "getAddressUTXOs",
+					params : [{
+						name : "address",
+						type : "string",
+						description : "public wallet address"
+					}],
+					description : "Get list of unspent transactions meta data for specified address",
+					"return" : "Json Object of address utxo in following format: " +
+							"<ul><li>{'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}</ul></li>"
 				}
 			]
 		}

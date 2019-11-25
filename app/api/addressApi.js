@@ -81,6 +81,33 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
 	});
 }
 
+function getAddressUTXOs(address, scriptPubkey) {
+	return new Promise(function(resolve, reject) {
+		var promises = [];
+		if (config.addressApi == "electrumx") {
+			promises.push(electrumAddressApi.getAddressUTXOs(null, scriptPubkey));
+
+		} else {
+			promises.push(new Promise(function(resolve, reject) {
+				resolve({addressUTXOs:null, errors:["No address API configured"]});
+			}));
+		}
+
+		Promise.all(promises).then(function(results) {
+			if (results && results.length > 0) {
+				resolve(results[0]);
+
+			} else {
+				resolve(null);
+			}
+		}).catch(function(err) {
+			utils.logError("239x7rhsd0gs", err);
+
+			reject(err);
+		});
+	});
+}
+
 function getAddressBalance(address, scriptPubkey) {
 	return new Promise(function(resolve, reject) {
 		var promises = [];
@@ -114,5 +141,6 @@ module.exports = {
 	getSupportedAddressApis: getSupportedAddressApis,
 	getCurrentAddressApiFeatureSupport: getCurrentAddressApiFeatureSupport,
 	getAddressDetails: getAddressDetails,
-	getAddressBalance : getAddressBalance
+	getAddressBalance : getAddressBalance,
+	getAddressUTXOs : getAddressUTXOs
 };
