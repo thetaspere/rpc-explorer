@@ -63,7 +63,9 @@ class CoinBase {
 					}],
 					description : "Get current balance for specified address",
 					"return" : "Json Object of address balance in following format: " +
-							"<ul><li>{'address' : {'confirmed' : satoshi_amount, 'unconfirmed' : satoshi_amount}}</ul></li>"
+							"<ul><li>{ 'address' : <br>" +
+							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
+							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount}<br>}</ul></li>"
 				},
 				{
 					name : "getaddressutxos", 
@@ -76,7 +78,14 @@ class CoinBase {
 					}],
 					description : "Get list of unspent transactions meta data for specified address",
 					"return" : "Json Object of address utxo in following format: " +
-							"<ul><li>{'address' : {'tx_hash' : txid, 'tx_pos' : index, 'height' : block_height, 'value' : satoshi_amount}}</ul></li>"
+							"<ul><li>{ 'address' <br>: " +
+							"&emsp;[<br>" +
+							"&emsp;&nbsp;&nbsp;{ 'tx_hash' : txid, <br>" +
+							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'tx_pos' : index, <br>" +
+							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'height' : block_height, <br>" +
+							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'value' : satoshi_amount }], <br>" +
+							"&emsp;...<br>" +
+							"}</ul></li>"
 				}
 			]
 		}
