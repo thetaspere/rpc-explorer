@@ -64,9 +64,29 @@ class CoinBase {
 					}],
 					description : "Get block information by height",
 					"return" : "Json Object of block info in following format: " +
-							"<ul><li>{ 'address' : <br>" +
-							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
-							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
+							`<ul><li>{<br>
+			  			  &emsp;&emsp;"hash" : "hash",     (string) the block hash (same as provided)<br>
+						  &emsp;&emsp;"confirmations" : n,   (numeric) The number of confirmations, or -1 if the block is not on the main chain<br>
+						  &emsp;&emsp;"size" : n,            (numeric) The block size<br>
+						  &emsp;&emsp;"strippedsize" : n,    (numeric) The block size excluding witness data<br>
+						  &emsp;&emsp;"weight" : n           (numeric) The block weight as defined in BIP 141<br>
+						  &emsp;&emsp;"height" : n,          (numeric) The block height or index<br>
+						  &emsp;&emsp;"version" : n,         (numeric) The block version<br>
+						  &emsp;&emsp;"versionHex" : "00000000", (string) The block version formatted in hexadecimal<br>
+						  &emsp;&emsp;"merkleroot" : "xxxx", (string) The merkle root<br>
+						  &emsp;&emsp;"tx" : [               (array of string) The transaction ids<br>
+						  &emsp;&emsp;&emsp;   "transactionid"     (string) The transaction id<br>
+						  &emsp;&emsp;&emsp;   ,...<br>
+						  &emsp;&emsp;],<br>
+						  &emsp;&emsp;"time" : ttt,          (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)<br>
+						  &emsp;&emsp;"mediantime" : ttt,    (numeric) The median block time in seconds since epoch (Jan 1 1970 GMT)<br>
+						  &emsp;&emsp;"nonce" : n,           (numeric) The nonce<br>
+						  &emsp;&emsp;"bits" : "1d00ffff", (string) The bits<br>
+						  &emsp;&emsp;"difficulty" : x.xxx,  (numeric) The difficulty<br>
+						  &emsp;&emsp;"chainwork" : "xxxx",  (string) Expected number of hashes required to produce the chain up to this block (in hex)<br>
+						  &emsp;&emsp;"previousblockhash" : "hash",  (string) The hash of the previous block<br>
+						  &emsp;&emsp;"nextblockhash" : "hash"       (string) The hash of the next block<br>
+							}</ul></li>`
 				},
 				{
 					name : "getrawtransaction", 
@@ -80,9 +100,49 @@ class CoinBase {
 					}],
 					description : "Get raw detail of a transaction",
 					"return" : "Json Object of transaction info in following format: " +
-							"<ul><li>{ 'address' : <br>" +
-							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
-							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
+							`<ul><li><body>{
+							  "hex" : "data",       (string) The serialized, hex-encoded data for 'txid'
+							  "txid" : "id",        (string) The transaction id (same as provided)
+							  "hash" : "id",        (string) The transaction hash (differs from txid for witness transactions)
+							  "size" : n,             (numeric) The serialized transaction size
+							  "vsize" : n,            (numeric) The virtual transaction size (differs from size for witness transactions)
+							  "version" : n,          (numeric) The version
+							  "locktime" : ttt,       (numeric) The lock time
+							  "vin" : [               (array of json objects)
+							     {
+							       "txid": "id",    (string) The transaction id
+							       "vout": n,         (numeric)
+							       "scriptSig": {     (json object) The script
+							         "asm": "asm",  (string) asm
+							         "hex": "hex"   (string) hex
+							       },
+							       "sequence": n      (numeric) The script sequence number
+							       "txinwitness": ["hex", ...] (array of string) hex-encoded witness data (if any)
+							     }
+							     ,...
+							  ],
+							  "vout" : [              (array of json objects)
+							     {
+							       "value" : x.xxx,            (numeric) The value whole unit
+							       "n" : n,                    (numeric) index
+							       "scriptPubKey" : {          (json object)
+							         "asm" : "asm",          (string) the asm
+							         "hex" : "hex",          (string) the hex
+							         "reqSigs" : n,            (numeric) The required sigs
+							         "type" : "pubkeyhash",  (string) The type, eg 'pubkeyhash'
+							         "addresses" : [           (json array of string)
+							           "address"        (string) pigeon address
+							           ,...
+							         ]
+							       }
+							     }
+							     ,...
+							  ],
+							  "blockhash" : "hash",   (string) the block hash
+							  "confirmations" : n,      (numeric) The confirmations
+							  "time" : ttt,             (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT)
+							  "blocktime" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)
+							}</ul></li></body>`
 				},
 				{
 					name : "getaddressbalance", 
