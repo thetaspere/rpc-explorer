@@ -26,7 +26,7 @@ class RestfullRouter {
 					if(result instanceof Object) {
 						res.send(result);
 					} else {
-						res.send(result.toString());
+						res.send(JSON.stringify(result, null, 2));
 					}
 					next();
 				}).catch(e => {

@@ -53,6 +53,38 @@ class CoinBase {
 					"return" : "block height as number"
 				},
 				{
+					name : "getblock", 
+					uri : "getblock",
+					api_source : "core",
+					method : "getBlockByHeight",
+					params : [{
+						name : "height",
+						type : "number",
+						description : "valid block height"
+					}],
+					description : "Get block information by height",
+					"return" : "Json Object of block info in following format: " +
+							"<ul><li>{ 'address' : <br>" +
+							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
+							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
+				},
+				{
+					name : "getrawtransaction", 
+					uri : "getblock",
+					api_source : "core",
+					method : "getRawTransaction",
+					params : [{
+						name : "txid",
+						type : "string",
+						description : "valid transaction id"
+					}],
+					description : "Get raw detail of a transaction",
+					"return" : "Json Object of transaction info in following format: " +
+							"<ul><li>{ 'address' : <br>" +
+							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
+							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
+				},
+				{
 					name : "getaddressbalance", 
 					uri : "getaddressbalance",
 					api_source : "getAddressBalance",
@@ -65,7 +97,7 @@ class CoinBase {
 					"return" : "Json Object of address balance in following format: " +
 							"<ul><li>{ 'address' : <br>" +
 							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
-							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount}<br>}</ul></li>"
+							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
 				},
 				{
 					name : "getaddressutxos", 
@@ -78,13 +110,13 @@ class CoinBase {
 					}],
 					description : "Get list of unspent transactions meta data for specified address",
 					"return" : "Json Object of address utxo in following format: " +
-							"<ul><li>{ 'address' <br>: " +
-							"&emsp;[<br>" +
-							"&emsp;&nbsp;&nbsp;{ 'tx_hash' : txid, <br>" +
-							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'tx_pos' : index, <br>" +
-							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'height' : block_height, <br>" +
-							"&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'value' : satoshi_amount }], <br>" +
-							"&emsp;...<br>" +
+							"<ul><li>{ 'address' : <br>" +
+							"&emsp;&emsp;[<br>" +
+							"&emsp;&emsp;&nbsp;&nbsp;{ 'tx_hash' : txid, <br>" +
+							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'tx_pos' : index, <br>" +
+							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'height' : block_height, <br>" +
+							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'value' : satoshi_amount }, <br>" +
+							"&emsp;&emsp;... ]<br>" +
 							"}</ul></li>"
 				}
 			]
