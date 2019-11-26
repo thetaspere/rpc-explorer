@@ -31,7 +31,7 @@ class RestfullRouter {
 					next();
 				}).catch(e => {
 					console.log(e);
-					res.send("");
+					res.send(e + "");
 					next();
 				});
 				

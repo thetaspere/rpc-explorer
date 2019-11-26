@@ -142,7 +142,7 @@ class CoinBase {
 							  <br>&emsp;&emsp;"confirmations" : n,      (numeric) The confirmations
 							  <br>&emsp;&emsp;"time" : ttt,             (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT)
 							  <br>&emsp;&emsp;"blocktime" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)
-							}<br></ul></li>`
+							<br>}</ul></li>`
 				},
 				{
 					name : "getaddressbalance", 
@@ -178,6 +178,27 @@ class CoinBase {
 							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'value' : satoshi_amount }, <br>" +
 							"&emsp;&emsp;... ]<br>" +
 							"}</ul></li>"
+				},
+				{
+					name : "supply",
+					uri : "supply",
+					api_source : "core",
+					method : "getSupply",
+					description : "Get current supply",
+					"return" : "current coin supply as number"
+				},
+				{
+					name : "broadcast",
+					uri : "broadcast",
+					api_source : "core",
+					method : "broadcast",
+					params : [{
+						name : "tx",
+						type : "string",
+						description : "raw transaction in hex"
+					}],
+					description : "broadcast transaction",
+					"return" : "txid"
 				}
 			]
 		}

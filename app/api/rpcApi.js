@@ -61,6 +61,20 @@ function getMempoolTxids() {
 	return getRpcDataWithParams({method:"getrawmempool", parameters:[false]});
 }
 
+function broadcast(rawtxhex) {
+	return getRpcDataWithParams({method:"sendrawtransaction", parameters:[rawtxhex]});
+}
+
+function getSupply() {
+	return new Promise(function(resolve, reject) {
+		getRpcData("gettxoutsetinfo").then(txoutinfo => {
+			if(txoutinfo) {
+				resolve(txoutinfo.total_amount);
+			}
+		}).catch(reject);
+	});
+}
+
 function getRawMempool() {
 	return new Promise(function(resolve, reject) {
 		getRpcDataWithParams({method:"getrawmempool", parameters:[false]}).then(function(txids) {
@@ -355,5 +369,7 @@ module.exports = {
 	getPeerInfo: getPeerInfo,
 	getChainTxStats: getChainTxStats,
 	getBlockCount : getBlockCount,
-	getBlock : getBlock
+	getBlock : getBlock,
+	getSupply : getSupply,
+	broadcast : broadcast
 };

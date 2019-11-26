@@ -931,6 +931,12 @@ function getRpcMethodHelp(methodName) {
 	});
 }
 
+function getSupply() {
+	return tryCacheThenRpcApi(miscCache, "getSupply", 1200000, function() {
+		return rpcApi.getChainTxStats(blockCount);
+	});
+}
+
 function logCacheSizes() {
 	var itemCounts = [ miscCache.itemCount, blockCache.itemCount, txCache.itemCount ];
 	
@@ -968,5 +974,6 @@ module.exports = {
 	getMempoolDetails: getMempoolDetails,
 	getTxCountStats: getTxCountStats,
 	getBlockCount : getBlockCount,
-	getBlock : getBlock
+	getBlock : getBlock,
+	broadcast : rpcApi.broadcast
 };
