@@ -576,6 +576,12 @@ function getBlockByHeight(blockHeight) {
 	});
 }
 
+function getBlock(blockHeight) {
+	return tryCacheThenRpcApi(blockCache, "getBlock-" + blockHeight, 3600000, function() {
+		return rpcApi.getBlock(blockHeight);
+	});
+}
+
 function getBlocksByHeight(blockHeights) {
 	return new Promise(function(resolve, reject) {
 		var promises = [];
@@ -961,5 +967,6 @@ module.exports = {
 	getChainTxStats: getChainTxStats,
 	getMempoolDetails: getMempoolDetails,
 	getTxCountStats: getTxCountStats,
-	getBlockCount : getBlockCount
+	getBlockCount : getBlockCount,
+	getBlock : getBlock
 };

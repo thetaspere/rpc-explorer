@@ -125,6 +125,18 @@ function getBlockByHeight(blockHeight) {
 	});
 }
 
+function getBlock(blockHeight) {
+	return new Promise(function(resolve, reject) {
+		getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+			getRpcDataWithParams({method:"getblock", parameters:[blockHash]}).then(function(block) {
+				resolve(block);
+			}).catch(reject);
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
 function getBlockByHash(blockHash) {
 	debugLog("getBlockByHash: %s", blockHash);
 
@@ -342,5 +354,6 @@ module.exports = {
 	getAddress: getAddress,
 	getPeerInfo: getPeerInfo,
 	getChainTxStats: getChainTxStats,
-	getBlockCount : getBlockCount
+	getBlockCount : getBlockCount,
+	getBlock : getBlock
 };

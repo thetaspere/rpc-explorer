@@ -56,7 +56,7 @@ class CoinBase {
 					name : "getblock", 
 					uri : "getblock",
 					api_source : "core",
-					method : "getBlockByHeight",
+					method : "getBlock",
 					params : [{
 						name : "height",
 						type : "number",
@@ -70,7 +70,7 @@ class CoinBase {
 				},
 				{
 					name : "getrawtransaction", 
-					uri : "getblock",
+					uri : "getrawtransaction",
 					api_source : "core",
 					method : "getRawTransaction",
 					params : [{

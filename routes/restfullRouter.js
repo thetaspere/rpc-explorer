@@ -26,11 +26,11 @@ class RestfullRouter {
 					if(result instanceof Object) {
 						res.send(result);
 					} else {
-						res.send(JSON.stringify(result, null, 2));
+						res.send(JSON.stringify(result));
 					}
 					next();
 				}).catch(e => {
-					console.err(e);
+					console.log(e);
 					res.send("");
 					next();
 				});
@@ -51,9 +51,9 @@ class RestfullRouter {
 	triggerApiCall(type, apiMethod, paramValues) {
 		switch(type) {
 		case "core": 
-			return coreApi[apiMethod].call(null, paramValues);
+			return coreApi[apiMethod].apply(null, paramValues);
 		case "address": 
-			return addressApi[apiMethod].call(null, paramValues);
+			return addressApi[apiMethod].apply(null, paramValues);
 		default :
 			return this[type](paramValues);
 		}
@@ -61,10 +61,13 @@ class RestfullRouter {
 	
 	getAddressUTXOs(addresses) {
 		return new Promise((resolve, reject) =>{
-			if(!addresses || addresses.length === 0) {
+			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
 				return resolve({});
 			}
 			var promises = [];
+			if(!(addresses instanceof Object)) {
+				addresses = [addresses];
+			}
 			for(var index in addresses) {
 				promises.push(coreApi.getAddress(addresses[index]));
 			}
@@ -98,10 +101,13 @@ class RestfullRouter {
 	
 	getAddressBalance(addresses) {
 		return new Promise((resolve, reject) =>{
-			if(!addresses || addresses.length === 0) {
+			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
 				return resolve({});
 			}
 			var promises = [];
+			if(!(addresses instanceof Object)) {
+				addresses = [addresses];
+			}
 			for(var index in addresses) {
 				promises.push(coreApi.getAddress(addresses[index]));
 			}
@@ -142,7 +148,7 @@ class RestfullRouter {
 	checkAndParseNumber(value) {
 		if(value && value.trim() !== "") {
 			var num = Number(value.trim());
-			if(num.isNaN()) {
+			if(isNaN(num)) {
 				return null;
 			}
 			return num;
