@@ -24,9 +24,9 @@ class RestfullRouter {
 				var method = api.method ? api.method : api.name
 				self.triggerApiCall(api.api_source, method, paramValues).then(result => {
 					if(result instanceof Object) {
-						res.send(result);
+						res.send(JSON.stringify(result, null, 4));
 					} else {
-						res.send(JSON.stringify(result));
+						res.send(result.toString());
 					}
 					next();
 				}).catch(e => {

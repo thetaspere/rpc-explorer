@@ -86,7 +86,7 @@ class CoinBase {
 						  &emsp;&emsp;"chainwork" : "xxxx",  (string) Expected number of hashes required to produce the chain up to this block (in hex)<br>
 						  &emsp;&emsp;"previousblockhash" : "hash",  (string) The hash of the previous block<br>
 						  &emsp;&emsp;"nextblockhash" : "hash"       (string) The hash of the next block<br>
-							}</ul></li>`
+							}</li></ul>`
 				},
 				{
 					name : "getrawtransaction", 
@@ -142,7 +142,7 @@ class CoinBase {
 							  <br>&emsp;&emsp;"confirmations" : n,      (numeric) The confirmations
 							  <br>&emsp;&emsp;"time" : ttt,             (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT)
 							  <br>&emsp;&emsp;"blocktime" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)
-							<br>}</ul></li>`
+							<br>}</li></ul>`
 				},
 				{
 					name : "getaddressbalance", 
@@ -157,7 +157,7 @@ class CoinBase {
 					"return" : "Json Object of address balance in following format: " +
 							"<ul><li>{ 'address' : <br>" +
 							"&emsp;{ 'confirmed' : satoshi_amount, <br>" +
-							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</ul></li>"
+							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</li></ul>"
 				},
 				{
 					name : "getaddressutxos", 
@@ -177,7 +177,27 @@ class CoinBase {
 							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'height' : block_height, <br>" +
 							"&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;'value' : satoshi_amount }, <br>" +
 							"&emsp;&emsp;... ]<br>" +
-							"}</ul></li>"
+							"}</li></ul>"
+				},
+				{
+					name : "getmininginfo",
+					uri : "getmininginfo",
+					api_source : "core",
+					method : "getMiningInfo",
+					description : "Get current network mining information",
+					"return" : "JSON object in the following format: " +
+						`<ul><li>{
+						  <br>&emsp;&emsp;"blocks": nnn,             (numeric) The current block
+						  <br>&emsp;&emsp;"currentblockweight": nnn, (numeric) The last block weight
+						  <br>&emsp;&emsp;"currentblocktx": nnn,     (numeric) The last block transaction
+						  <br>&emsp;&emsp;"difficulty": xxx.xxxxx    (numeric) The current difficulty
+						  <br>&emsp;&emsp;"networkhashps": nnn,      (numeric) The network hashes per second
+						  <br>&emsp;&emsp;"hashespersec": nnn,       (numeric) The hashes per second of built-in miner
+						  <br>&emsp;&emsp;"pooledtx": n              (numeric) The size of the mempool
+						  <br>&emsp;&emsp;"chain": "xxxx",           (string) current network name as defined in BIP70 (main, test, regtest)
+						  <br>&emsp;&emsp;"warnings": "..."          (string) any network and blockchain warnings
+						  <br>&emsp;&emsp;"errors": "..."            (string) DEPRECATED. Same as warnings. Only shown when pigeond is started with -deprecatedrpc=getmininginfo
+						<br>}</li><ul>`
 				},
 				{
 					name : "supply",
