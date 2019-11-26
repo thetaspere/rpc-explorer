@@ -933,7 +933,7 @@ function getRpcMethodHelp(methodName) {
 
 function getSupply() {
 	return tryCacheThenRpcApi(miscCache, "getSupply", 1200000, function() {
-		return rpcApi.getChainTxStats(blockCount);
+		return rpcApi.getSupply();
 	});
 }
 
