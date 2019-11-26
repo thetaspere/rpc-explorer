@@ -975,5 +975,6 @@ module.exports = {
 	getTxCountStats: getTxCountStats,
 	getBlockCount : getBlockCount,
 	getBlock : getBlock,
-	broadcast : rpcApi.broadcast
+	broadcast : rpcApi.broadcast,
+	getSupply : getSupply
 };
