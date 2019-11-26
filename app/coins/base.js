@@ -100,49 +100,49 @@ class CoinBase {
 					}],
 					description : "Get raw detail of a transaction",
 					"return" : "Json Object of transaction info in following format: " +
-							`<ul><li><body>{
-							  "hex" : "data",       (string) The serialized, hex-encoded data for 'txid'
-							  "txid" : "id",        (string) The transaction id (same as provided)
-							  "hash" : "id",        (string) The transaction hash (differs from txid for witness transactions)
-							  "size" : n,             (numeric) The serialized transaction size
-							  "vsize" : n,            (numeric) The virtual transaction size (differs from size for witness transactions)
-							  "version" : n,          (numeric) The version
-							  "locktime" : ttt,       (numeric) The lock time
-							  "vin" : [               (array of json objects)
-							     {
-							       "txid": "id",    (string) The transaction id
-							       "vout": n,         (numeric)
-							       "scriptSig": {     (json object) The script
-							         "asm": "asm",  (string) asm
-							         "hex": "hex"   (string) hex
-							       },
-							       "sequence": n      (numeric) The script sequence number
-							       "txinwitness": ["hex", ...] (array of string) hex-encoded witness data (if any)
-							     }
-							     ,...
-							  ],
-							  "vout" : [              (array of json objects)
-							     {
-							       "value" : x.xxx,            (numeric) The value whole unit
-							       "n" : n,                    (numeric) index
-							       "scriptPubKey" : {          (json object)
-							         "asm" : "asm",          (string) the asm
-							         "hex" : "hex",          (string) the hex
-							         "reqSigs" : n,            (numeric) The required sigs
-							         "type" : "pubkeyhash",  (string) The type, eg 'pubkeyhash'
-							         "addresses" : [           (json array of string)
-							           "address"        (string) pigeon address
-							           ,...
-							         ]
-							       }
-							     }
-							     ,...
-							  ],
-							  "blockhash" : "hash",   (string) the block hash
-							  "confirmations" : n,      (numeric) The confirmations
-							  "time" : ttt,             (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT)
-							  "blocktime" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)
-							}</ul></li></body>`
+							`<ul><li>{
+							  <br>&emsp;&emsp;"hex" : "data",       (string) The serialized, hex-encoded data for 'txid'
+							  <br>&emsp;&emsp;"txid" : "id",        (string) The transaction id (same as provided)
+							  <br>&emsp;&emsp;"hash" : "id",        (string) The transaction hash (differs from txid for witness transactions)
+							  <br>&emsp;&emsp;"size" : n,             (numeric) The serialized transaction size
+							  <br>&emsp;&emsp;"vsize" : n,            (numeric) The virtual transaction size (differs from size for witness transactions)
+							  <br>&emsp;&emsp;"version" : n,          (numeric) The version
+							  <br>&emsp;&emsp;"locktime" : ttt,       (numeric) The lock time
+							  <br>&emsp;&emsp;"vin" : [               (array of json objects)
+							  <br>&emsp;&emsp;&emsp;   {
+							  <br>&emsp;&emsp;&emsp;&emsp;     "txid": "id",    (string) The transaction id
+							  <br>&emsp;&emsp;&emsp;&emsp;     "vout": n,         (numeric)
+							  <br>&emsp;&emsp;&emsp;&emsp;     "scriptSig": {     (json object) The script
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;       "asm": "asm",  (string) asm
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;      "hex": "hex"   (string) hex
+							  <br>&emsp;&emsp;&emsp;&emsp;    },
+							  <br>&emsp;&emsp;&emsp;&emsp;     "sequence": n      (numeric) The script sequence number
+							  <br>&emsp;&emsp;&emsp;&emsp;     "txinwitness": ["hex", ...] (array of string) hex-encoded witness data (if any)
+							  <br>&emsp;&emsp;&emsp;   }
+							  <br>&emsp;&emsp;&emsp;   ,...
+							  <br>&emsp;&emsp;],
+							  <br>&emsp;&emsp;"vout" : [              (array of json objects)
+							  <br>&emsp;&emsp;&emsp;   {
+							  <br>&emsp;&emsp;&emsp;&emsp;     "value" : x.xxx,            (numeric) The value whole unit
+							  <br>&emsp;&emsp;&emsp;&emsp;     "n" : n,                    (numeric) index
+							  <br>&emsp;&emsp;&emsp;&emsp;     "scriptPubKey" : {          (json object)
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;       "asm" : "asm",          (string) the asm
+							   <br>&emsp;&emsp;&emsp;&emsp;&emsp;      "hex" : "hex",          (string) the hex
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;       "reqSigs" : n,            (numeric) The required sigs
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;       "type" : "pubkeyhash",  (string) The type, eg 'pubkeyhash'
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;       "addresses" : [           (json array of string)
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;         "address"        (string) pigeon address
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;        ,...
+							  <br>&emsp;&emsp;&emsp;&emsp;&emsp;      ]
+							  <br>&emsp;&emsp;&emsp;&emsp;     }
+							  <br>&emsp;&emsp;&emsp;   }
+							  <br>&emsp;&emsp;&emsp;   ,...
+							  <br>&emsp;&emsp;],
+							  <br>&emsp;&emsp;"blockhash" : "hash",   (string) the block hash
+							  <br>&emsp;&emsp;"confirmations" : n,      (numeric) The confirmations
+							  <br>&emsp;&emsp;"time" : ttt,             (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT)
+							  <br>&emsp;&emsp;"blocktime" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)
+							}<br></ul></li>`
 				},
 				{
 					name : "getaddressbalance", 
