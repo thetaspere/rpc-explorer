@@ -3,13 +3,13 @@
 [![npm version][npm-ver-img]][npm-ver-url] [![NPM downloads][npm-dl-img]][npm-dl-url]
 
 
-Simple, database-free Bitcoin blockchain explorer, via RPC. Built with Node.js, express, bootstrap-v4.
+Simple, database-free Bitcoin base blockchain explorer, via RPC. Built with Node.js, express, bootstrap-v4.
 
-This tool is intended to be a simple, self-hosted explorer for the Bitcoin blockchain, driven by RPC calls to your own bitcoind node. This tool is easy to run but currently lacks features compared to database-backed explorers.
+This tool is intended to be a simple, self-hosted explorer for the Bitcoin base blockchain, driven by RPC calls to your own coind node. This tool is easy to run but currently lacks features compared to database-backed explorers.
 
 Whatever reasons one might have for running a full node (trustlessness, technical curiosity, supporting the network, etc) it's helpful to appreciate the "fullness" of your node. With this explorer, you can not only explore the blockchain (in the traditional sense of the term "explorer"), but also explore the functional capabilities of your own node.
 
-Live demo available at: [https://btc-explorer.com](https://btc-explorer.com)
+Live demo available at: [https://explorer.pigeoncoin.org/](https://explorer.pigeoncoin.org/)
 
 # Features
 
@@ -30,7 +30,9 @@ See [CHANGELOG.md](/CHANGELOG.md).
 
 The below instructions are geared toward BTC, but can be adapted easily to other coins.
 
-## Prerequisites
+## Prerequisites: 
+
+These steps are for bitcoin but other supported bitcoins base coin should have similar setup
 
 1. Install and run a full, archiving node - [instructions](https://bitcoin.org/en/full-node). Ensure that your bitcoin node has full transaction indexing enabled (`txindex=1`) and the RPC server enabled (`server=1`).
 2. Synchronize your node with the Bitcoin network.
@@ -39,8 +41,8 @@ The below instructions are geared toward BTC, but can be adapted easily to other
 ## Instructions
 
 ```bash
-npm install -g btc-rpc-explorer
-btc-rpc-explorer
+npm install -g rpc-explorer
+rpc-explorer
 ```
 
 If you're running on mainnet with the default datadir and port, this Should Just Work.
@@ -59,15 +61,15 @@ See [.env-sample](.env-sample) for a list of the options and details for formatt
 You may also pass options as CLI arguments, for example:
 
 ```bash
-btc-rpc-explorer --port 8080 --bitcoind-port 18443 --bitcoind-cookie ~/.bitcoin/regtest/.cookie
+rpc-explorer --port 8080 --bitcoind-port 18443 --bitcoind-cookie ~/.bitcoin/regtest/.cookie
 ```
 
-See `btc-rpc-explorer --help` for the full list of CLI options.
+See `rpc-explorer --help` for the full list of CLI options.
 
 ## Run via Docker
 
-1. `docker build -t btc-rpc-explorer .`
-2. `docker run -p 3002:3002 -it btc-rpc-explorer`
+1. `docker build -t rpc-explorer .`
+2. `docker run -p 3002:3002 -it rpc-explorer`
 
 # Support
 
