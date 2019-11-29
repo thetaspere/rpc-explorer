@@ -46,7 +46,7 @@ var coreApi = require("./app/api/coreApi.js");
 var auth = require('./app/auth.js');
 
 var package_json = require('./package.json');
-var Restfull = require('./routes/restfullRouter.js');
+var Restful = require('./routes/restfulRouter.js');
 global.appVersion = package_json.version;
 
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
@@ -416,7 +416,7 @@ if(coins[config.coin].api) {
 	var limiter = rateLimit(apiProperties.limit);
 	var apiRounter = express.Router();
 	app.use(apiProperties.base_uri, limiter);
-	var restfullAPI = new Restfull(apiRounter, apiProperties);
+	var restfulAPI = new Restful(apiRounter, apiProperties);
 	app.use(apiProperties.base_uri, apiRounter);
 }
 

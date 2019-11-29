@@ -196,8 +196,7 @@ class CoinBase {
 						  <br>&emsp;&emsp;"pooledtx": n              (numeric) The size of the mempool
 						  <br>&emsp;&emsp;"chain": "xxxx",           (string) current network name as defined in BIP70 (main, test, regtest)
 						  <br>&emsp;&emsp;"warnings": "..."          (string) any network and blockchain warnings
-						  <br>&emsp;&emsp;"errors": "..."            (string) DEPRECATED. Same as warnings. Only shown when pigeond is started with -deprecatedrpc=getmininginfo
-						<br>}</li><ul>`
+						  <br>}</li><ul>`
 				},
 				{
 					name : "supply",

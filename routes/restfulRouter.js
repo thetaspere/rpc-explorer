@@ -7,7 +7,7 @@ var PageRender = require('./../app/pageRender.js');
 var coins = require("./../app/coins.js");
 var config = require("./../app/config.js");
 
-class RestfullRouter {
+class RestfulRouter {
 	constructor(router, apiProperties) {
 		var self = this;
 		apiProperties.api_map.forEach(api => {
@@ -168,4 +168,4 @@ class RestfullRouter {
 	}
 }
 
-module.exports = RestfullRouter;
+module.exports = RestfulRouter;

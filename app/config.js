@@ -171,7 +171,7 @@ module.exports = {
 
 		{name:"RPC Browser", url:"/rpc-browser", desc:"Browse the RPC functionality of this node. See docs and execute commands.", fontawesome:"fas fa-book" , enabled : (process.env.BTCEXP_BASIC_AUTH_PASSWORD !== undefined)},
 		{name:"RPC Terminal", url:"/rpc-terminal", desc:"Directly execute RPCs against this node.", fontawesome:"fas fa-terminal", enabled : (process.env.BTCEXP_BASIC_AUTH_PASSWORD !== undefined)},
-		{name: "APIs", url:"/api", desc:"Restfull APIs service by this explorer", fontawesome:"fas fa-code", enabled : true},
+		{name: "APIs", url:"/api", desc:"Restful APIs service by this explorer", fontawesome:"fas fa-code", enabled : true},
 		
 		{name:(coins[currentCoin].name + " Fun"), url:"/fun", desc:"See fun/interesting historical blockchain data.", fontawesome:"fas fa-certificate", enabled : true}
 	],
