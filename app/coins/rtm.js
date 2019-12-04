@@ -134,11 +134,10 @@ Raptoreum.addProperties({
 	],
 	
 	relatedSites : [
-		{name: "Official Website", url:"https://Raptoreum.org/", imgUrl:"/img/logo/RTM.svg"},
-		{name: "Discord", url:"https://discord.gg/SZcf63h", imgUrl:"/img/logo/discord.svg"},
+		{name: "Official Website", url:"https://Raptoreum.com/", imgUrl:"/img/logo/RTM.svg"},
+		{name: "Discord", url:"https://discord.gg/2T8xG7e", imgUrl:"/img/logo/discord.svg"},
 		{name: "Twitter", url:"https://twitter.com/Raptoreum", imgUrl:"/img/logo/twitter.svg"},
-		{name: "Offiical Pool", url:"https://pool.Raptoreum.org/", imgUrl:"/img/logo/RTM.svg"},
-		{name: "Github", url:"https://github.com/Raptoreum", imgUrl:"/img/logo/github.png"}
+		{name: "Github", url:"https://github.com/Raptor3um/Raptoreum", imgUrl:"/img/logo/github.png"}
 	],
 	blockRewardFunction:function(blockHeight) {
 		var eras = [ new Decimal8(5000) ];
