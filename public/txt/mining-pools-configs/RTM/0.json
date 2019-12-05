@@ -1,0 +1,15 @@
+{
+	"payout_addresses" : {
+		 "RHA3Jsuvi7dssBH1vX4uCGEy1V4nzyk4yb" : {
+            "name" : "zellab",
+            "link" : "https://zellabs.net/coins/rtm"
+        },
+		 "RRVVdVm2G2Set7mJHRn5xreGDdgqqcRjsh" : {
+            "name" : "Raptoreum Offical Pool",
+            "link" : "https://Raptoreum.com"
+        }
+	},
+	"coinbase_tags" : {
+
+	}
+}

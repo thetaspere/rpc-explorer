@@ -65,6 +65,62 @@ function broadcast(rawtxhex) {
 	return getRpcDataWithParams({method:"sendrawtransaction", parameters:[rawtxhex]});
 }
 
+function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
+	return new Promise(function(resolve, reject) {
+		var promises = [];
+
+		var txidData = null;
+		var balanceData = null;
+		var assetSupported = coins[config.coin].assetSupported ? true : false;
+		// getBlockCount().then(currentHeight => {
+		// 	promises.push(getRpcDataWithParams({method : "getaddresstxids", parameters: [{adddresses : [address]}]}));
+		// }).catch(reject);
+		promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]}));
+		promises.push(getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]}));
+		Promise.all(promises).then(function(results) {
+			txidData = results[0];
+			if (sort == "desc") {
+				txidData.reverse();
+			}
+			txidData = txidData.splice(0,100);
+			balanceData = results[1];
+			var addressDetails = {
+				txCount : txidData.length,
+				txids : [],
+				blockHeightsByTxid : {}
+			}
+			for (var i = offset; i < Math.min(txidData.length, limit + offset); i++) {
+				addressDetails.txids.push(txidData[i].txid);
+				addressDetails.blockHeightsByTxid[txidData[i].txid] = txidData[i].height;
+			}
+			if(assetSupported) {
+				addressDetails.assets = {};
+				for(var bIndex in balanceData) {
+					var bal = balanceData[bIndex];
+					if(bal.assetName === coins[config.coin].ticker) {
+						addressDetails.balanceSat = bal.balance;
+					} else {
+						addressDetails.assets[bal.assetName] = bal.balance;
+					}
+				}
+			} else {
+				addressDetails.balanceSat = balanceData.balance;
+			}
+			resolve({addressDetails : addressDetails, errors : null});
+ 		}).catch(reject);
+	});
+}
+
+function getAddressBalance(address, scriptPubkey) {
+	var assetSupported = coins[config.coin].assetSupported ? true : false;
+	console.log("address = %s", address);
+	return getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]});
+}
+function getAddressUTXOs(address, scriptPubkey) {
+	//var assetSupported = coins[config.coin].assetSupported ? true : false;
+	return getRpcDataWithParams({method : "getaddressutxos", parameters: [{addresses : [address]}]});
+}
+
 function getSupply() {
 	return new Promise(function(resolve, reject) {
 		getRpcData("gettxoutsetinfo").then(txoutinfo => {
@@ -317,7 +373,7 @@ function getRpcData(cmd) {
 				callback();
 			});
 		};
-		
+
 		rpcQueue.push({rpcCall:rpcCall});
 	});
 }
@@ -343,7 +399,7 @@ function getRpcDataWithParams(request) {
 				callback();
 			});
 		};
-		
+
 		rpcQueue.push({rpcCall:rpcCall});
 	});
 }
@@ -371,5 +427,8 @@ module.exports = {
 	getBlockCount : getBlockCount,
 	getBlock : getBlock,
 	getSupply : getSupply,
-	broadcast : broadcast
+	broadcast : broadcast,
+	getAddressDetails : getAddressDetails,
+	getAddressUTXOs : getAddressUTXOs,
+	getAddressBalance : getAddressBalance
 };

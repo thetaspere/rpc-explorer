@@ -57,7 +57,7 @@ var currencyUnits = [
 	},
 ];
 
-var Raptoreum = new CoinBase("Raptoreum", "RTM", "Raptoreum");
+var Raptoreum = new CoinBase("Raptoreum", "RTM", "raptoreum");
 Raptoreum.addProperties({
 	logoUrl:"/img/logo/RTM.svg",
 	siteTitle:"Raptoreum Explorer",
@@ -70,6 +70,7 @@ Raptoreum.addProperties({
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
 	],
 	maxBlockWeight: 4000000,
+	assetSupported : true,
 	targetBlockTimeSeconds: 60,
 	currencyUnits:currencyUnits,
 	currencyUnitsByName:{"RTM":currencyUnits[0], "mRTM":currencyUnits[1], "pits":currencyUnits[2], "rap":currencyUnits[3]},
@@ -130,9 +131,9 @@ Raptoreum.addProperties({
 			alertBodyHtml: "This transaction doesn't really exist! ",
 			referenceUrl: "https://github.com/bitcoin/bitcoin/issues/3303"
 		}
-		
+
 	],
-	
+
 	relatedSites : [
 		{name: "Official Website", url:"https://Raptoreum.com/", imgUrl:"/img/logo/RTM.svg"},
 		{name: "Discord", url:"https://discord.gg/2T8xG7e", imgUrl:"/img/logo/discord.svg"},

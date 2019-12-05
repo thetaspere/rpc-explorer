@@ -130,7 +130,7 @@ router.get("/peers", function(req, res, next) {
 		if (peerIps.length > 0) {
 			utils.geoLocateIpAddresses(peerIps).then(function(results) {
 				res.locals.peerIpSummary = results;
-				
+
 				res.render("peers");
 
 				next();
@@ -250,7 +250,7 @@ router.get("/blocks", function(req, res, next) {
 				}
 			}
 		}
-		
+
 		coreApi.getBlocksByHeight(blockHeights).then(function(blocks) {
 			res.locals.blocks = blocks;
 
@@ -443,7 +443,7 @@ router.get("/block/:blockHash", function(req, res, next) {
 	res.locals.limit = limit;
 	res.locals.offset = offset;
 	res.locals.paginationBaseUrl = "/block/" + blockHash;
-	
+
 	coreApi.getBlockByHashWithTransactions(blockHash, limit, offset).then(function(result) {
 		res.locals.result.getblock = result.getblock;
 		res.locals.result.transactions = result.transactions;
@@ -483,7 +483,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 		promises.push(new Promise(function(resolve, reject) {
 			coreApi.getTxUtxos(rawTxResult).then(function(utxos) {
 				res.locals.utxos = utxos;
-				
+
 				resolve();
 
 			}).catch(function(err) {
@@ -497,7 +497,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 			promises.push(new Promise(function(resolve, reject) {
 				coreApi.getMempoolTxDetails(txid).then(function(mempoolDetails) {
 					res.locals.mempoolDetails = mempoolDetails;
-					
+
 					resolve();
 
 				}).catch(function(err) {
@@ -540,7 +540,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 			next();
 		});
 
-		
+
 	}).catch(function(err) {
 		res.locals.userMessage = "Failed to load transaction with txid=" + txid + ": " + err;
 
@@ -555,7 +555,7 @@ router.get("/address/:address", function(req, res, next) {
 	var offset = 0;
 	var sort = "desc";
 
-	
+
 	if (req.query.limit) {
 		limit = parseInt(req.query.limit);
 
@@ -585,7 +585,7 @@ router.get("/address/:address", function(req, res, next) {
 	res.locals.paginationBaseUrl = `/address/${address}?sort=${sort}`;
 	res.locals.transactions = [];
 	res.locals.addressApiSupport = addressApi.getCurrentAddressApiFeatureSupport();
-	
+
 	res.locals.result = {};
 
 	try {
@@ -653,7 +653,7 @@ router.get("/address/:address", function(req, res, next) {
 							}
 
 							res.locals.txids = txids;
-							
+
 							coreApi.getRawTransactionsWithInputs(txids).then(function(rawTxResult) {
 								res.locals.transactions = rawTxResult.transactions;
 								res.locals.txInputsByTransaction = rawTxResult.txInputsByTransaction;
@@ -714,7 +714,7 @@ router.get("/address/:address", function(req, res, next) {
 									for (var i = 0; i < rawTxResult.transactions.length; i++) {
 										var tx = rawTxResult.transactions[i];
 										var txInputs = rawTxResult.txInputsByTransaction[tx.txid];
-										
+
 										if (handledTxids.includes(tx.txid)) {
 											continue;
 										}
@@ -821,7 +821,7 @@ router.get("/address/:address", function(req, res, next) {
 
 			next();
 		});
-		
+
 	}).catch(function(err) {
 		res.locals.pageErrors.push(utils.logError("2108hs0gsdfe", err, {address:address}));
 
@@ -836,7 +836,7 @@ router.get("/address/:address", function(req, res, next) {
 router.get("/rpc-terminal", function(req, res, next) {
 	if (!config.demoSite && !req.authenticated) {
 		res.send("RPC Terminal / Browser require authentication. Set an authentication password via the 'BTCEXP_BASIC_AUTH_PASSWORD' environment variable (see .env-sample file for more info).");
-		
+
 		next();
 
 		return;
@@ -965,7 +965,7 @@ router.get("/rpc-browser", function(req, res, next) {
 									if (req.query.args[i]) {
 										argValues.push(JSON.parse(req.query.args[i]));
 									}
-									
+
 									break;
 
 								} else {
@@ -1140,7 +1140,7 @@ router.get("/fun", function(req, res, next) {
 	});
 
 	res.locals.historicalData = sortedList;
-	
+
 	res.render("fun");
 
 	next();

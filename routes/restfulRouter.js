@@ -34,31 +34,31 @@ class RestfulRouter {
 					res.send(e + "");
 					next();
 				});
-				
-				
+
+
 			});
 		});
 		var pageRender = new PageRender(router, "/", "api");
 		pageRender.prepareRender(this.infoPageContent.bind(this));
 	}
-	
+
 	infoPageContent() {
 		var api = coins[config.coin].api();
 		return {APIS : api.api_map,
 				baseUri : api.base_uri};
 	}
-	
+
 	triggerApiCall(type, apiMethod, paramValues) {
 		switch(type) {
-		case "core": 
+		case "core":
 			return coreApi[apiMethod].apply(null, paramValues);
-		case "address": 
+		case "address":
 			return addressApi[apiMethod].apply(null, paramValues);
 		default :
 			return this[type](paramValues);
 		}
 	}
-	
+
 	getAddressUTXOs(addresses) {
 		return new Promise((resolve, reject) =>{
 			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
@@ -75,14 +75,18 @@ class RestfulRouter {
 				promises = [];
 				for(var i in validatedAddresses) {
 					if(validatedAddresses[i].isvalid) {
-						promises.push(addressApi.getAddressUTXOs(addresses[i], validatedAddresses[i].scriptPubKey));
+						promises.push(addressApi.getAddressUTXOs(addresses[i], config.addressApi === "daemonRPC" ? null : validatedAddresses[i].scriptPubKey));
 					}
 				}
 				if(promises.length > 0) {
 					Promise.all(promises).then(utxos => {
 						var result = {};
 						for(var j in utxos) {
-							result[addresses[j]] = utxos[j].result;
+							if(utxos[j].result) {
+								result[addresses[j]] = utxos[j].result;
+							} else {
+								result[addresses[j]] = utxos[j];
+							}
 						}
 						resolve(result);
 					}).catch(err => {
@@ -98,7 +102,7 @@ class RestfulRouter {
 			});
 		});
 	}
-	
+
 	getAddressBalance(addresses) {
 		return new Promise((resolve, reject) =>{
 			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
@@ -115,14 +119,18 @@ class RestfulRouter {
 				promises = [];
 				for(var i in validatedAddresses) {
 					if(validatedAddresses[i].isvalid) {
-						promises.push(addressApi.getAddressBalance(addresses[i], validatedAddresses[i].scriptPubKey));
+						promises.push(addressApi.getAddressBalance(addresses[i], config.addressApi === "daemonRPC" ? null : validatedAddresses[i].scriptPubKey));
 					}
 				}
 				if(promises.length > 0) {
 					Promise.all(promises).then(balances => {
 						var result = {};
 						for(var j in balances) {
-							result[addresses[j]] = balances[j].result;
+							if(balances[j].result) {
+								result[addresses[j]] = balances[j].result;
+							} else {
+								result[addresses[j]] = balances[j];
+							}
 						}
 						resolve(result);
 					}).catch(err => {
@@ -138,7 +146,7 @@ class RestfulRouter {
 			});
 		});
 	}
-	
+
 	checkAndParseString(value) {
 		if(value && value.trim() !== "") {
 			return value.trim().toString();
@@ -155,13 +163,13 @@ class RestfulRouter {
 		}
 		return null;
 	}
-	
+
 	checkAndParseParams(paramType, paramValue) {
 		switch(paramType) {
-		case "string" : 
+		case "string" :
 			return this.checkAndParseString(paramValue);
 			break;
-		case "number" : 
+		case "number" :
 			return this.checkAndParseNumber(paramValue);
 			break;
 		}
