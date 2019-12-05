@@ -59,7 +59,7 @@ var currencyUnits = [
 
 var Raptoreum = new CoinBase("Raptoreum", "RTM", "raptoreum");
 Raptoreum.addProperties({
-	logoUrl:"/img/logo/RTM.svg",
+	logoUrl:"/img/logo/rtm.svg",
 	siteTitle:"Raptoreum Explorer",
 	siteDescriptionHtml:"<b>RTM Explorer</b> is <a href='https://github.com/Raptoreum/RTM-rpc-explorer). If you run your own [Raptoreum Full Node](https://github.com/Raptoreum/Raptoreum/releases), **RTM Explorer** can easily run alongside it, communicating via RPC calls. See the project [ReadMe](https://github.com/Raptoreum/RTM-rpc-explorer) for a list of features and instructions for running.",
 	nodeTitle:"Raptoreum Full Node",
@@ -135,7 +135,7 @@ Raptoreum.addProperties({
 	],
 
 	relatedSites : [
-		{name: "Official Website", url:"https://Raptoreum.com/", imgUrl:"/img/logo/RTM.svg"},
+		{name: "Official Website", url:"https://Raptoreum.com/", imgUrl:"/img/logo/rtm.svg"},
 		{name: "Discord", url:"https://discord.gg/2T8xG7e", imgUrl:"/img/logo/discord.svg"},
 		{name: "Twitter", url:"https://twitter.com/Raptoreum", imgUrl:"/img/logo/twitter.svg"},
 		{name: "Github", url:"https://github.com/Raptor3um/Raptoreum", imgUrl:"/img/logo/github.png"}
