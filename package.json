@@ -1,5 +1,5 @@
 {
-  "name": "pgn-rpc-explorer",
+  "name": "rpc-explorer",
   "version": "1.2.0",
   "description": "Explorer for Bitcoin and RPC-compatible blockchains",
   "private": false,
@@ -12,13 +12,14 @@
     "bitcoin",
     "litecoin",
     "pigeoncoin",
+    "raptoreum",
     "blockchain"
   ],
   "author": "Tri Nguyen",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pigeoncoin/pgn-rpc-explorer.git"
+    "url": "git+https://github.com/npq7721/rpc-explorer.git"
   },
   "dependencies": {
     "async": "2.6.2",
