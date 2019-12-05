@@ -116,7 +116,7 @@ function tryCacheThenRpcApi(cache, cacheKey, cacheMaxAge, rpcApiFunction, cacheC
 			cacheResult = result;
 
 			finallyFunc();
-			
+
 		}).catch(function(err) {
 			utils.logError("nds9fc2eg621tf3", err, {cacheKey:cacheKey});
 
@@ -129,7 +129,7 @@ function shouldCacheTransaction(tx) {
 	if (!tx.confirmations) {
 		return false;
 	}
-	
+
 	if (tx.confirmations < 1) {
 		return false;
 	}
@@ -170,6 +170,26 @@ function getMiningInfo() {
 function getUptimeSeconds() {
 	return tryCacheThenRpcApi(miscCache, "getUptimeSeconds", 1000, rpcApi.getUptimeSeconds);
 }
+
+function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
+	return tryCacheThenRpcApi(miscCache, `getAddressDetails-${address}-${sort}-${limit}-${offset}`, 1200000, function() {
+		return rpcApi.getAddressDetails(address, scriptPubkey, sort, limit, offset);
+	});
+}
+
+function getAddressBalance(address, scriptPubkey) {
+	return tryCacheThenRpcApi(miscCache, "getAddressBalance-" + address, 1200000, function() {
+		return rpcApi.getAddressBalance(address, scriptPubkey);
+	});
+
+}
+function getAddressUTXOs(address, scriptPubkey) {
+	return tryCacheThenRpcApi(miscCache, "getAddressUTXOs-" + address, 1200000, function() {
+		return rpcApi.getAddressUTXOs(address, scriptPubkey);
+	});
+
+}
+
 
 function getChainTxStats(blockCount) {
 	return tryCacheThenRpcApi(miscCache, "getChainTxStats-" + blockCount, 1200000, function() {
@@ -232,7 +252,7 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 						txStats.txLabels.push(i);
 					}
 				}
-				
+
 				resolve({txCountStats:txStats, getblockchaininfo:getblockchaininfo, totalTxCount:results[0].txcount});
 
 			}).catch(function(err) {
@@ -704,7 +724,7 @@ function getRawTransactionsWithInputs(txids, maxInputs=-1) {
 	return new Promise(function(resolve, reject) {
 		getRawTransactions(txids).then(function(transactions) {
 			var maxInputsTracked = config.site.txMaxInput;
-			
+
 			if (maxInputs <= 0) {
 				maxInputsTracked = 1000000;
 
@@ -755,7 +775,7 @@ function getBlockByHashWithTransactions(blockHash, txLimit, txOffset) {
 	return new Promise(function(resolve, reject) {
 		getBlockByHash(blockHash).then(function(block) {
 			var txids = [];
-			
+
 			if (txOffset > 0) {
 				txids.push(block.tx[0]);
 			}
@@ -939,7 +959,7 @@ function getSupply() {
 
 function logCacheSizes() {
 	var itemCounts = [ miscCache.itemCount, blockCache.itemCount, txCache.itemCount ];
-	
+
 	var stream = fs.createWriteStream("memoryUsage.csv", {flags:'a'});
 	stream.write("itemCounts: " + JSON.stringify(itemCounts) + "\n");
 	stream.end();
@@ -976,5 +996,8 @@ module.exports = {
 	getBlockCount : getBlockCount,
 	getBlock : getBlock,
 	broadcast : rpcApi.broadcast,
-	getSupply : getSupply
+	getSupply : getSupply,
+	getAddressDetails : getAddressDetails,
+	getAddressUTXOs : getAddressUTXOs,
+	getAddressBalance : getAddressBalance
 };

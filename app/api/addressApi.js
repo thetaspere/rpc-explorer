@@ -8,7 +8,7 @@ var electrumAddressApi = require("./electrumAddressApi.js");
 var blockchainAddressApi = require("./blockchainAddressApi.js");
 var blockchairAddressApi = require("./blockchairAddressApi.js");
 var blockcypherAddressApi = require("./blockcypherAddressApi.js");
-var rpcApi = require("./rpcApi.js");
+var rpcApi = require("./coreApi.js");
 
 const ADDRESS_APIS = {
 	BLOCKCHAIN : "blockchain.com",

@@ -113,7 +113,6 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
 
 function getAddressBalance(address, scriptPubkey) {
 	var assetSupported = coins[config.coin].assetSupported ? true : false;
-	console.log("address = %s", address);
 	return getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]});
 }
 function getAddressUTXOs(address, scriptPubkey) {
