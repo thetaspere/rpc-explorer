@@ -65,31 +65,65 @@ function broadcast(rawtxhex) {
 	return getRpcDataWithParams({method:"sendrawtransaction", parameters:[rawtxhex]});
 }
 
-function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
+function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName = coins[config.coin].ticker) {
 	return new Promise(function(resolve, reject) {
-		var promises = [];
+		var assetSupported = coins[config.coin].assetSupported ? true : false;
+		var promise;
+		if(assetSupported) {
+			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName}]});
+		} else {
+			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]});
+		}
+		promise.then(addressDeltas => {
+			if (sort == "desc") {
+				addressDeltas.reverse();
+			}
+			var end = Math.min(addressDeltas.length, limit + offset);
+			var result = {
+				txCount : addressDeltas.length,
+				txids : [],
+				blockHeightsByTxid : {}
+			}
+			addressDeltas = addressDeltas.slice(offset, end);
+			for (var i in addressDeltas) {
+				result.txids.push(addressDeltas[i].txid);
+				result.blockHeightsByTxid[addressDeltas[i].txid] = addressDeltas[i].height;
+			}
+			//console.log("getAddressDeltas ", result);
+			resolve({addressDeltas : result, errors : null});
+		}).catch(reject);
+	});
+}
 
+function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName = coins[config.coin].ticker) {
+	return new Promise(function(resolve, reject) {
 		var txidData = null;
 		var balanceData = null;
 		var assetSupported = coins[config.coin].assetSupported ? true : false;
 		// getBlockCount().then(currentHeight => {
 		// 	promises.push(getRpcDataWithParams({method : "getaddresstxids", parameters: [{adddresses : [address]}]}));
 		// }).catch(reject);
-		promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]}));
+		var promises = [];
+		if(assetSupported) {
+			promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName}]}));
+		} else {
+			promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]}));
+		}
 		promises.push(getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]}));
 		Promise.all(promises).then(function(results) {
 			txidData = results[0];
 			if (sort == "desc") {
 				txidData.reverse();
 			}
-			txidData = txidData.splice(0,100);
+			var end = Math.min(txidData.length, limit + offset);
 			balanceData = results[1];
 			var addressDetails = {
 				txCount : txidData.length,
 				txids : [],
 				blockHeightsByTxid : {}
 			}
-			for (var i = offset; i < Math.min(txidData.length, limit + offset); i++) {
+		  txidData = txidData.slice(offset, end);
+			for (var i in txidData) {
 				addressDetails.txids.push(txidData[i].txid);
 				addressDetails.blockHeightsByTxid[txidData[i].txid] = txidData[i].height;
 			}
@@ -429,5 +463,6 @@ module.exports = {
 	broadcast : broadcast,
 	getAddressDetails : getAddressDetails,
 	getAddressUTXOs : getAddressUTXOs,
-	getAddressBalance : getAddressBalance
+	getAddressBalance : getAddressBalance,
+	getAddressDeltas : getAddressDeltas
 };

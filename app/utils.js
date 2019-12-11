@@ -67,13 +67,13 @@ var ipCache = {
 function redirectToConnectPageIfNeeded(req, res) {
 	if (!req.session.host) {
 		req.session.redirectUrl = req.originalUrl;
-		
+
 		res.redirect("/");
 		res.end();
-		
+
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -82,14 +82,14 @@ function hex2ascii(hex) {
 	for (var i = 0; i < hex.length; i += 2) {
 		str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
 	}
-	
+
 	return str;
 }
 
 function splitArrayIntoChunks(array, chunkSize) {
 	var j = array.length;
 	var chunks = [];
-	
+
 	for (var i = 0; i < j; i += chunkSize) {
 		chunks.push(array.slice(i, i + chunkSize));
 	}
@@ -99,28 +99,28 @@ function splitArrayIntoChunks(array, chunkSize) {
 
 function getRandomString(length, chars) {
     var mask = '';
-	
+
     if (chars.indexOf('a') > -1) {
 		mask += 'abcdefghijklmnopqrstuvwxyz';
 	}
-	
+
     if (chars.indexOf('A') > -1) {
 		mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	}
-	
+
     if (chars.indexOf('#') > -1) {
 		mask += '0123456789';
 	}
-    
+
 	if (chars.indexOf('!') > -1) {
 		mask += '~`!@#$%^&*()_+-={}[]:";\'<>?,./|\\';
 	}
-	
+
     var result = '';
     for (var i = length; i > 0; --i) {
 		result += mask[Math.floor(Math.random() * mask.length)];
 	}
-	
+
 	return result;
 }
 
@@ -148,7 +148,7 @@ function getCurrencyFormatInfo(formatType) {
 	return null;
 }
 
-function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedDecimalPlaces) {
+function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, assetName, forcedDecimalPlaces) {
 	var formatInfo = getCurrencyFormatInfo(formatType);
 	if (formatInfo != null) {
 		var dec = new Decimal(amount);
@@ -161,11 +161,11 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
 		if (forcedDecimalPlaces >= 0) {
 			decimalPlaces = forcedDecimalPlaces;
 		}
-
+		//console.log("formatCurrencyAmountWithForcedDecimalPlaces assetName=", assetName);
 		if (formatInfo.type == "native") {
 			dec = dec.times(formatInfo.multiplier);
-
-			return addThousandsSeparators(dec.toDecimalPlaces(decimalPlaces)) + " " + formatInfo.name;
+			var name = !assetName || assetName === coinConfig.ticker ? formatInfo.name : assetName;
+			return addThousandsSeparators(dec.toDecimalPlaces(decimalPlaces)) + " " + name;
 
 		} else if (formatInfo.type == "exchanged") {
 			if (global.exchangeRates != null && global.exchangeRates[formatInfo.multiplier] != null) {
@@ -174,20 +174,20 @@ function formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, forcedD
 				return addThousandsSeparators(dec.toDecimalPlaces(decimalPlaces)) + " " + formatInfo.name;
 
 			} else {
-				return formatCurrencyAmountWithForcedDecimalPlaces(amount, coinConfig.defaultCurrencyUnit.name, forcedDecimalPlaces);
+				return formatCurrencyAmountWithForcedDecimalPlaces(amount, coinConfig.defaultCurrencyUnit.name, assetName, forcedDecimalPlaces);
 			}
 		}
 	}
-	
+
 	return amount;
 }
 
-function formatCurrencyAmount(amount, formatType) {
-	return formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType, -1);
+function formatCurrencyAmount(amount, formatType, assetName) {
+	return formatCurrencyAmountWithForcedDecimalPlaces(amount, formatType,assetName, -1);
 }
 
-function formatCurrencyAmountInSmallestUnits(amount, forcedDecimalPlaces) {
-	return formatCurrencyAmountWithForcedDecimalPlaces(amount, coins[config.coin].baseCurrencyUnit.name, forcedDecimalPlaces);
+function formatCurrencyAmountInSmallestUnits(amount, assetName, forcedDecimalPlaces) {
+	return formatCurrencyAmountWithForcedDecimalPlaces(amount, coins[config.coin].baseCurrencyUnit.name, assetName, forcedDecimalPlaces);
 }
 
 // ref: https://stackoverflow.com/a/2901298/673828
@@ -241,7 +241,7 @@ function getMinerFromCoinbaseTx(tx) {
 	if (tx == null || tx.vin == null || tx.vin.length == 0) {
 		return null;
 	}
-	
+
 	if (global.miningPoolsConfigs) {
 		for (var i = 0; i < global.miningPoolsConfigs.length; i++) {
 			var miningPoolsConfig = global.miningPoolsConfigs[i];
@@ -275,10 +275,22 @@ function getMinerFromCoinbaseTx(tx) {
 	return null;
 }
 
-function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
+function getAssetValue(vout, assetName) {
+	if(assetName === coinConfig.ticker) {
+		return vout.value;
+	}
+	if(vout.scriptPubKey && vout.scriptPubKey.asset) {
+		return vout.scriptPubKey.asset.amount;
+	}
+	return 0;
+}
+
+function getTxTotalInputOutputValues(tx, txInputs, blockHeight, assetName) {
 	var totalInputValue = new Decimal(0);
 	var totalOutputValue = new Decimal(0);
-
+	if(!assetName) {
+		assetName = coinConfig.ticker;
+	}
 	try {
 		for (var i = 0; i < tx.vin.length; i++) {
 			if (tx.vin[i].coinbase) {
@@ -290,8 +302,9 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 				if (txInput) {
 					try {
 						var vout = txInput.vout[tx.vin[i].vout];
-						if (vout.value) {
-							totalInputValue = totalInputValue.plus(new Decimal(vout.value));
+						var value = getAssetValue(vout, assetName);
+						if (value) {
+							totalInputValue = totalInputValue.plus(new Decimal(value));
 						}
 					} catch (err) {
 						logError("2397gs0gsse", err, {txid:tx.txid, vinIndex:i});
@@ -299,9 +312,10 @@ function getTxTotalInputOutputValues(tx, txInputs, blockHeight) {
 				}
 			}
 		}
-		
+
 		for (var i = 0; i < tx.vout.length; i++) {
-			totalOutputValue = totalOutputValue.plus(new Decimal(tx.vout[i].value));
+			var value = getAssetValue(tx.vout[i], assetName);
+			totalOutputValue = totalOutputValue.plus(new Decimal(value));
 		}
 	} catch (err) {
 		logError("2308sh0sg44", err, {tx:tx, txInputs:txInputs, blockHeight:blockHeight});
@@ -369,12 +383,12 @@ function geoLocateIpAddresses(ipAddresses, provider) {
 		var promises = [];
 		for (var i = 0; i < ipAddresses.length; i++) {
 			var ipStr = ipAddresses[i];
-			
+
 			promises.push(new Promise(function(resolve2, reject2) {
 				ipCache.get(ipStr).then(function(result) {
 					if (result.value == null) {
 						var apiUrl = "http://api.ipstack.com/" + result.key + "?access_key=" + config.credentials.ipStackComApiAccessKey;
-						
+
 						debugLog("Requesting IP-geo: " + apiUrl);
 
 						request(apiUrl, function(error, response, body) {
@@ -422,7 +436,7 @@ function geoLocateIpAddresses(ipAddresses, provider) {
 
 function parseExponentStringDouble(val) {
 	var [lead,decimal,pow] = val.toString().split(/e|\./);
-	return +pow <= 0 
+	return +pow <= 0
 		? "0." + "0".repeat(Math.abs(pow)-1) + lead + decimal
 		: lead + ( +pow >= decimal.length ? (decimal + "0".repeat(+pow-decimal.length)) : (decimal.slice(0,+pow)+"."+decimal.slice(+pow)));
 }
@@ -497,7 +511,7 @@ function logError(errorId, err, optionalUserData = null) {
 	}
 
 	debugErrorLog("Error " + errorId + ": " + err + ", json: " + JSON.stringify(err) + (optionalUserData != null ? (", userData: " + optionalUserData + " (json: " + JSON.stringify(optionalUserData) + ")") : ""));
-	
+
 	if (err && err.stack) {
 		debugErrorLog("Stack: " + err.stack);
 	}
@@ -562,7 +576,7 @@ function getStatsSummary(json) {
 	var price = `${formatExchangedCurrency(1.0, "btc", "฿", 8)}/${formatExchangedCurrency(1.0, "usd", "$", 6)}`
 	mempoolBytesData[1].abbreviation = mempoolBytesData[1].abbreviation ? mempoolBytesData[1].abbreviation : "";
 	return {
-		hashrate : { 
+		hashrate : {
 			rate : hashrateData[0],
 			unit : ` ${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`
 		},

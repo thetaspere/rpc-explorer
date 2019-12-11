@@ -33,6 +33,9 @@ const METHOD_MAPPING = {
 	addressBalance : {
 		"electrumx" : electrumAddressApi.getAddressBalance,
 		"daemonRPC" : rpcApi.getAddressBalance
+	},
+	addressDeltas : {
+		"daemonRPC" : rpcApi.getAddressDeltas,
 	}
 }
 
@@ -114,11 +117,24 @@ function executeMethod(method, ...args) {
 	});
 }
 
-function getAddressDetails(address, scriptPubkey, sort, limit, offset) {
-	return executeMethod("addressDetails", address, scriptPubkey, sort, limit, offset);
+function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName) {
+	return executeMethod("addressDetails", address, scriptPubkey, sort, limit, offset, assetName);
+}
+
+function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName) {
+	if(config.addressApi === "daemonRPC") {
+		scriptPubkey = null;
+	}
+	if(scriptPubkey) {
+		address = null;
+	}
+	return executeMethod("addressDeltas", address, scriptPubkey, sort, limit, offset, assetName);
 }
 
 function getAddressUTXOs(address, scriptPubkey) {
+	if(config.addressApi === "daemonRPC") {
+		scriptPubkey = null;
+	}
 	if(scriptPubkey) {
 		address = null;
 	}
@@ -126,6 +142,9 @@ function getAddressUTXOs(address, scriptPubkey) {
 }
 
 function getAddressBalance(address, scriptPubkey) {
+	if(config.addressApi === "daemonRPC") {
+		scriptPubkey = null;
+	}
 	if(scriptPubkey) {
 		address = null;
 	}
@@ -139,5 +158,6 @@ module.exports = {
 	getCurrentAddressApiFeatureSupport: getCurrentAddressApiFeatureSupport,
 	getAddressDetails: getAddressDetails,
 	getAddressBalance : getAddressBalance,
-	getAddressUTXOs : getAddressUTXOs
+	getAddressUTXOs : getAddressUTXOs,
+	getAddressDeltas : getAddressDeltas
 };
