@@ -144,7 +144,7 @@ class CoinBase {
 			base_uri : "/api/",
 			limit : {
 				 windowMs: 15 * 60 * 1000, // 15 minutes
-				 max: 100, // limit each IP to 100 requests per windowMs
+				 max: 3000, // limit each IP to 100 requests per windowMs
 				 message: "Too calls from this IP with 15 mins, please try again after 15 mins"
 			},
 			api_map : [
