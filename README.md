@@ -30,7 +30,7 @@ See [CHANGELOG.md](/CHANGELOG.md).
 
 The below instructions are geared toward BTC, but can be adapted easily to other coins.
 
-## Prerequisites: 
+## Prerequisites:
 
 These steps are for bitcoin but other supported bitcoins base coin should have similar setup
 
@@ -56,7 +56,7 @@ See [configuration](#configuration) for details.
 Configuration options may be passed as environment variables
 or by creating an env file at `~/.config/btc-rpc-explorer.env`
 or at `.env` in the working directory.
-See [.env-sample](.env-sample) for a list of the options and details for formatting `.env`.
+See [example](examples/rtm/btc-rpc-explorer.env) for a list of the options and details for formatting `.env`.
 
 You may also pass options as CLI arguments, for example:
 
@@ -73,11 +73,11 @@ See `rpc-explorer --help` for the full list of CLI options.
 
 # Support
 
-* [3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq](bitcoin:3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq)
-
+* BTC: [3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq](bitcoin:3Jym9QJLXQyjSSGKS1LCD9LCroPqCGo3Lq)
+* LTC: [LeBistdbcpTDbztr4GU9P29WZzGqJVmnjT](litecoin:LeBistdbcpTDbztr4GU9P29WZzGqJVmnjT)
+* RAVEN: [RUExhCD48z1jRCZtMJTyCXQx83N9svvavC](litecoin:RUExhCD48z1jRCZtMJTyCXQx83N9svvavC)
 
 [npm-ver-img]: https://img.shields.io/npm/v/btc-rpc-explorer.svg?style=flat
 [npm-ver-url]: https://www.npmjs.com/package/btc-rpc-explorer
 [npm-dl-img]: http://img.shields.io/npm/dm/btc-rpc-explorer.svg?style=flat
 [npm-dl-url]: https://npmcharts.com/compare/btc-rpc-explorer?minimal=true
-

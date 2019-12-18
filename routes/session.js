@@ -278,7 +278,8 @@ class Session {
 
 	compileView(query, viewUri, cacheKey, viewDataPromise) {
 		var self = this;
-		return htmlViewCache.tryCache(cacheKey, 300000, () => {
+		var cacheTime = query.cacheTime  ? query.cacheTime : 300000;
+		return htmlViewCache.tryCache(cacheKey, cacheTime, () => {
 			return new Promise((resolve, reject) => {
 				viewDataPromise(query).then(() => {
 					query.moment = moment;
@@ -287,8 +288,8 @@ class Session {
 					var htmlView = pug.compileFile(`${__dirname}/../views/${viewUri}`)(query);
 					resolve(htmlView)
 				}).catch(err=> {
-					query.pageErrors.push(utils.logError("2108hs0gsdfe", err, {address:query.address}));
-					query.userMessage = "Failed to load address " + query.address + " (" + err + ")";
+					query.pageErrors.push(utils.logError("2108hs0gsdfe", err, {viewUri:viewUri}));
+					query.userMessage = "Failed to getting view data " + viewUri+ " (" + err + ")";
 					self.res.send(query);
 					self.next();
 				});
@@ -303,12 +304,12 @@ class Session {
 				self.res.send(result);
 				self.next();
 			} else {
-				self.res.send("No Trnsactions");
+				self.res.send("No Results");
 				self.next();
 			}
 		}).catch(err => {
-			query.pageErrors.push(utils.logError("2108hs0gsdfe", err, {address:query.address}));
-			query.userMessage = "Failed to load address " + address + " (" + err + ")";
+			query.pageErrors.push(utils.logError("2108hs0gsdfe", err, {view:viewUri}));
+			query.userMessage = "Failed to compile view " + viewUri + " (" + err + ")";
 			self.res.send(query);
 			self.next();
 		});
@@ -379,6 +380,34 @@ class Session {
 		});
 	}
 
+	renderBlockTables(query) {
+		return new Promise(function(resolve, reject) {
+			coreApi.getBlockCount().then(height => {
+				if (height) {
+					var blockHeights = [];
+					for (var i = 0; i < query.amountOfBlocks; i++) {
+						blockHeights.push(height - i);
+					}
+					coreApi.getBlocksByHeight(blockHeights).then(function(latestBlocks) {
+						query.blocks = latestBlocks;
+						resolve();
+					}).catch(reject);
+				} else {
+					resolve();
+				}
+			}).catch(reject);
+		});
+	}
+
+	renderBlocksTableView() {
+		var query = this.res.locals;
+		query.Decimal = Decimal;
+		query.amountOfBlocks = this.req.params.blockTotal ? this.req.params.blockTotal : 10;
+		query.cacheTime = 60000;
+		var cacheKey = `block-table-view`;
+		this.renderDynamicView(query, "includes/blocks-list.pug", cacheKey, this.renderBlockTables.bind(this));
+	}
+
 	renderHome() {
 		this.res.locals.homepage = true;
 		var promises = [];
@@ -405,46 +434,33 @@ class Session {
 					promises.push(coreApi.getChainTxStats(chainTxStatsIntervals[i]));
 				}
 			}
-
-			var blockHeights = [];
-			if (getblockchaininfo.blocks) {
-				for (var i = 0; i < 10; i++) {
-					blockHeights.push(getblockchaininfo.blocks - i);
-				}
-			}
-
 			if (getblockchaininfo.chain !== 'regtest') {
 				promises.push(coreApi.getChainTxStats(getblockchaininfo.blocks - 1));
 			}
+			Promise.all(promises).then(function(promiseResults) {
+				self.res.locals.mempoolInfo = promiseResults[0];
+				self.res.locals.miningInfo = promiseResults[1];
 
-			coreApi.getBlocksByHeight(blockHeights).then(function(latestBlocks) {
-				self.res.locals.latestBlocks = latestBlocks;
+				if (getblockchaininfo.chain !== 'regtest') {
+					self.res.locals.txStats = promiseResults[2];
 
-				Promise.all(promises).then(function(promiseResults) {
-					self.res.locals.mempoolInfo = promiseResults[0];
-					self.res.locals.miningInfo = promiseResults[1];
-
-					if (getblockchaininfo.chain !== 'regtest') {
-						self.res.locals.txStats = promiseResults[2];
-
-						var chainTxStats = [];
-						for (var i = 0; i < self.res.locals.chainTxStatsLabels.length; i++) {
-							chainTxStats.push(promiseResults[i + 3]);
-						}
-
-						self.res.locals.chainTxStats = chainTxStats;
+					var chainTxStats = [];
+					for (var i = 0; i < self.res.locals.chainTxStatsLabels.length; i++) {
+						chainTxStats.push(promiseResults[i + 3]);
 					}
 
-					self.res.render("index");
-
-					self.next();
-				});
+					self.res.locals.chainTxStats = chainTxStats;
+				}
+				self.res.render("index");
+				self.next();
+			}).catch(err => {
+				self.res.locals.userMessage = "Error loading index: " + err;
+				self.res.render("index");
+				self.next();
 			});
 		}).catch(function(err) {
 			self.res.locals.userMessage = "Error loading recent blocks: " + err;
-
 			self.res.render("index");
-
 			self.next();
 		});
 	}

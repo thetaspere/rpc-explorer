@@ -7,6 +7,7 @@ html(lang="en")
 
 		link(rel="stylesheet", href="/css/fonts.css", integrity="sha384-XOmmu8j3C2MFUXRVGg8VWYNwlhEkSNb0rW/4e7bi3F56S6PejEmBUQDGZofQyjbL")
 		link(rel="stylesheet", href="/css/highlight.min.css", integrity="sha384-zhIsEafzyQWHSoMCQ4BfT8ZlRXQyIFwAHAJn32PNdsb8n6tVysGZSLpEEIvCskw4")
+		link(rel="stylesheet", href="/css/jquery-ui-themes-1.12.1/jquery-ui.min.css")
 
 
 		if (session.uiTheme && session.uiTheme == "dark")
@@ -132,7 +133,7 @@ html(lang="en")
 
 				div(style="margin-bottom: 30px;")
 
-				if (config.demoSite && !crawlerBot)
+				if (!crawlerBot)
 					include ./includes/donation-modal.pug
 
 		footer(class="footer border-top border-primary bg-dark pt-3 pb-1 px-3 text-white", style="border-width: 5px !important;")
@@ -192,23 +193,39 @@ html(lang="en")
 					div(class="col-md-7 text-md-right")
 						dl
 							dd
+								p If you would like to this explorer to support your favorite coin, feel free to make request by open an <a href="https://github.com/npq7721/rpc-explorer/issues">issue</a> at my github to request coin supports.
 								button.btn.btn-primary(type="button", class="btn btn-primary", data-toggle="modal", data-target="#exampleModalCenter")
 									i(class="fas fa-heart mr-2")
 									span Support Project
-
+		div(id="popup-dialog")
 		//script(src="/js/jquery.min.js", integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=")
 		script(src="/js/jquery-3.4.1.min.js", integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=")
 		script(src="/js/popper.min.js", integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut")
 		script(src="/js/bootstrap.min.js", integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM")
 		script(defer, src="/js/fontawesome.min.js", integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7")
 		script(src="/js/highlight.min.js", integrity="sha384-xLrpH5gNLD6HMLgeDH1/p4FXigQ8T9mgNm+EKtCSXL0OJ5i1bnSi57dnwFuUMM9/")
+		script(src="/js/jquery.dataTables.min.js", integrity="sha384-rgWRqC0OFPisxlUvl332tiM/qmaNxnlY46eksSZD84t+s2vZlqGeHrncwIRX7CGp")
+		script(src="/js/dataTables.bootstrap4.min.js", integrity="sha384-uiSTMvD1kcI19sAHJDVf68medP9HA2E2PzGis9Efmfsdb8p9+mvbQNgFhzii1MEX")
 		script(src="/js/utils.js")
+		script(src="/js/jquery-ui.min.js", integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=")
 		script.
+			$("#popup-dialog").dialog({
+				autoOpen: false,
+				modal : true,
+				width : 700,
+				height : 600,
+				maxWidth : 1000,
+				maxHeight : 1000
+			});
 			$(document).ready(function() {
 				$('[data-toggle="tooltip"]').tooltip();
 				$('[data-toggle="popover"]').popover({html:true, container:"body"});
+				$(document).on('click', '.ui-widget-overlay', function () {
+				   $("#popup-dialog").dialog("close");
+				});
 				updateStats();
 				loadLazyContainers();
+				updateSupply();
 			});
 
 			hljs.initHighlightingOnLoad();

@@ -1,10 +1,65 @@
 
 class CoinBase {
-	constructor(name, ticker, priceid) {
+	constructor(name, ticker, priceid, satUnits = ["sat", "satoshi"]) {
 		this.name = name;
 		this.ticker = ticker;
 		this.priceid = priceid;
 		this.priceApiUrl = `https://api.coingecko.com/api/v3/coins/${priceid}?localization=false`;
+		var currencyUnits = [
+			{
+				type:"native",
+				name:ticker,
+				multiplier:1,
+				default:true,
+				values:["", ticker.toLowerCase(), ticker],
+				decimalPlaces:8
+			},
+			{
+				type:"native",
+				name:"mRTM",
+				multiplier:1000,
+				values:[`m${ticker.toLowerCase()}`],
+				decimalPlaces:5
+			},
+			{
+				type:"native",
+				name:"bits",
+				multiplier:1000000,
+				values:["bits"],
+				decimalPlaces:2
+			},
+			{
+				type:"native",
+				name:"rap",
+				multiplier:100000000,
+				values:satUnits,
+				decimalPlaces:0
+			},
+			{
+				type:"exchanged",
+				name:"BTC",
+				multiplier:"btc",
+				values:["btc"],
+				decimalPlaces:8,
+				symbol:"฿"
+			},
+			{
+				type:"exchanged",
+				name:"USD",
+				multiplier:"usd",
+				values:["usd"],
+				decimalPlaces:8,
+				symbol:"$"
+			},
+			{
+				type:"exchanged",
+				name:"CHY",
+				multiplier:"cny",
+				values:["eur"],
+				decimalPlaces:4,
+				symbol:"¥"
+			},
+		];
 		this.properties = {
 			name : this.name,
 			ticker : this.ticker,
@@ -13,9 +68,58 @@ class CoinBase {
 				jsonUrl:this.priceApiUrl,
 				responseBodySelectorFunction:this.responseBodySelectorFunction
 			},
-			api : this.coinApi
+			api : this.coinApi,
+			maxBlockWeight: 4000000,
+			currencyUnits : currencyUnits,
+			baseCurrencyUnit: currencyUnits[3],
+			defaultCurrencyUnit: currencyUnits[0],
+			tableHeaders : this.tableHeaders()
 		};
 	}
+
+	addTableHeaders(headers) {
+		Object.assign(this.properties.tableHeaders, headers);
+	}
+
+	tableHeaders() {
+		return {
+			transactions_table_headers : [
+				{
+					name : "TXID"
+				},
+				{
+					name : "Confirmations"
+				}
+			],
+			blocks_table_headers : [
+				{
+					name : "Height"
+				},
+				{
+					name : "Timestamp"
+				},
+				{
+					name : "Age"
+				},
+				{
+					name : "Miner"
+				},
+				{
+					name : "Transactions"
+				},
+				{
+					name : "Average Fee"
+				},
+				{
+					name : "Size (bytes)"
+				},
+				{
+					name : "Weight (wu)"
+				}
+			]
+		}
+	}
+
 	responseBodySelectorFunction(responseBody) {
 		var exchangedCurrencies = ["BTC", "USD", "CNY"];
 
@@ -31,10 +135,10 @@ class CoinBase {
 
 			return exchangeRates;
 		}
-		
+
 		return null;
 	}
-	
+
 	coinApi() {
 		return {
 			base_uri : "/api/",
@@ -53,7 +157,32 @@ class CoinBase {
 					"return" : "block height as number"
 				},
 				{
-					name : "getblock", 
+					name : "getblocks",
+					uri : "getblocks",
+					api_source : "getBlocks",
+					method : "getBlockCount",
+					params : [
+						{
+		          name : "start",
+		          type : "number",
+		          description : "Begin row for query result"
+		        },
+	          {
+	            name : "length",
+	            type : "number",
+	            description : "max result for the query"
+	          },
+	          {
+	            name : "search.value",
+	            type: "object",
+	            description : "block height.Specifc height or start-end. Start can be * which mean start from block 0. End can be * which is end at current height."
+	          }
+					],
+					description : "Get current block height",
+					"return" : "block height as number"
+				},
+				{
+					name : "getblock",
 					uri : "getblock",
 					api_source : "core",
 					method : "getBlock",
@@ -89,7 +218,7 @@ class CoinBase {
 							}</li></ul>`
 				},
 				{
-					name : "getrawtransaction", 
+					name : "getrawtransaction",
 					uri : "getrawtransaction",
 					api_source : "core",
 					method : "getRawTransaction",
@@ -145,7 +274,7 @@ class CoinBase {
 							<br>}</li></ul>`
 				},
 				{
-					name : "getaddressbalance", 
+					name : "getaddressbalance",
 					uri : "getaddressbalance",
 					api_source : "getAddressBalance",
 					params : [{
@@ -160,7 +289,7 @@ class CoinBase {
 							"&emsp;&nbsp;&nbsp;'unconfirmed' : satoshi_amount }<br>}</li></ul>"
 				},
 				{
-					name : "getaddressutxos", 
+					name : "getaddressutxos",
 					uri : "getaddressutxos",
 					api_source : "getAddressUTXOs",
 					params : [{
@@ -218,11 +347,27 @@ class CoinBase {
 					}],
 					description : "broadcast transaction",
 					"return" : "txid"
+				},
+				{
+					name : "getlatesttxids",
+					uri : "getlatesttxids",
+					api_source : "getLatestTxids",
+					params : [{
+						name : "blocks",
+						type : "number",
+						description : "Number of latest blocks to get transactions from"
+					}],
+					description : "Get all transactions from the last x blocks",
+					"return" : "JSON object in the following format: " +
+						`<ul><li>{
+						  <br>&emsp;&emsp;"data": array of txids object
+						  <br>&emsp;&emsp;"columns": an column maping array to be use for jquery data table
+						  <br>}</li><ul>`
 				}
 			]
 		}
 	}
-	
+
 	addProperties(properties) {
 		Object.assign(this.properties, properties);
 	}

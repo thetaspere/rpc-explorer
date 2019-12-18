@@ -10,6 +10,10 @@ var coins = require("../coins.js");
 
 var activeQueueTasks = 0;
 
+const HAS_COUNT_MAP = {
+
+}
+
 var rpcQueue = async.queue(function(task, callback) {
 	activeQueueTasks++;
 	//debugLog("activeQueueTasks: " + activeQueueTasks);
@@ -57,8 +61,84 @@ function getPeerInfo() {
 	return getRpcData("getpeerinfo");
 }
 
-function getMempoolTxids() {
-	return getRpcDataWithParams({method:"getrawmempool", parameters:[false]});
+function countRPC(rpcMethod) {
+	return new Promise((resolve, reject) => {
+		rpcMethod.then(result => {
+			if(result) {
+				if(result.name && result.name === "RpcError") {
+					reject(result.message);
+				} else {
+					resolve(result);
+				}
+			} else {
+				resolve(0);
+			}
+		});
+	});
+}
+
+function getTotalAssetAddresses(assetName) {
+	if(HAS_COUNT_MAP.listaddressesbyasset) {
+		return getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName, true]});
+	} else if(HAS_COUNT_MAP.listaddressesbyasset !== undefined) {
+		return new Promise((resolve, reject) => {
+			countRPC(getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName]})).then(result => {
+				resolve(result ? Object.keys(result).length : 0);
+			}).catch(reject);
+		});
+	}
+	return new Promise((resolve, reject) => {
+		getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName, true]}).then(result => {
+			if(result) {
+				if(result.name && result.name === "RpcError") {
+					countRPC(getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName]})).then(result => {
+						HAS_COUNT_MAP.listaddressesbyasset = 0;
+						resolve(result ? Object.keys(result).length : 0);
+					}).catch(reject);
+				} else {
+					HAS_COUNT_MAP.listaddressesbyasset = 1;
+					resolve(result);
+				}
+			} else {
+				HAS_COUNT_MAP.listaddressesbyasset = 1;
+				resolve(0);
+			}
+		}).catch(reject);
+	});
+}
+
+function getAssetAddresses(assetName, start, limit) {
+	if(HAS_COUNT_MAP.listaddressesbyasset) {
+		return getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName, false, limit, start]});
+	} else {
+		return getRpcDataWithParams({method:"listaddressesbyasset", parameters:[assetName]});
+	}
+}
+
+function getTotalAddressAssetBalances(address) {
+	return getRpcDataWithParams({method:"listassetbalancesbyaddress", parameters:[address, true]});
+}
+
+function getAddressAssetBalances(address, start, limit) {
+	return getRpcDataWithParams({method:"listassetbalancesbyaddress", parameters:[address, false, limit, start]});
+}
+
+function getTotalAssetCount(filter) {
+	return new Promise((resolve, reject) => {
+		filter = filter && filter !== "*" ? `${filter}*` : "*"
+		getRpcDataWithParams({method:"listassets", parameters:[filter]}).then(assets => {
+			resolve(assets.length);
+		}).catch(reject);
+	});
+}
+
+function queryAssets(searchTerm, start, limit) {
+	searchTerm = (searchTerm && searchTerm !== "*") ? `${searchTerm}*` : "*"
+	return getRpcDataWithParams({method:"listassets", parameters:[searchTerm, true, limit, start]});
+}
+
+function getMempoolTxids(verbose = false) {
+	return getRpcDataWithParams({method:"getrawmempool", parameters:[verbose]});
 }
 
 function broadcast(rawtxhex) {
@@ -437,7 +517,6 @@ function getRpcDataWithParams(request) {
 	});
 }
 
-
 module.exports = {
 	getBlockchainInfo: getBlockchainInfo,
 	getNetworkInfo: getNetworkInfo,
@@ -464,5 +543,11 @@ module.exports = {
 	getAddressDetails : getAddressDetails,
 	getAddressUTXOs : getAddressUTXOs,
 	getAddressBalance : getAddressBalance,
-	getAddressDeltas : getAddressDeltas
+	getAddressDeltas : getAddressDeltas,
+	getTotalAssetAddresses : getTotalAssetAddresses,
+	getAssetAddresses : getAssetAddresses,
+	getTotalAddressAssetBalances : getTotalAddressAssetBalances,
+	getAddressAssetBalances : getAddressAssetBalances,
+	getTotalAssetCount : getTotalAssetCount,
+	queryAssets : queryAssets
 };

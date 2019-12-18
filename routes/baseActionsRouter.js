@@ -24,16 +24,16 @@ var Session = require("./session.js");
 const forceCsrf = csurf({ ignoreMethods: [] });
 const pug = require('pug');
 
-var routing = function(path, method, sessionMethod, hashNext = true) {
+var routing = function(path, method, sessionMethod, args = null, hashNext = true) {
 	if(hashNext) {
 		router[method](path, (req, res, next) => {
-			var session = new Session(req, res, next);
-			session[sessionMethod]();
+			var session = new Session(req, res, next, config);
+			session[sessionMethod].apply(session, args);
 		});
 	} else {
 		router[method](path, (req, res) => {
-			var session = new Session(req, res);
-			session[sessionMethod]();
+			var session = new Session(req, res, null, config);
+			session[sessionMethod].apply(session, args);
 		});
 	}
 }
@@ -551,15 +551,9 @@ router.get("/tx/:transactionId", function(req, res, next) {
 	});
 });
 
-router.get("/addressview/:address", (req, res, next) => {
-	var session = new Session(req, res, next, config);
-	session.renderAddressView(coins[config.coin].assetSupported);
-});
-
-router.get("/address/:address", function(req, res, next) {
-	var session = new Session(req, res, next, config);
-	session.renderAddressPage(coins[config.coin].assetSupported);
-});
+routing("/blocktableview/:blockTotal", "get", "renderBlocksTableView", null, true);
+routing("/addressview/:address", "get", "renderAddressView", [coins[config.coin].assetSupported],true);
+routing("/address/:address", "get", "renderAddressPage", [coins[config.coin].assetSupported],true);
 
 router.get("/rpc-terminal", function(req, res, next) {
 	if (!config.demoSite && !req.authenticated) {
@@ -873,5 +867,5 @@ router.get("/fun", function(req, res, next) {
 
 	next();
 });
-routing("/ext/summary", "get", "getNetworkSummary", false);
+routing("/ext/summary", "get", "getNetworkSummary", null, false);
 module.exports = router;

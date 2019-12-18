@@ -1,63 +1,8 @@
 var Decimal = require("decimal.js");
 Decimal8 = Decimal.clone({ precision:8, rounding:8 });
-var CoinBase = require("./base.js");
-var currencyUnits = [
-	{
-		type:"native",
-		name:"RTM",
-		multiplier:1,
-		default:true,
-		values:["", "rtm", "RTM"],
-		decimalPlaces:8
-	},
-	{
-		type:"native",
-		name:"mRTM",
-		multiplier:1000,
-		values:["mrtm"],
-		decimalPlaces:5
-	},
-	{
-		type:"native",
-		name:"bits",
-		multiplier:1000000,
-		values:["bits"],
-		decimalPlaces:2
-	},
-	{
-		type:"native",
-		name:"rap",
-		multiplier:100000000,
-		values:["rap", "rapeoshi"],
-		decimalPlaces:0
-	},
-	{
-		type:"exchanged",
-		name:"BTC",
-		multiplier:"btc",
-		values:["btc"],
-		decimalPlaces:8,
-		symbol:"฿"
-	},
-	{
-		type:"exchanged",
-		name:"USD",
-		multiplier:"usd",
-		values:["usd"],
-		decimalPlaces:8,
-		symbol:"$"
-	},
-	{
-		type:"exchanged",
-		name:"CHY",
-		multiplier:"cny",
-		values:["eur"],
-		decimalPlaces:4,
-		symbol:"¥"
-	},
-];
+var AssetBase = require("./assetBase.js");
 
-var Raptoreum = new CoinBase("Raptoreum", "RTM", "raptoreum");
+var Raptoreum = new AssetBase("Raptoreum", "RTM", "raptoreum", ["sat", "satoshi"]);
 Raptoreum.addProperties({
 	logoUrl:"/img/logo/rtm.svg",
 	siteTitle:"Raptoreum Explorer",
@@ -69,13 +14,15 @@ Raptoreum.addProperties({
 		"https://raw.githubusercontent.com/RTMcom/Blockchain-Known-Pools/master/pools.json",
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
 	],
-	maxBlockWeight: 4000000,
-	assetSupported : true,
 	targetBlockTimeSeconds: 60,
-	currencyUnits:currencyUnits,
-	currencyUnitsByName:{"RTM":currencyUnits[0], "mRTM":currencyUnits[1], "pits":currencyUnits[2], "rap":currencyUnits[3]},
-	baseCurrencyUnit:currencyUnits[3],
-	defaultCurrencyUnit:currencyUnits[0],
+	currencyUnitsByName:{
+		"RTM": Raptoreum.properties.currencyUnits[0],
+		"mRTM": Raptoreum.properties.currencyUnits[1],
+		"pits": Raptoreum.properties.currencyUnits[2],
+		"rap": Raptoreum.properties.currencyUnits[3]
+	},
+	//baseCurrencyUnit: currencyUnits[3],
+	//defaultCurrencyUnit:currencyUnits[0],
 	//feeSatoshiPerByteBucketMaxima: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 75, 100, 150],
 	genesisBlockHash: "000000f049bef9fec0179131874c54c76c0ff59f695db30a4f0da52072c99492",
 	genesisCoinbaseTransactionId: "f0cc5f92b11a6655a4939fc239e8bf960cd0453b87b5a0820ab36904279341a5",

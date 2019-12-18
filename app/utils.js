@@ -247,16 +247,26 @@ function getMinerFromCoinbaseTx(tx) {
 			var miningPoolsConfig = global.miningPoolsConfigs[i];
 
 			for (var payoutAddress in miningPoolsConfig.payout_addresses) {
-				if (miningPoolsConfig.payout_addresses.hasOwnProperty(payoutAddress)) {
-					if (tx.vout && tx.vout.length > 0 && tx.vout[0].scriptPubKey && tx.vout[0].scriptPubKey.addresses && tx.vout[0].scriptPubKey.addresses.length > 0) {
-						if (tx.vout[0].scriptPubKey.addresses[0] == payoutAddress) {
+				if(payoutAddress && tx.vout && tx.vout.length > 0) {
+					for(var i in tx.vout) {
+						if(tx.vout[i].scriptPubKey && tx.vout[i].scriptPubKey.addresses &&
+								tx.vout[i].scriptPubKey.addresses && tx.vout[i].scriptPubKey.addresses.includes(payoutAddress)) {
 							var minerInfo = miningPoolsConfig.payout_addresses[payoutAddress];
 							minerInfo.identifiedBy = "payout address " + payoutAddress;
-
 							return minerInfo;
 						}
 					}
 				}
+				// if (miningPoolsConfig.payout_addresses.hasOwnProperty(payoutAddress)) {
+				// 	if (tx.vout && tx.vout.length > 0 && tx.vout[0].scriptPubKey && tx.vout[0].scriptPubKey.addresses && tx.vout[0].scriptPubKey.addresses.length > 0) {
+				// 		if (tx.vout[0].scriptPubKey.addresses[0] == payoutAddress) {
+				// 			var minerInfo = miningPoolsConfig.payout_addresses[payoutAddress];
+				// 			minerInfo.identifiedBy = "payout address " + payoutAddress;
+				//
+				// 			return minerInfo;
+				// 		}
+				// 	}
+				// }
 			}
 
 			for (var coinbaseTag in miningPoolsConfig.coinbase_tags) {
@@ -594,7 +604,8 @@ function getStatsSummary(json) {
 			exp : difficultyData[1].exponent
 		},
 		chainSize : `${sizeData[0]} ${sizeData[1].abbreviation}B`,
-		price : price
+		price : price,
+		height : json.getblockchaininfo.blocks
 	}
 	/*
 	updateElementValue("hashrate", hashrateData[0]);

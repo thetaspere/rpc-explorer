@@ -15,9 +15,10 @@ var Decimal = require("decimal.js");
 // choose one of the below: RPC to a node, or mock data while testing
 var rpcApi = require("./rpcApi.js");
 //var rpcApi = require("./mockApi.js")
-var miscCache = new Cache(50);
-var blockCache = new Cache(50);
-var txCache = new Cache(200);
+var miscCache = new Cache(process.env.MAX_MISC_CACHE ? process.env.MAX_MISC_CACHE : 50);
+var blockCache = new Cache(process.env.MAX_BLOCK_CACHE ? process.env.MAX_BLOCK_CACHE : 50);
+var txCache = new Cache(process.env.MAX_TX_CACHE ? process.env.MAX_TX_CACHE : 200);
+var assetsCache =  new Cache(process.env.MAX_ASSET_CACHE ? process.env.MAX_ASSET_CACHE : 100);
 
 function getGenesisBlockHash() {
 	return coins[config.coin].genesisBlockHash;
@@ -69,6 +70,42 @@ function getMiningInfo() {
 
 function getUptimeSeconds() {
 	return miscCache.tryCache("getUptimeSeconds", 1000, rpcApi.getUptimeSeconds);
+}
+
+
+function getTotalAssetAddresses(assetName) {
+	return assetsCache.tryCache("getTotalAssetAddresses-"+assetName, 300000, () => {
+		return rpcApi.getTotalAssetAddresses(assetName);
+	});
+}
+
+function getAssetAddresses(assetName, start, limit) {
+	return assetsCache.tryCache(`getAssetAddresses-${assetName}-${start}-${limit}`, 300000, function() {
+		return rpcApi.getAssetAddresses(assetName, start, limit);
+	});
+}
+
+function getTotalAddressAssetBalances(address) {
+	return assetsCache.tryCache("getTotalAddressAssetBalances-"+address, 300000, () => {
+		return rpcApi.getTotalAddressAssetBalances(address);
+	});
+}
+
+function getAddressAssetBalances(address, start, limit) {
+	return assetsCache.tryCache(`getAddressAssetBalances-${address}-${start}-${limit}`, 300000, function() {
+		return rpcApi.getAddressAssetBalances(address, start, limit);
+	});
+}
+
+function getTotalAssetCount(filter) {
+	return assetsCache.tryCache("getTotalAssetCount-"+filter, 300000, () => {
+		return rpcApi.getTotalAssetCount(filter);
+	});
+}
+function queryAssets(searchTerm, start, limit) {
+	return assetsCache.tryCache(`queryAssets-${searchTerm}-${start}-${limit}`, 300000, function() {
+		return rpcApi.queryAssets(searchTerm, start, limit);
+	});
 }
 
 function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName) {
@@ -249,6 +286,10 @@ function getPeerSummary() {
 			reject(err);
 		});
 	});
+}
+
+function getMempoolTxids(verbose = false) {
+	return miscCache.tryCache("getMempoolTxidSummary", 1000, rpcApi.getMempoolTxids);
 }
 
 function getMempoolDetails(start, count) {
@@ -905,5 +946,12 @@ module.exports = {
 	getAddressDetails : getAddressDetails,
 	getAddressUTXOs : getAddressUTXOs,
 	getAddressBalance : getAddressBalance,
-	getAddressDeltas : getAddressDeltas
+	getAddressDeltas : getAddressDeltas,
+	getMempoolTxids : getMempoolTxids,
+	getTotalAssetAddresses : getTotalAssetAddresses,
+	getAssetAddresses : getAssetAddresses,
+	getTotalAddressAssetBalances : getTotalAddressAssetBalances,
+	getAddressAssetBalances : getAddressAssetBalances,
+	getTotalAssetCount : getTotalAssetCount,
+	queryAssets : queryAssets
 };
