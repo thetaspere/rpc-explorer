@@ -5,6 +5,7 @@ class CoinBase {
 		this.ticker = ticker;
 		this.priceid = priceid;
 		this.priceApiUrl = `https://api.coingecko.com/api/v3/coins/${priceid}?localization=false`;
+		this.unlimittedIps = process.env.UNLIMIT_IPS ? process.env.UNLIMIT_IPS.split(",") : [];
 		var currencyUnits = [
 			{
 				type:"native",
@@ -145,7 +146,30 @@ class CoinBase {
 			limit : {
 				 windowMs: 15 * 60 * 1000, // 15 minutes
 				 max: 3000, // limit each IP to 100 requests per windowMs
-				 message: "Too calls from this IP with 15 mins, please try again after 15 mins"
+				 message: "Too calls from this IP with 15 mins, please try again after 15 mins",
+				 keyGenerator : (req, res) => {
+					 var ip = req.headers['x-forwarded-for'];
+					 if(!ip) {
+						 ip = req.ip;
+					 } else {
+						 console.log("x-forwarded-for ip", ip);
+					 }
+					 return ip;
+				 },
+				 skip : (req, res) => {
+					 var ip = req.headers['x-forwarded-for'];
+					 if(!ip) {
+						 ip = req.ip;
+					 }
+					 var skip = this.unlimittedIps.includes(ip);
+					 if(skip) {
+						 console.log("ip=%s get unlimitted api requests", ip)
+					 } else {
+						 console.log(this.unlimittedIps);
+						 console.log("ip=%s get limitted api requests", ip)
+					 }
+		        return skip;
+		      }
 			},
 			api_map : [
 				{
@@ -180,6 +204,25 @@ class CoinBase {
 					],
 					description : "Get current block height",
 					"return" : "block height as number"
+				},
+				{
+					name : "getnetworkhashes",
+					uri : "getnetworkhashes",
+					api_source : "getNetworkHashes",
+					params : [
+						{
+							name : "total",
+							type : "number",
+							description : "total number of blocks to get hashrates starting from certain block or latest block by default"
+						},
+						{
+							name : "from",
+							type : "number",
+							description : "Optional. default to be current height. Starting blocks to get hashrates data"
+						}
+					],
+					description : "Get hashrates for total of blocks starting from block height",
+					"return" : "A map of height and its hashrate"
 				},
 				{
 					name : "getblock",

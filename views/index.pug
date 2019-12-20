@@ -212,41 +212,50 @@ block content
 					- var headers = coinConfig.tableHeaders.asset_address_table_headers;
 					- var hidden = true;
 					include ./includes/table-template.pug
-		if (txStats)
-			div(class="card mb-4 shadow-sm")
-				div(class="card-header")
-					div(class="row")
-						div(class="col")
-							h2(class="h6 mb-0") Transaction Stats Summary
-
-						div(class="col")
-							span(style="float: right;")
-								a(href="/tx-stats")
-									span  Transaction Stats &raquo;
-
-				div(class="card-body")
-					if (true)
+		ul(class='nav nav-tabs mb-3')
+			if (txStats)
+				li(class="nav-item")
+					a(id="tab-blocks-nav" data-toggle="tab", href=`#tab-tx-stats`, class="nav-link active", role="tab") #{translate('Tx Stats')}
+			li(class="nav-item")
+				a(id="tab-blocks-nav" data-toggle="tab", href=`#tab-hashrates`, class=`nav-link ${txStats ? "" : "active"}`, role="tab", onclick=`chartLineGraph("hashrate-chart", '${translate("Hash Rate")}', '${translate("Block")}', '${translate("Hashes")}', "/api/getnetworkhashes?total=100")`) #{translate('Hashrates Chart')}
+		div(class="tab-content")
+			if (txStats)
+				div(id="tab-tx-stats", class="card mb-4 shadow-sm tab-pane active", role="tabpanel")
+					div(class="card-header")
 						div(class="row")
-							div(class="col-lg-6")
-								div(class="table-responsive")
-									table(class="table text-right mb-4 mb-lg-0")
-										thead
-											tr
-												th Period
-												th Transactions
-												th Transactions Per Sec
-										tbody
-											each item, index in chainTxStats
-												tr(class="monospace")
-													td #{chainTxStatsLabels[index]}
-													td #{item.window_tx_count.toLocaleString()}
-													td #{new Decimal(item.txrate).toDecimalPlaces(4)}
+							div(class="col")
+								h2(class="h6 mb-0") Transaction Stats Summary
+
+							div(class="col")
+								span(style="float: right;")
+									a(href="/tx-stats")
+										span  Transaction Stats &raquo;
+
+					div(class="card-body")
+						if (true)
+							div(class="row")
+								div(class="col-lg-6")
+									div(class="table-responsive")
+										table(class="table text-right mb-4 mb-lg-0")
+											thead
+												tr
+													th Period
+													th Transactions
+													th Transactions Per Sec
+											tbody
+												each item, index in chainTxStats
+													tr(class="monospace")
+														td #{chainTxStatsLabels[index]}
+														td #{item.window_tx_count.toLocaleString()}
+														td #{new Decimal(item.txrate).toDecimalPlaces(4)}
 
 
-							div(class="col-lg-6")
-								script var txRateDataDay = [];
-								each item, index in txStats.txCountStats.txRates
-									script txRateDataDay.push({x:#{item.x}, y:#{item.y}});
+								div(class="col-lg-6")
+									script var txRateDataDay = [];
+									each item, index in txStats.txCountStats.txRates
+										script txRateDataDay.push({x:#{item.x}, y:#{item.y}});
 
-								- var graphData = {id:"graphRateDay", dataVar:"txRateDataDay", labels:txStats.txCountStats.txLabels, title:"Tx Rate, 24hr", xaxisTitle:"Block", xaxisStep:5, yaxisTitle:"Tx Per Sec"};
-								include ./includes/line-graph.pug
+									- var graphData = {id:"graphRateDay", dataVar:"txRateDataDay", labels:txStats.txCountStats.txLabels, title:"Tx Rate, 24hr", xaxisTitle:"Block", xaxisStep:5, yaxisTitle:"Tx Per Sec"};
+									include ./includes/line-graph.pug
+			div(id="tab-hashrates", class=`card mb-4 shadow-sm tab-pane ${txStats ? "" : "active"}`, role="tabpanel")
+				canvas(id="hashrate-chart", class="mb-4")

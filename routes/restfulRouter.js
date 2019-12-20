@@ -14,28 +14,8 @@ class RestfulRouter {
 		var self = this;
 		apiProperties.api_map.forEach(api => {
 			router.get(`/${api.uri}`, (req, res, next) => {
-				var paramValues = [];
-				for(var paramIndex in api.params) {
-					var param = api.params[paramIndex];
-					var paramArray = param.name.split(".");
-					var paramValue;
-					if(paramArray.length > 1) {
-						paramValue = req.query[paramArray[0]];
-						paramValue = self.checkAndParseParams(param.type, paramValue, paramArray[1]);
-					} else {
-					 	paramValue = req.query[param.name];
-						paramValue = self.checkAndParseParams(param.type, paramValue);
-					}
-					if(paramValue || paramValue === 0 || paramValue === '') {
-						paramValues.push(paramValue);
-					}
-				}
-				if(req.query.draw || req.query.draw === 0) {
-					paramValues.push(req.query.draw);
-				}
-				paramValues.push(req);
 				var method = api.method ? api.method : api.name
-				self.triggerApiCall(api.api_source, method, paramValues).then(result => {
+				self.triggerApiCall(api.api_source, method, req).then(result => {
 					if(result instanceof Object) {
 						res.send(JSON.stringify(result, null, 4));
 					} else {
@@ -62,15 +42,61 @@ class RestfulRouter {
 	triggerApiCall(type, apiMethod, paramValues) {
 		switch(type) {
 		case "core":
-			return coreApi[apiMethod].apply(null, paramValues);
+			return coreApi[apiMethod].call(null, paramValues);
 		case "address":
-			return addressApi[apiMethod].apply(null, paramValues);
+			return addressApi[apiMethod].call(null, paramValues);
 		default :
-			return this[type].apply(this, paramValues);
+			return this[type].call(this, paramValues);
 		}
 	}
 
-	getAssetAddresses(searchTerm, start, limit, draw) {
+	getNetworkHashes(req) {
+		var total = this.checkAndParseParams("number",req.query.total);
+		var from = this.checkAndParseParams("number",req.query.from);
+		var self = this;
+		return new Promise((resolve, reject) => {
+			if(total > 0) {
+				if(from) {
+					self.getNetworkHashesHelper(total, from).then(result => {
+						resolve(result);
+					}).catch(reject);
+				} else {
+					coreApi.getBlockCount().then(height => {
+						from = height;
+						self.getNetworkHashesHelper(total, from).then(result => {
+							resolve(result);
+						}).catch(reject);
+					}).catch(reject);
+				}
+			} else {
+				resolve({});
+			}
+		});
+	}
+	getNetworkHashesHelper(total, from) {
+		return new Promise((resolve, reject) => {
+			var promises = [];
+			var lastBlock = from - total;
+			if(lastBlock < 0) {
+				total = from;
+			}
+			for(var i=0; i < total; i++) {
+				promises.push(coreApi.getNetworkHash(from - i));
+			}
+			Promise.all(promises).then(hashes => {
+				var result = {};
+				for(var i=0; i < total; i++) {
+					result[from-i] = hashes[i];
+				}
+				resolve(result)
+			}).catch(reject);
+		});
+	}
+	getAssetAddresses(req) {
+		var searchTerm = this.checkAndParseParams("string", req.query.assetname);
+		var start = this.checkAndParseParams("number",req.query.start);
+		var limit = this.checkAndParseParams("number", req.query.length);
+		var draw = req.query.draw;
 		return new Promise((resolve, reject) => {
 			var result = {
 				data : [],
@@ -109,7 +135,11 @@ class RestfulRouter {
 		});
 	}
 
-	queryAssets(start, limit, searchTerm, draw) {
+	queryAssets(req) {
+		var start = this.checkAndParseParams("number",req.query.start);
+		var limit = this.checkAndParseParams("number", req.query.length);
+		var searchTerm = this.checkAndParseParams("string", req.query.search.value);
+		var draw = req.query.draw;
 		return new Promise((resolve, reject) => {
 			if(!searchTerm || searchTerm.trim() === "") {
 				searchTerm =  "*";
@@ -144,13 +174,20 @@ class RestfulRouter {
 							recordsTotal : totals[0],
 							recordsFiltered : totals[1] ? totals[1] : totals[0]
 						});
-				}).catch(reject);
+				}).catch(err => {
+					console.log(err);
+					reject(err);
+				});
 			}).catch(reject);
 		});
 	}
 
-	getBlocks(start, limit, searchTerm, draw, req) {
+	getBlocks(req) {
 		var self = this;
+		var start = this.checkAndParseParams("number", req.query.start);
+		var limit = this.checkAndParseParams("number", req.query.length);
+		var searchTerm = this.checkAndParseParams("string", req.query.search.value);
+		var draw = req.query.draw;
 		return new Promise((resolve, reject) => {
 			var result = {
 				data : [],
@@ -164,7 +201,7 @@ class RestfulRouter {
 			if(limit < 0) {
 				limit = 100;
 			}
-			var filteredHeights = searchTerm.split("-");
+			var filteredHeights = searchTerm ? searchTerm.split("-") : [];
 			var lowHeight;
 			var maxHeight;
 			var defaultLow = false;
@@ -268,8 +305,10 @@ class RestfulRouter {
 			}
 		});
 	}
-	getLatestTxids(blocks) {
+	getLatestTxids(req) {
+		var self = this;
 		return new Promise(function(resolve, reject) {
+			var blocks = self.checkAndParseParams("number", req.query.blocks);
 			coreApi.getBlockCount().then(height => {
 				var data = [];
 				var ids = [];
@@ -311,7 +350,8 @@ class RestfulRouter {
 		});
 	}
 
-	getAddressUTXOs(addresses) {
+	getAddressUTXOs(req) {
+		var addresses = this.checkAndParseParams("string", req.query.address);
 		return new Promise((resolve, reject) =>{
 			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
 				return resolve({});
@@ -355,7 +395,8 @@ class RestfulRouter {
 		});
 	}
 
-	getAddressBalance(addresses) {
+	getAddressBalance(req) {
+		var addresses = this.checkAndParseParams("string", req.query.address);
 		return new Promise((resolve, reject) =>{
 			if(!addresses || (addresses instanceof Object && addresses.length === 0)) {
 				return resolve({});

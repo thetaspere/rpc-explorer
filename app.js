@@ -44,9 +44,9 @@ var addressApi = require("./app/api/addressApi.js");
 var electrumAddressApi = require("./app/api/electrumAddressApi.js");
 var coreApi = require("./app/api/coreApi.js");
 var auth = require('./app/auth.js');
-
 var package_json = require('./package.json');
 var Restful = require('./routes/restfulRouter.js');
+var translations = require("./translations.js");
 global.appVersion = package_json.version;
 
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
@@ -59,8 +59,10 @@ if(process.env.BTCEXP_HTTPS) {
    var helmet = require("helmet");
    app.use(helmet());
 }
-
-
+// app.configure(() => {
+// 	app.use(translations.init);
+// });
+app.use(translations.init);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
@@ -268,7 +270,7 @@ app.continueStartup = function() {
 			if (config.electrumXServers && config.electrumXServers.length > 0) {
 				electrumAddressApi.connectToServers().then(function() {
 					global.electrumAddressApi = electrumAddressApi;
-					
+
 				}).catch(function(err) {
 					utils.logError("31207ugf4e0fed", err, {electrumXServers:config.electrumXServers});
 				});
@@ -324,7 +326,7 @@ app.use(function(req, res, next) {
 
 	res.locals.config = global.config;
 	res.locals.coinConfig = global.coinConfig;
-	
+
 	res.locals.host = req.session.host;
 	res.locals.port = req.session.port;
 
@@ -356,7 +358,7 @@ app.use(function(req, res, next) {
 		} else {
 			req.session.uiTheme = "dark";
 		}
-	} 
+	}
 	// homepage banner
 	if (!req.session.hideHomepageBanner) {
 		var cookieValue = req.cookies['user-setting-hideHomepageBanner'];
@@ -380,10 +382,10 @@ app.use(function(req, res, next) {
 
 	if (req.session.userMessage) {
 		res.locals.userMessage = req.session.userMessage;
-		
+
 		if (req.session.userMessageType) {
 			res.locals.userMessageType = req.session.userMessageType;
-			
+
 		} else {
 			res.locals.userMessageType = "warning";
 		}

@@ -7,16 +7,14 @@ html(lang="en")
 
 		link(rel="stylesheet", href="/css/fonts.css", integrity="sha384-XOmmu8j3C2MFUXRVGg8VWYNwlhEkSNb0rW/4e7bi3F56S6PejEmBUQDGZofQyjbL")
 		link(rel="stylesheet", href="/css/highlight.min.css", integrity="sha384-zhIsEafzyQWHSoMCQ4BfT8ZlRXQyIFwAHAJn32PNdsb8n6tVysGZSLpEEIvCskw4")
-		link(rel="stylesheet", href="/css/jquery-ui-themes-1.12.1/themes/dark-hive/jquery-ui.min.css")
-
 
 		if (session.uiTheme && session.uiTheme == "dark")
 			link(rel="stylesheet", href="/css/bootstrap-dark.css", integrity="")
 			link(rel="stylesheet", href="/css/dark-touchups.css", integrity="")
-
+			link(rel="stylesheet", href="/css/jquery-ui-themes-1.12.1/themes/dark-hive/jquery-ui.min.css")
 		else
 			link(rel="stylesheet", href="/css/bootstrap.min.css", integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T")
-
+			link(rel="stylesheet", href="/css/jquery-ui-themes-1.12.1/themes/base/jquery-ui.min.css")
 
 		link(rel='stylesheet', href='/css/styling.css')
 
@@ -207,6 +205,7 @@ html(lang="en")
 		script(src="/js/jquery.dataTables.min.js", integrity="sha384-rgWRqC0OFPisxlUvl332tiM/qmaNxnlY46eksSZD84t+s2vZlqGeHrncwIRX7CGp")
 		script(src="/js/dataTables.bootstrap4.min.js", integrity="sha384-uiSTMvD1kcI19sAHJDVf68medP9HA2E2PzGis9Efmfsdb8p9+mvbQNgFhzii1MEX")
 		script(src="/js/utils.js")
+		script(src="/js/chartUtils.js")
 		script(src="/js/jquery-ui.min.js", integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=")
 		script.
 			$("#popup-dialog").dialog({

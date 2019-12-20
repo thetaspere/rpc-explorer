@@ -137,11 +137,16 @@ function queryAssets(searchTerm, start, limit) {
 	return getRpcDataWithParams({method:"listassets", parameters:[searchTerm, true, limit, start]});
 }
 
+function getNetworkHash(height) {
+	return getRpcDataWithParams({method:"getnetworkhashps", parameters:[120, height]});
+}
+
 function getMempoolTxids(verbose = false) {
 	return getRpcDataWithParams({method:"getrawmempool", parameters:[verbose]});
 }
 
-function broadcast(rawtxhex) {
+function broadcast(req) {
+	var rawtxhex = req.query.tx;
 	return getRpcDataWithParams({method:"sendrawtransaction", parameters:[rawtxhex]});
 }
 
@@ -549,5 +554,6 @@ module.exports = {
 	getTotalAddressAssetBalances : getTotalAddressAssetBalances,
 	getAddressAssetBalances : getAddressAssetBalances,
 	getTotalAssetCount : getTotalAssetCount,
-	queryAssets : queryAssets
+	queryAssets : queryAssets,
+	getNetworkHash : getNetworkHash
 };

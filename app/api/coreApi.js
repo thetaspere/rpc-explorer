@@ -19,6 +19,7 @@ var miscCache = new Cache(process.env.MAX_MISC_CACHE ? process.env.MAX_MISC_CACH
 var blockCache = new Cache(process.env.MAX_BLOCK_CACHE ? process.env.MAX_BLOCK_CACHE : 50);
 var txCache = new Cache(process.env.MAX_TX_CACHE ? process.env.MAX_TX_CACHE : 200);
 var assetsCache =  new Cache(process.env.MAX_ASSET_CACHE ? process.env.MAX_ASSET_CACHE : 100);
+var chartingCache =  new Cache(process.env.MAX_CHART_CACHE ? process.env.MAX_CHART_CACHE : 1200);
 
 function getGenesisBlockHash() {
 	return coins[config.coin].genesisBlockHash;
@@ -72,8 +73,14 @@ function getUptimeSeconds() {
 	return miscCache.tryCache("getUptimeSeconds", 1000, rpcApi.getUptimeSeconds);
 }
 
+function getNetworkHash(height) {
+	return chartingCache.tryCache("getNetworkHash-" + height, 86400000, () => {
+		return rpcApi.getNetworkHash(height);
+	});
+}
 
-function getTotalAssetAddresses(assetName) {
+function getTotalAssetAddresses(req) {
+	var assetName = req.query.assetname;
 	return assetsCache.tryCache("getTotalAssetAddresses-"+assetName, 300000, () => {
 		return rpcApi.getTotalAssetAddresses(assetName);
 	});
@@ -85,7 +92,8 @@ function getAssetAddresses(assetName, start, limit) {
 	});
 }
 
-function getTotalAddressAssetBalances(address) {
+function getTotalAddressAssetBalances(req) {
+	var address = req.query.address;
 	return assetsCache.tryCache("getTotalAddressAssetBalances-"+address, 300000, () => {
 		return rpcApi.getTotalAddressAssetBalances(address);
 	});
@@ -542,7 +550,8 @@ function getBlockByHeight(blockHeight) {
 	});
 }
 
-function getBlock(blockHeight) {
+function getBlock(req) {
+	var blockHeight = req.query.height;
 	return blockCache.tryCache("getBlock-" + blockHeight, 3600000, function() {
 		return rpcApi.getBlock(blockHeight);
 	});
@@ -592,7 +601,8 @@ function getBlocksByHash(blockHashes) {
 	});
 }
 
-function getRawTransaction(txid) {
+function getRawTransaction(req) {
+	var txid = req.query.txid;
 	var rpcApiFunction = function() {
 		return rpcApi.getRawTransaction(txid);
 	};
@@ -654,7 +664,7 @@ function getRawTransactions(txids) {
 	return new Promise(function(resolve, reject) {
 		var promises = [];
 		for (var i = 0; i < txids.length; i++) {
-			promises.push(getRawTransaction(txids[i]));
+			promises.push(getRawTransaction({query : {txid : txids[i]}}));
 		}
 
 		Promise.all(promises).then(function(results) {
@@ -953,5 +963,6 @@ module.exports = {
 	getTotalAddressAssetBalances : getTotalAddressAssetBalances,
 	getAddressAssetBalances : getAddressAssetBalances,
 	getTotalAssetCount : getTotalAssetCount,
-	queryAssets : queryAssets
+	queryAssets : queryAssets,
+	getNetworkHash : getNetworkHash
 };

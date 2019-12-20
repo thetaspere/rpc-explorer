@@ -179,13 +179,29 @@ function ajaxUpdate(uri, id) {
 	updateElementValue(id, `<div class="spinner-border" role="status">
   													<span class="sr-only">Loading...</span>
 													</div>`, true);
+	uri = checkAndPadLocale(uri);
 	$.ajax({url: uri, success: function(html) {
 			updateElementValue(id, html, true);
 		}
 	});
 }
 
+function checkAndPadLocale(url) {
+	var lang = currentUrlParams.lang;
+	if(lang) {
+		var urlParams = getUrlVars(url);
+		var params = Object.keys(urlParams);
+		if(params.length > 0) {
+			url += "&lang=" + lang;
+		} else {
+			url += "?lang=" + lang;
+		}
+	}
+	return url;
+}
+
 function loadDataToTable(id, headers, loadUrl, paging, searching) {
+	loadUrl = checkAndPadLocale(loadUrl);
 	if ( ! $.fn.DataTable.isDataTable(`#${id}`) ) {
 		var table;
 		if(paging) {
@@ -308,7 +324,8 @@ function loadLazyContainers() {
 
 function updateSupply() {
 	setInterval( function() {
-		$.ajax({url: "/api/supply", success: function(supply) {
+		var uri = checkAndPadLocale("/api/supply");
+		$.ajax({url: uri, success: function(supply) {
 				updateElementValue("supply", supply, false);
 			}
 		});
@@ -319,8 +336,9 @@ function updateStats() {
 	setInterval( function() {
 		var checkEle = $("#hashrate");
 		console.log("hashrate element %d", checkEle.length);
+		var uri = checkAndPadLocale("/ext/summary");
 		if(checkEle && checkEle.length > 0) {
-			$.ajax({url: '/ext/summary', success: function(json){
+			$.ajax({url: uri, success: function(json){
 				updateElementValue("hashrate", json.hashrate.rate + " ");
 				updateElementAttr("hashUnit", "data-original-title", json.hashrate.unit);
 				updateElementValue("txStats", json.txcount);
@@ -337,3 +355,16 @@ function updateStats() {
 		}
 	}, 180000);
 }
+
+function getUrlVars(url) {
+	if(!url) {
+		url = window.location.href;
+	}
+    var vars = {};
+    var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+var currentUrlParams = getUrlVars();

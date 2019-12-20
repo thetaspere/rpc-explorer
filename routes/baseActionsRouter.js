@@ -40,6 +40,7 @@ var routing = function(path, method, sessionMethod, args = null, hashNext = true
 
 router.get("/", function(req, res, next) {
 	var session = new Session(req,res,next);
+	console.log(req.locale);
 	if(session.isRenderConnect()) {
 		return;
 	}
@@ -294,7 +295,7 @@ router.post("/search", function(req, res, next) {
 	req.session.query = req.body.query;
 
 	if (query.length == 64) {
-		coreApi.getRawTransaction(query).then(function(tx) {
+		coreApi.getRawTransaction({query : {txid : query}}).then(function(tx) {
 			if (tx) {
 				res.redirect("/tx/" + query);
 
@@ -476,7 +477,7 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 	res.locals.result = {};
 
-	coreApi.getRawTransaction(txid).then(function(rawTxResult) {
+	coreApi.getRawTransaction({query : {txid : txid}}).then(function(rawTxResult) {
 		res.locals.result.getrawtransaction = rawTxResult;
 
 		var promises = [];
