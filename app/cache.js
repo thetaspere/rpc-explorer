@@ -3,6 +3,7 @@ const debugLog = debug("btcexp:core");
 const LRU = require("lru-cache");
 const config = require("./config.js");
 const redisCache = require("./redisCache.js");
+//var utils = require("./utils.js");
 class Cache {
   constructor(maxCacheAmount) {
     if (config.noInmemoryRpcCache) {
@@ -44,7 +45,8 @@ class Cache {
           resolve(result);
         }
       }).catch(function(err) {
-        utils.logError("nds9fc2eg621tf3", err, {cacheKey:cacheKey});
+        console.log(err);
+        //utils.logError("nds9fc2eg621tf3", err, {cacheKey:cacheKey});
         finallyFunc();
       });
     });

@@ -113,9 +113,6 @@ class CoinBase {
 				},
 				{
 					name : "Size (bytes)"
-				},
-				{
-					name : "Weight (wu)"
 				}
 			]
 		}

@@ -462,11 +462,111 @@ function getHelp() {
 	return getRpcData("help");
 }
 
+function smartnode(command) {
+		return masternode(command, smartnode);
+}
+
+function masternode(command, masternodeCommand = "masternode") {
+	return new Promise((resolve, reject) => {
+		var possibleCommand = ["count", "list", "current", "winner", "winners"];
+		if(command) {
+			command = command.toLowerCase();
+		} else {
+			resolve({"error" : "no command was given"});
+		}
+		if(possibleCommand.includes(command)) {
+			getRpcDataWithParams({method:masternodeCommand, parameters:[command]}).then(result => {
+				resolve(result);
+			}).catch(reject);
+		} else {
+			resolve({"error" : `${command} is an invalid command`});
+		}
+	});
+}
+
+function protx(command, params) {
+	return new Promise((resolve, reject) => {
+		var possibleCommand = ["list", "info", "diff"];
+		if(command) {
+			command = command.toLowerCase();
+		} else {
+			resolve({"error" : "no command was given"});
+		}
+		if(possibleCommand.includes(command)) {
+			var parameters = [command];
+			if(command == "info") {
+				if(params.protxhash) {
+					parameters.push(params.protxhash);
+				} else {
+					return resolve({"error" : "protxhash was not given for info command"});
+				}
+			} else if(command == "diff") {
+				if(params.baseblock && params.block) {
+					parameters.push(params.baseblock);
+					parameters.push(params.block);
+				} else {
+					return resolve({"error" : "baseblock or/and baseblock was not given for diff command"});
+				}
+			}
+			getRpcDataWithParams({method:"protx", parameters:parameters}).then(result => {
+				resolve(result);
+			}).catch(reject);
+		} else {
+			resolve({"error" : `${command} is an invalid command`});
+		}
+	});
+}
+
+function quorum(command, params) {
+	return new Promise((resolve, reject) => {
+		var possibleCommand = ["list", "info", "memberof", "isconflicting"];
+		if(command) {
+			command = command.toLowerCase();
+		} else {
+			resolve({"error" : "no command was given"});
+		}
+		if(possibleCommand.includes(command)) {
+			var parameters = [command];
+			if(command == "info") {
+				if(params.llmqtype && params.quorumhash) {
+					parameters.push(params.llmqtype);
+					parameters.push(params.quorumhash);
+					if(params.skshare) {
+						parameters.push(params.skshare);
+					}
+				} else {
+					return resolve({"error" : "quorumhash or/and llmqtype was not given for info command"});
+				}
+			} else if(command == "memberof") {
+				if(params.protxhash) {
+					parameters.push(params.protxhash);
+					if(params.count) {
+						parameters.push(params.count);
+					}
+				} else {
+					return resolve({"error" : "protxhash was not given for memberof command"});
+				}
+			} else if(command == "isconflicting") {
+				if(params.llmqtype && params.id && params.msghash) {
+					parameters.push(params.llmqtype);
+					parameters.push(params.id);
+					parameters.push(params.msghash);
+				} else {
+					return resolve({"error" : "llmqtype, id, or/and msghash was not given for isconflicting command"});
+				}
+			}
+			getRpcDataWithParams({method:"quorum", parameters:parameters}).then(result => {
+				resolve(result);
+			}).catch(reject);
+		} else {
+			resolve({"error" : `${command} is an invalid command`});
+		}
+	});
+}
+
 function getRpcMethodHelp(methodName) {
 	return getRpcDataWithParams({method:"help", parameters:[methodName]});
 }
-
-
 
 function getRpcData(cmd) {
 	return new Promise(function(resolve, reject) {
@@ -555,5 +655,9 @@ module.exports = {
 	getAddressAssetBalances : getAddressAssetBalances,
 	getTotalAssetCount : getTotalAssetCount,
 	queryAssets : queryAssets,
-	getNetworkHash : getNetworkHash
+	getNetworkHash : getNetworkHash,
+	masternode : masternode,
+	smartnode : smartnode,
+	protx : protx,
+	quorum : quorum
 };

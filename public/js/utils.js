@@ -10,6 +10,53 @@ const HEADERS = {
 			className: "data-cell monospace"
 		}
 	],
+	masternode_table_headers : [
+		{
+			data : "IP",
+			className: "data-cell monospace"
+		},
+		{
+			data : "Status",
+			className: "data-cell monospace"
+		},
+		{
+			data : "Reachable",
+			className: "data-cell monospace"
+		},
+		{
+			data : "Collateral Address",
+			className: "data-cell monospace",
+			render: addressRedirectLinkWithShortHand
+		},
+		{
+			data : "Protx Hash",
+			className: "data-cell monospace",
+			render: shortHandText
+		},
+		{
+			data : "Voting Address",
+			className: "data-cell monospace",
+			render: addressRedirectLinkWithShortHand
+		},
+		{
+			data : "Owner Address",
+			className: "data-cell monospace",
+			render: addressRedirectLinkWithShortHand
+		},
+		{
+			data : "Payee Address",
+			className: "data-cell monospace",
+			render: addressRedirectLinkWithShortHand
+		},
+		{
+			data : "Last Paid Block",
+			className: "data-cell monospace"
+		},
+		{
+			data : "Last Paid Time",
+			className: "data-cell monospace"
+		}
+	],
 	asset_table_headers : [
 		{
 			data : "Name",
@@ -75,18 +122,26 @@ const HEADERS = {
 		{
 			data : "Size (bytes)",
 			className: "data-cell monospace text-right",
-		},
-		{
-			data : "Weight (wu)",
-			className: "data-cell monospace text-right",
-			render : displayWeight
 		}
 	]
 }
 
+function shortHandText(text) {
+	 return text.length > 10 ? text.substring(0, 4) + "..." + text.substring(text.length - 4, text.length) : text;
+}
+
 function redirectLink(data, type, row, meta, baseUri) {
 	if(type === 'display'){
-			data = `<a href="${baseUri}/${data}" target="_blank">${data}</a>`;
+		  var dataLink = data.replace(/,/g, "");
+			data = `<a href="${baseUri}/${dataLink}" target="_blank">${data}</a>`;
+	}
+	return data;
+}
+
+function redirectLinkWithShortHandText(data, type, row, meta, baseUri) {
+	if(type === 'display'){
+		  var shortHand = shortHandText(data);
+			data = `<a href="${baseUri}/${data}" target="_blank">${shortHand}</a>`;
 	}
 	return data;
 }
@@ -147,6 +202,10 @@ function addressRedirectLink(data, type, row, meta){
 	return redirectLink(data, type, row, meta, "address");
 }
 
+function addressRedirectLinkWithShortHand(data, type, row, meta){
+	return redirectLinkWithShortHandText(data, type, row, meta, "address");
+}
+
 function transactionHylink(data, type, row, meta){
 	//console.log("name=%s, data=%O, meta=%O, row=%O", row.name, data, meta, row );
 	return redirectLink(data, type, row, meta, "tx");
@@ -200,8 +259,9 @@ function checkAndPadLocale(url) {
 	return url;
 }
 
-function loadDataToTable(id, headers, loadUrl, paging, searching) {
+function loadDataToTable(id, headers, loadUrl, paging, searching, ordering) {
 	loadUrl = checkAndPadLocale(loadUrl);
+	console.log("Headers ", headers);
 	if ( ! $.fn.DataTable.isDataTable(`#${id}`) ) {
 		var table;
 		if(paging) {
@@ -214,7 +274,7 @@ function loadDataToTable(id, headers, loadUrl, paging, searching) {
 				columns : headers,
 				paging : true,
 				processing : true,
-				ordering : false,
+				ordering : ordering ? ordering : false,
 				searching : searching ? searching : false,
 				searchDelay: 500,
 				scrollX : false,
@@ -233,8 +293,8 @@ function loadDataToTable(id, headers, loadUrl, paging, searching) {
 				columns : headers,
 				paging : false,
 				processing : true,
-				ordering : false,
-				searching : false,
+				ordering : ordering ? ordering : false,
+				searching : searching ? searching : false,
 				scrollX : false,
 				scrollY : false,
 				info : false,
@@ -322,15 +382,28 @@ function loadLazyContainers() {
 	}
 }
 
-function updateSupply() {
+function routineUpdate(uri, elementId, interval) {
 	setInterval( function() {
-		var uri = checkAndPadLocale("/api/supply");
-		$.ajax({url: uri, success: function(supply) {
-				updateElementValue("supply", supply, false);
+		var uriPad = checkAndPadLocale(uri);
+		$.ajax({url: uriPad, success: function(result) {
+				updateElementValue(elementId, result, false);
 			}
 		});
-	},600000);
+	},interval);
 }
+
+function updateSupply() {
+	routineUpdate("/api/supply","supply", 600000);
+}
+
+function updateMasternodeCount() {
+	routineUpdate("/api/getmasternodecount","mncount", 1800000);
+}
+
+function updateMasternodeReachableCount() {
+	routineUpdate("/api/getmasternodereachablecount","mnreachable", 1800000);
+}
+
 
 function updateStats() {
 	setInterval( function() {

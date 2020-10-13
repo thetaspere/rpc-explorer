@@ -11,6 +11,7 @@ var moment = require('moment');
 
 class RestfulRouter {
 	constructor(router, apiProperties) {
+		this.apiProperties = apiProperties;
 		var self = this;
 		apiProperties.api_map.forEach(api => {
 			router.get(`/${api.uri}`, (req, res, next) => {
@@ -111,7 +112,7 @@ class RestfulRouter {
 				if(start < 0) {
 					start = 0;
 				}
-				coreApi.getTotalAssetAddresses(searchTerm).then( count => {
+				coreApi.getTotalAssetAddresses({query : {assetname : searchTerm}}).then( count => {
 					if(limit < 0) {
 						limit = count;
 					}
@@ -293,11 +294,11 @@ class RestfulRouter {
 							Transactions : blocks[i].tx.length.toLocaleString(),
 							"Average Fee" : value,
 							"Size (bytes)" : blocks[i].size.toLocaleString(),
-							"Weight (wu)" : {
+							"Weight (wu)" : blocks[i].weight ? {
 								weight : blocks[i].weight.toLocaleString(),
 								percentage : `${fullPercent}%`,
 								maxWeight : coins[config.coin].maxBlockWeight
-							}
+							} : {}
 						});
 					}
 					resolve(result);
@@ -440,6 +441,79 @@ class RestfulRouter {
 		});
 	}
 
+	getNodeList(req) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
+				var result = {
+					data : [],
+					draw : req.query.draw,
+					recordsTotal : 0,
+					recordsFiltered : 0
+				};
+				for(var tx in mnList) {
+					var mn = mnList[tx];
+					//console.log(mn);
+					result.recordsTotal++;
+					var ipPort = mn.address.split(':');
+					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+					var reachableStatus;
+					if(isReachable === "Not Cached") {
+						reachableStatus = "Checking"
+					} else {
+						reachableStatus = isReachable ? "Yes" : "No";
+					}
+					result.data.push({
+						IP : ipPort[0],
+						"Status" : mn.status,
+						"Reachable" : reachableStatus,
+						"Collateral Address" : mn.collateraladdress,
+						"Protx Hash" : mn.proTxHash,
+						"Voting Address" : mn.votingaddress,
+						"Owner Address" : mn.owneraddress,
+						"Payee Address" : mn.payee,
+						"Last Paid Block" : mn.lastpaidblock,
+						"Last Paid Time" : moment.utc(new Date(parseInt(mn.lastpaidtime) * 1000)).format("Y-MM-DD HH:mm:ss")
+					});
+				}
+				result.data.sort((first, second) => {
+					return second.Reachable.localeCompare(first.Reachable);
+				});
+				result.recordsFiltered = result.recordsTotal;
+				utils.checkIps();
+				resolve(result.data);
+			}).catch(reject);
+		});
+	}
+
+	getMasternodeCount() {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			console.log("getMasternodeCount");
+			coreApi.masternode({query : {command :"count"}}, global.coinConfig.masternodeCommand).then(mnCount => {
+				console.log(mnCount);
+				resolve(`${mnCount.enabled}/${mnCount.total}`);
+			}).catch(reject);
+		});
+	}
+
+	getMasternodeReachableCount() {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			console.log("getMasternodeList");
+			coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
+				for(var tx in mnList) {
+					var mn = mnList[tx];
+					var ipPort = mn.address.split(':');
+					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+				}
+				var checkResult = await utils.checkIpsAsync();
+				console.log(checkResult);
+				resolve(checkResult);
+			}).catch(reject);
+		});
+	}
+
 	checkAndParseString(value) {
 		if(value) {
 			value = (typeof value) === "string" ? value.trim() : value.toString();
@@ -466,6 +540,9 @@ class RestfulRouter {
 			break;
 		case "number" :
 			return this.checkAndParseNumber(paramValue);
+			break;
+		case "boolean" :
+			return paramValue ? paramValue.toLowerCase() === "true" || paramValue == "1" : false;
 			break;
 		case "object" :
 			return paramValue ? paramValue[key] : paramValue;

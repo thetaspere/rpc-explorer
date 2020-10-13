@@ -11,6 +11,11 @@ var config = require("./config.js");
 var coins = require("./coins.js");
 var coinConfig = coins[config.coin];
 var redisCache = require("./redisCache.js");
+var Cache = require("./cache.js");
+const schedule = require("node-schedule");
+const isPortReachable = require('is-port-reachable');
+var reachableCache = new Cache(process.env.MAX_REACHABLE_CACHE ? process.env.MAX_REACHABLE_CACHE : 5000);
+var ipList = {}
 
 
 var exponentScales = [
@@ -578,11 +583,15 @@ function buildQrCodeUrl(str, results) {
 }
 
 function getStatsSummary(json) {
+	//console.log("getStatsSummary %O", json)
 	var hashrateData = formatLargeNumber(json.miningInfo.networkhashps, 3);
 	var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
 	var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
 	var difficultyData = formatLargeNumber(json.getblockchaininfo.difficulty, 3);
-	var sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
+	var sizeData;
+	if(json.getblockchaininfo.size_on_disk) {
+		sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
+	}
 	var price = `${formatExchangedCurrency(1.0, "btc", "฿", 8)}/${formatExchangedCurrency(1.0, "usd", "$", 6)}`
 	mempoolBytesData[1].abbreviation = mempoolBytesData[1].abbreviation ? mempoolBytesData[1].abbreviation : "";
 	return {
@@ -603,7 +612,7 @@ function getStatsSummary(json) {
 			num : difficultyData[0],
 			exp : difficultyData[1].exponent
 		},
-		chainSize : `${sizeData[0]} ${sizeData[1].abbreviation}B`,
+		chainSize : sizeData ? `${sizeData[0]} ${sizeData[1].abbreviation}B` : "N/A",
 		price : price,
 		height : json.getblockchaininfo.blocks
 	}
@@ -621,8 +630,64 @@ function getStatsSummary(json) {
 	updateElementValue("price", price);*/
 }
 
+function isIpPortReachable(ip, port) {
+		return reachableCache.tryCache(`${ip}:${port}`, 600000, () => {
+			return isPortReachable(port, {host  : ip, timeout : 1000});
+		});
+}
+
+async function isIpPortReachableFromCache(ip, port) {
+	var reachable = await reachableCache.get(`${ip}:${port}`);
+	if(reachable == undefined || reachable == null) {
+			ipList[ip] = port;
+			return "Not Cached"
+	}
+	return reachable;
+}
+
+function checkIps(checkCount) {
+	Object.keys(ipList).forEach(ip => {
+		var port = ipList[ip];
+		//console.log("checking if reachable %s:%s", ip, port);
+		isIpPortReachable(ip, port).then(reachable => {
+			var log = `${ip}:${port} is ${reachable ? "reachable" : "no reachable"}`;
+			if(checkCount) {
+				checkCount.count++;
+				if(reachable) {
+					checkCount.reachable++;
+				}
+			}
+			debugLog(log);
+			//console.log(log);
+		}).catch(err => {
+			console.log(err);
+		})
+	});
+}
+
+function checkIpsAsync() {
+	return new Promise((resolve, reject) => {
+		const checkCount = {count : 0, reachable: 0};
+		checkIps(checkCount);
+		const job = schedule.scheduleJob("0/1 * * * *", () => {
+			console.log("checkCount.count ", checkCount.count);
+				if(checkCount.count >= Object.keys(ipList).length) {
+					resolve(`${checkCount.reachable}/${checkCount.count}`);
+					job.cancel();
+				}
+		});
+	});
+}
+
+function scheduleCheckIps() {
+	schedule.scheduleJob("*/10 * * * *", checkIps);
+}
 
 module.exports = {
+	checkIps: checkIps,
+	checkIpsAsync: checkIpsAsync,
+	isIpPortReachableFromCache: isIpPortReachableFromCache,
+	scheduleCheckIps: scheduleCheckIps,
 	reflectPromise: reflectPromise,
 	redirectToConnectPageIfNeeded: redirectToConnectPageIfNeeded,
 	hex2ascii: hex2ascii,

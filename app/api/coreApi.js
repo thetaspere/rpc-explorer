@@ -1,8 +1,6 @@
 var debug = require("debug");
 
 var debugLog = debug("btcexp:core");
-
-var LRU = require("lru-cache");
 var fs = require('fs');
 
 var utils = require("../utils.js");
@@ -19,6 +17,7 @@ var miscCache = new Cache(process.env.MAX_MISC_CACHE ? process.env.MAX_MISC_CACH
 var blockCache = new Cache(process.env.MAX_BLOCK_CACHE ? process.env.MAX_BLOCK_CACHE : 50);
 var txCache = new Cache(process.env.MAX_TX_CACHE ? process.env.MAX_TX_CACHE : 200);
 var assetsCache =  new Cache(process.env.MAX_ASSET_CACHE ? process.env.MAX_ASSET_CACHE : 100);
+var masternodeCache =  new Cache(process.env.MAX_MASTERNODE_CACHE ? process.env.MAX_MASTERNODE_CACHE : 100);
 var chartingCache =  new Cache(process.env.MAX_CHART_CACHE ? process.env.MAX_CHART_CACHE : 1200);
 
 function getGenesisBlockHash() {
@@ -660,6 +659,48 @@ function getAddress(address) {
 	});
 }
 
+function smartnode(req) {
+	return masternode(req, "smartnode")
+}
+
+function masternode(req, masternodeCommand = "masternode") {
+	var command = req.query.command;
+	return masternodeCache.tryCache(masternodeCommand + "-" + command, 60000, function() {
+		return rpcApi.masternode(command, masternodeCommand);
+	});
+}
+
+function nullableValue(value) {
+	return value ? value : "";
+}
+
+function protx(req) {
+	var command = req.query.command;
+	var protxHash = req.query.protxhash;
+	var baseBlock = req.query.baseblock;
+	var block = req.query.block;
+	var cacheKey = `protx-${nullableValue(command)}-${nullableValue(protxHash)}-${nullableValue(baseBlock)}-${nullableValue(block)}`;
+	return miscCache.tryCache(cacheKey, 60000, function() {
+		return rpcApi.protx(command, req.query);
+	});
+}
+
+function quorum(req) {
+	var command = req.query.command;
+	var protxHash = req.query.protxhash;
+	var llmqType = req.query.llmqtype;
+	var count = req.query.count;
+	var quorumHash = req.query.quorumhash;
+	var skshare = req.query.skshare;
+	var id = req.query.id;
+	var msgHash = req.query.msghash
+	var cacheKey = `protx-${nullableValue(command)}-${nullableValue(protxHash)}-${nullableValue(llmqType)}-${nullableValue(count)}
+	-${nullableValue(quorumHash)}-${nullableValue(id)}-${nullableValue(msgHash)}-${nullableValue(skshare)}`;
+	return miscCache.tryCache(cacheKey, 60000, function() {
+		return rpcApi.quorum(command, req.query);
+	});
+}
+
 function getRawTransactions(txids) {
 	return new Promise(function(resolve, reject) {
 		var promises = [];
@@ -964,5 +1005,9 @@ module.exports = {
 	getAddressAssetBalances : getAddressAssetBalances,
 	getTotalAssetCount : getTotalAssetCount,
 	queryAssets : queryAssets,
-	getNetworkHash : getNetworkHash
+	getNetworkHash : getNetworkHash,
+	masternode : masternode,
+	smartnode : smartnode,
+	protx : protx,
+	quorum : quorum
 };

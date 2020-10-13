@@ -66,6 +66,8 @@ block content
 
 		if (txStats)
 			- networkSummaryItemCount++;
+		if (masternodeStats)
+			- networkSummaryItemCount += 2;
 
 		- var networkSummaryColumnClass = "col-md-4";
 		if (networkSummaryItemCount > 6)
@@ -105,6 +107,25 @@ block content
 						p(id="supply" class="lead")
 							div(class="spinner-border lazyload", loadurl=`/api/supply`, loadeleid="supply", role="status")
 								span(class="sr-only") Loading...
+					if(masternodeStats)
+						div(class=networkSummaryColumnClass)
+							div(class="float-left", style="height: 40px; width: 40px;")
+								span
+									i(class="fas fa-calculator fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
+
+							span(class="font-weight-bold") #{coinConfig.masternodeName} Count
+							p(id="mncount" class="lead")
+								div(class="spinner-border lazyload", loadurl=`/api/getmasternodecount`, loadeleid="mncount", role="status")
+									span(class="sr-only") Loading...
+						div(class=networkSummaryColumnClass)
+							div(class="float-left", style="height: 40px; width: 40px;")
+								span
+									i(class="fas fa-calculator fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
+
+							span(class="font-weight-bold") Reachable #{coinConfig.masternodeName}
+							p(id="mnreachable" class="lead")
+								div(class="spinner-border lazyload", loadurl=`/api/getmasternodereachablecount`, loadeleid="mnreachable", role="status")
+									span(class="sr-only") Loading...
 					if (txStats)
 						div(class=networkSummaryColumnClass)
 							div(class="float-left", style="height: 40px; width: 40px;")
@@ -190,6 +211,9 @@ block content
 			if(coinConfig.assetSupported)
 				li(class="nav-item")
 					a(data-toggle="tab", href=`#tab-assets`, class="nav-link", role="tab", onclick=`loadDataToTable("assets-table", HEADERS.asset_table_headers,"/api/queryassets", true, true)`) Assets
+			if(coinConfig.masternodeSupported)
+				li(class="nav-item")
+					a(data-toggle="tab", href=`#tab-masternodes`, class="nav-link", role="tab", onclick=`loadDataToTable("masternode-table", HEADERS.masternode_table_headers,"/api/getnodelist", false, false, true)`) #{coinConfig.masternodeName}
 		div(class="tab-content")
 			div(id="tab-blocks", class="card mb-4 shadow-sm tab-pane active", role="tabpanel")
 				- var tableId = "blocks-data";
@@ -211,6 +235,11 @@ block content
 					- var tableId = "asset-info-table";
 					- var headers = coinConfig.tableHeaders.asset_address_table_headers;
 					- var hidden = true;
+					include ./includes/table-template.pug
+			if(coinConfig.masternodeSupported)
+				div(id="tab-masternodes", class="card mb-4 shadow-sm tab-pane", role="tabpanel")
+					- var tableId = "masternode-table";
+					- var headers = coinConfig.tableHeaders.masternode_table_headers;
 					include ./includes/table-template.pug
 		ul(class='nav nav-tabs mb-3')
 			if (txStats)
@@ -246,7 +275,8 @@ block content
 												each item, index in chainTxStats
 													tr(class="monospace")
 														td #{chainTxStatsLabels[index]}
-														td #{item.window_tx_count.toLocaleString()}
+														if(item.window_tx_count)
+															td #{item.window_tx_count.toLocaleString()}
 														td #{new Decimal(item.txrate).toDecimalPlaces(4)}
 
 

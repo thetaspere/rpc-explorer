@@ -440,6 +440,7 @@ class Session {
 			Promise.all(promises).then(function(promiseResults) {
 				self.res.locals.mempoolInfo = promiseResults[0];
 				self.res.locals.miningInfo = promiseResults[1];
+				self.res.locals.masternodeStats = global.coinConfig.masternodeSupported;
 
 				if (getblockchaininfo.chain !== 'regtest') {
 					self.res.locals.txStats = promiseResults[2];

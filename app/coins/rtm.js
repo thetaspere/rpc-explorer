@@ -1,8 +1,8 @@
 var Decimal = require("decimal.js");
 Decimal8 = Decimal.clone({ precision:8, rounding:8 });
-var AssetBase = require("./assetBase.js");
+var MasternodeBase = require("./masternodeBase.js");
 
-var Raptoreum = new AssetBase("Raptoreum", "RTM", "raptoreum", ["sat", "satoshi"]);
+var Raptoreum = new MasternodeBase("Raptoreum", "RTM", "raptoreum", ["sat", "satoshi"], "smartnode");
 Raptoreum.addProperties({
 	logoUrl:"/img/logo/rtm.svg",
 	siteTitle:"Raptoreum Explorer",
@@ -10,6 +10,7 @@ Raptoreum.addProperties({
 	nodeTitle:"Raptoreum Full Node",
 	nodeUrl:"https://github.com/Raptoreum/Raptoreum/releases",
 	demoSiteUrl: "https://btc.chaintools.io",
+	masternodeName: "Smartnode",
 	miningPoolsConfigUrls:[
 		"https://raw.githubusercontent.com/RTMcom/Blockchain-Known-Pools/master/pools.json",
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"

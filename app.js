@@ -34,6 +34,7 @@ var utils = require("./app/utils.js");
 var moment = require("moment");
 var Decimal = require('decimal.js');
 var bitcoinCore = require("bitcoin-core");
+var BTCEventListener = require("./app/api/btcEventListeners.js");
 var pug = require("pug");
 var momentDurationFormat = require("moment-duration-format");
 var coreApi = require("./app/api/coreApi.js");
@@ -216,6 +217,17 @@ app.continueStartup = function() {
 	};
 
 	global.rpcClientNoTimeout = new bitcoinCore(rpcClientNoTimeoutProperties);
+	var btcEventListener = new BTCEventListener({
+		ip : rpcCred.host,
+		zmq_port : 23024,
+		network : coins.networks[global.coinConfig.ticker],
+		masternodeSupported : global.coinConfig.masternodeSupported
+	});
+	btcEventListener.listen();
+
+	if(global.coinConfig.masternodeSupported) {
+		utils.scheduleCheckIps();
+	}
 
 	coreApi.getNetworkInfo().then(function(getnetworkinfo) {
 		debugLog(`Connected via RPC to node. Basic info: version=${getnetworkinfo.version}, subversion=${getnetworkinfo.subversion}, protocolversion=${getnetworkinfo.protocolversion}, services=${getnetworkinfo.localservices}`);
