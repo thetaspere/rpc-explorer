@@ -564,6 +564,25 @@ function quorum(command, params) {
 	});
 }
 
+function getMasternodeReachableCount() {
+	var self = this;
+	return new Promise((resolve, reject) => {
+		console.log("getMasternodeList");
+		masternode("list", global.coinConfig.masternodeCommand).then(async mnList => {
+			for(var tx in mnList) {
+				var mn = mnList[tx];
+				if(mn.status === "ENABLED") {
+					var ipPort = mn.address.split(':');
+					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+				}
+			}
+			var checkResult = await utils.checkIpsAsync();
+			console.log(checkResult);
+			resolve(checkResult);
+		}).catch(reject);
+	});
+}
+
 function getRpcMethodHelp(methodName) {
 	return getRpcDataWithParams({method:"help", parameters:[methodName]});
 }
@@ -659,5 +678,6 @@ module.exports = {
 	masternode : masternode,
 	smartnode : smartnode,
 	protx : protx,
-	quorum : quorum
+	quorum : quorum,
+	getMasternodeReachableCount : getMasternodeReachableCount
 };

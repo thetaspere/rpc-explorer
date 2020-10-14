@@ -497,24 +497,24 @@ class RestfulRouter {
 		});
 	}
 
-	getMasternodeReachableCount() {
-		var self = this;
-		return new Promise((resolve, reject) => {
-			console.log("getMasternodeList");
-			coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
-				for(var tx in mnList) {
-					var mn = mnList[tx];
-					if(mn.status === "ENABLED") {
-						var ipPort = mn.address.split(':');
-						var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
-					}
-				}
-				var checkResult = await utils.checkIpsAsync();
-				console.log(checkResult);
-				resolve(checkResult);
-			}).catch(reject);
-		});
-	}
+	// getMasternodeReachableCount() {
+	// 	var self = this;
+	// 	return new Promise((resolve, reject) => {
+	// 		console.log("getMasternodeList");
+	// 		coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
+	// 			for(var tx in mnList) {
+	// 				var mn = mnList[tx];
+	// 				if(mn.status === "ENABLED") {
+	// 					var ipPort = mn.address.split(':');
+	// 					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+	// 				}
+	// 			}
+	// 			var checkResult = await utils.checkIpsAsync();
+	// 			console.log(checkResult);
+	// 			resolve(checkResult);
+	// 		}).catch(reject);
+	// 	});
+	// }
 
 	checkAndParseString(value) {
 		if(value) {

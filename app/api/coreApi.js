@@ -136,7 +136,12 @@ function getAddressUTXOs(address, scriptPubkey) {
 	return miscCache.tryCache("getAddressUTXOs-" + address, 1200000, function() {
 		return rpcApi.getAddressUTXOs(address, scriptPubkey);
 	});
+}
 
+function getMasternodeReachableCount() {
+	return masternodeCache.tryCache("getMasternodeReachableCount", 60000, function() {
+		return rpcApi.getMasternodeReachableCount();
+	});
 }
 
 
@@ -1009,5 +1014,6 @@ module.exports = {
 	masternode : masternode,
 	smartnode : smartnode,
 	protx : protx,
-	quorum : quorum
+	quorum : quorum,
+	getMasternodeReachableCount : getMasternodeReachableCount
 };

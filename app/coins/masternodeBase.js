@@ -80,7 +80,8 @@ class AssetBase extends CoinBase {
       }, {
         name : "getmasternodereachablecount",
         uri : "getmasternodereachablecount",
-        api_source : "getMasternodeReachableCount",
+        api_source : "core",
+        method : "getMasternodeReachableCount",
         description : "Get " + this.properties.masternodeCommand + " count",
         "return" : "enabledCount/total"
       }, {
