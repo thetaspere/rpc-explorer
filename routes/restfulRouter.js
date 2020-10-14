@@ -504,8 +504,10 @@ class RestfulRouter {
 			coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
 				for(var tx in mnList) {
 					var mn = mnList[tx];
-					var ipPort = mn.address.split(':');
-					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+					if(mn.status === "ENABLED") {
+						var ipPort = mn.address.split(':');
+						var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
+					}
 				}
 				var checkResult = await utils.checkIpsAsync();
 				console.log(checkResult);
