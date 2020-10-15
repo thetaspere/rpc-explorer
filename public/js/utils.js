@@ -18,10 +18,12 @@ const HEADERS = {
 		{
 			data : "Status",
 			className: "data-cell monospace"
+
 		},
 		{
 			data : "Reachable",
-			className: "data-cell monospace"
+			className: "data-cell monospace",
+			render: renderBooleanIcon
 		},
 		{
 			data : "Collateral Address",
@@ -124,6 +126,25 @@ const HEADERS = {
 			className: "data-cell monospace text-right",
 		}
 	]
+}
+
+function renderBooleanIcon(data, type) {
+		if(type === 'display'){
+			var icon;
+			var color;
+			if(data === 'Checking') {
+				icon = "fa-sync";
+				color = "#F0FF33";
+			} else if(data) {
+				icon = "fa-check";
+				color = "#008000";
+			} else {
+				icon = "fa-times";
+				color = "#FF0000";
+			}
+			data = `<i class="fas ${icon} fa-lg mr-2" style="color:${color}"/>`
+		}
+		return data;
 }
 
 function shortHandText(text) {

@@ -567,7 +567,6 @@ function quorum(command, params) {
 function getMasternodeReachableCount() {
 	var self = this;
 	return new Promise((resolve, reject) => {
-		console.log("getMasternodeList");
 		masternode("list", global.coinConfig.masternodeCommand).then(async mnList => {
 			for(var tx in mnList) {
 				var mn = mnList[tx];

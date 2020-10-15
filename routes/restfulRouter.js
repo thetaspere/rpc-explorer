@@ -461,7 +461,7 @@ class RestfulRouter {
 					if(isReachable === "Not Cached") {
 						reachableStatus = "Checking"
 					} else {
-						reachableStatus = isReachable ? "Yes" : "No";
+						reachableStatus = isReachable;// ? "Yes" : "No";
 					}
 					result.data.push({
 						IP : ipPort[0],
@@ -477,7 +477,7 @@ class RestfulRouter {
 					});
 				}
 				result.data.sort((first, second) => {
-					return second.Reachable.localeCompare(first.Reachable);
+					return second.Reachable.toLocaleString().localeCompare(first.Reachable.toLocaleString());
 				});
 				result.recordsFiltered = result.recordsTotal;
 				utils.checkIps();
@@ -489,32 +489,12 @@ class RestfulRouter {
 	getMasternodeCount() {
 		var self = this;
 		return new Promise((resolve, reject) => {
-			console.log("getMasternodeCount");
 			coreApi.masternode({query : {command :"count"}}, global.coinConfig.masternodeCommand).then(mnCount => {
 				console.log(mnCount);
 				resolve(`${mnCount.enabled}/${mnCount.total}`);
 			}).catch(reject);
 		});
 	}
-
-	// getMasternodeReachableCount() {
-	// 	var self = this;
-	// 	return new Promise((resolve, reject) => {
-	// 		console.log("getMasternodeList");
-	// 		coreApi.masternode({query : {command :"list"}}, global.coinConfig.masternodeCommand).then(async mnList => {
-	// 			for(var tx in mnList) {
-	// 				var mn = mnList[tx];
-	// 				if(mn.status === "ENABLED") {
-	// 					var ipPort = mn.address.split(':');
-	// 					var isReachable = await utils.isIpPortReachableFromCache(ipPort[0], ipPort[1]);
-	// 				}
-	// 			}
-	// 			var checkResult = await utils.checkIpsAsync();
-	// 			console.log(checkResult);
-	// 			resolve(checkResult);
-	// 		}).catch(reject);
-	// 	});
-	// }
 
 	checkAndParseString(value) {
 		if(value) {
