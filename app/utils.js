@@ -641,9 +641,9 @@ function clearIpList() {
 }
 
 async function isIpPortReachableFromCache(ip, port) {
+	ipList[ip] = port;
 	var reachable = await reachableCache.get(`${ip}:${port}`);
 	if(reachable == undefined || reachable == null) {
-			ipList[ip] = port;
 			return "Not Cached"
 	}
 	return reachable;
