@@ -568,6 +568,7 @@ function getMasternodeReachableCount() {
 	var self = this;
 	return new Promise((resolve, reject) => {
 		masternode("list", global.coinConfig.masternodeCommand).then(async mnList => {
+			utils.clearIpList();
 			for(var tx in mnList) {
 				var mn = mnList[tx];
 				if(mn.status === "ENABLED") {

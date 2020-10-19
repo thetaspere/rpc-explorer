@@ -636,6 +636,10 @@ function isIpPortReachable(ip, port) {
 		});
 }
 
+function clearIpList() {
+	ipList = {};
+}
+
 async function isIpPortReachableFromCache(ip, port) {
 	var reachable = await reachableCache.get(`${ip}:${port}`);
 	if(reachable == undefined || reachable == null) {
@@ -715,5 +719,6 @@ module.exports = {
 	logError: logError,
 	buildQrCodeUrls: buildQrCodeUrls,
 	ellipsize: ellipsize,
-	getStatsSummary: getStatsSummary
+	getStatsSummary: getStatsSummary,
+	clearIpList: clearIpList
 };
