@@ -191,10 +191,10 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 			}
 			getblockchaininfo.difficultiesData = [];
 			if(getblockchaininfo.difficulty) {
-				getblockchaininfo.difficultiesData.push(getDifficultyData("Difficulty", getblockchaininfo.difficulty));
+				getblockchaininfo.difficultiesData.push(utils.getDifficultyData("Difficulty", getblockchaininfo.difficulty));
 			} else if(getblockchaininfo.difficulties) {
 				for(var diffName in getblockchaininfo.difficulties) {
-					getblockchaininfo.difficultiesData.push(getDifficultyData(diffName + " diff",  getblockchaininfo.difficulties[diffName]));
+					getblockchaininfo.difficultiesData.push(utils.getDifficultyData(diffName + " diff",  getblockchaininfo.difficulties[diffName]));
 				}
 			}
 

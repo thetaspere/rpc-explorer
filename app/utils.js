@@ -582,12 +582,31 @@ function buildQrCodeUrl(str, results) {
 	});
 }
 
+function getDifficultyData(name, difficulty) {
+	return {
+			name : name,
+			diff : difficulty,
+			diffCal : formatLargeNumber(difficulty, 3)
+	}
+}
+
 function getStatsSummary(json) {
 	//console.log("getStatsSummary %O", json)
 	var hashrateData = formatLargeNumber(json.miningInfo.networkhashps, 3);
 	var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
 	var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
-	var difficultyData = formatLargeNumber(json.getblockchaininfo.difficulty, 3);
+	var difficultiesData = {};
+	if(json.getblockchaininfo.difficulty) {
+		var diffData = getDifficultyData("Difficulty", json.getblockchaininfo.difficulty);
+		difficultiesData["DifficultyNum"] = diffData.diffCal[0];
+		difficultiesData["DifficultyExp"] = diffData.diffCal[1].exponent;
+	} else if(json.getblockchaininfo.difficulties) {
+		for(var diffName in json.getblockchaininfo.difficulties) {
+			var diffData = getDifficultyData(diffName + " diff", json.getblockchaininfo.difficulties[diffName]);
+			difficultiesData[diffData.name + "Num"] = diffData.diffCal[0];
+			difficultiesData[diffData.name + "Exp"] = diffData.diffCal[1].exponent;
+		}
+	}
 	var sizeData;
 	if(json.getblockchaininfo.size_on_disk) {
 		sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
@@ -608,10 +627,7 @@ function getStatsSummary(json) {
 			num : chainworkData[0],
 			exp : chainworkData[1].exponent
 		},
-		diff : {
-			num : difficultyData[0],
-			exp : difficultyData[1].exponent
-		},
+		diff : difficultiesData,
 		chainSize : sizeData ? `${sizeData[0]} ${sizeData[1].abbreviation}B` : "N/A",
 		price : price,
 		height : json.getblockchaininfo.blocks
@@ -720,5 +736,6 @@ module.exports = {
 	buildQrCodeUrls: buildQrCodeUrls,
 	ellipsize: ellipsize,
 	getStatsSummary: getStatsSummary,
-	clearIpList: clearIpList
+	clearIpList: clearIpList,
+	getDifficultyData: getDifficultyData
 };

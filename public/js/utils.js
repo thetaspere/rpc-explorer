@@ -148,7 +148,10 @@ function renderBooleanIcon(data, type) {
 }
 
 function shortHandText(text) {
-	 return text.length > 10 ? text.substring(0, 4) + "..." + text.substring(text.length - 4, text.length) : text;
+	if(!text) {
+		return "";
+	}
+	return text.length > 10 ? text.substring(0, 4) + "..." + text.substring(text.length - 4, text.length) : text;
 }
 
 function redirectLink(data, type, row, meta, baseUri) {
@@ -440,8 +443,9 @@ function updateStats() {
 				updateElementValue("mempoolSize", json.mempool.size);
 				updateElementValue("chainworkNum", json.chainwork.num);
 				updateElementValue("chainworkExp", json.chainwork.exp);
-				updateElementValue("diffNum", json.diff.num);
-				updateElementValue("diffExp", json.diff.exp);
+				for(var diffName in json.diff) {
+					updateElementValue(diffName, json.diff[diffName]);
+				}
 				updateElementValue("chainSize", json.chainSize);
 				updateElementValue("price", json.price);
 				updateElementValue("current-height", json.height);
