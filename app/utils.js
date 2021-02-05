@@ -596,17 +596,12 @@ function getStatsSummary(json) {
 	var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
 	var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
 	var difficultiesData = {};
-	if(json.getblockchaininfo.difficulty) {
-		var diffData = getDifficultyData("Difficulty", json.getblockchaininfo.difficulty);
-		difficultiesData["DifficultyNum"] = diffData.diffCal[0];
-		difficultiesData["DifficultyExp"] = diffData.diffCal[1].exponent;
-	} else if(json.getblockchaininfo.difficulties) {
-		for(var diffName in json.getblockchaininfo.difficulties) {
-			var diffData = getDifficultyData(diffName + " diff", json.getblockchaininfo.difficulties[diffName]);
-			difficultiesData[diffData.name + "Num"] = diffData.diffCal[0];
-			difficultiesData[diffData.name + "Exp"] = diffData.diffCal[1].exponent;
-		}
+	for(var index in json.difficultiesData) {
+		diffData =  json.difficultiesData[index];
+		difficultiesData[diffData.name + "Num"] = diffData.diffCal[0];
+		difficultiesData[diffData.name + "Exp"] = diffData.diffCal[1].exponent;
 	}
+
 	var sizeData;
 	if(json.getblockchaininfo.size_on_disk) {
 		sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);
@@ -634,7 +629,7 @@ function getStatsSummary(json) {
 	}
 	/*
 	updateElementValue("hashrate", hashrateData[0]);
-	updateElementAttr("hashUnit", "data-original-title", `${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`);
+	updateElementAttr("hashUnit", "data-oriinal-title", `${hashrateData[1].abbreviation}H = ${hashrateData[1].name}-hash (x10^${hashrateData[1].exponent})`);
 	updateElementValue("txStats", json.txStats.totalTxCount.toLocaleString());
 	updateElementValue("mempoolCount", json.mempoolInfo.size.toLocaleString() + " tx");
 	updateElementValue("mempoolSize", `(${mempoolBytesData[0]} ${mempoolBytesData[1].abbreviation}B)`);

@@ -30,7 +30,19 @@ var rpcQueue = async.queue(function(task, callback) {
 
 
 function getBlockchainInfo() {
-	return getRpcData("getblockchaininfo");
+	return new Promise((resolve, reject) => {
+		getRpcData("getblockchaininfo").then(result => {
+			result.difficultiesData = [];
+			if(result.difficulty) {
+				result.difficultiesData.push(utils.getDifficultyData("Difficulty", result.difficulty));
+			} else if(result.difficulties) {
+				for(var diffName in result.difficulties) {
+					result.difficultiesData.push(utils.getDifficultyData(diffName + " diff",  result.difficulties[diffName]));
+				}
+			}
+			resolve(result);
+		}).catch(reject);
+	});
 }
 
 function getBlockCount() {

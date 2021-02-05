@@ -189,15 +189,7 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 			if (blockEnd < 0) {
 				blockEnd += getblockchaininfo.blocks;
 			}
-			getblockchaininfo.difficultiesData = [];
-			if(getblockchaininfo.difficulty) {
-				getblockchaininfo.difficultiesData.push(utils.getDifficultyData("Difficulty", getblockchaininfo.difficulty));
-			} else if(getblockchaininfo.difficulties) {
-				for(var diffName in getblockchaininfo.difficulties) {
-					getblockchaininfo.difficultiesData.push(utils.getDifficultyData(diffName + " diff",  getblockchaininfo.difficulties[diffName]));
-				}
-			}
-
+			
 			var chainTxStatsIntervals = [];
 			for (var i = 0; i < dataPoints; i++) {
 				chainTxStatsIntervals.push(parseInt(Math.max(10, getblockchaininfo.blocks - blockStart - i * (blockEnd - blockStart) / (dataPoints - 1) - 1)));
