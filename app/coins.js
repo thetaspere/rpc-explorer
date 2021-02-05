@@ -2,13 +2,15 @@ var btc = require("./coins/btc.js");
 var ltc = require("./coins/ltc.js");
 var pgn = require("./coins/pgn.js");
 var rtm = require("./coins/rtm.js");
+var pyrk = require("./coins/pyrk.js");
 
 module.exports = {
 	"BTC": btc,
 	"LTC": ltc,
 	"PGN": pgn,
 	"RTM": rtm,
-
+	"PYRK" : pyrk,
+	
 	"coins":["BTC", "LTC", "PGN", "RTM"],
 
 	networks : {
@@ -66,6 +68,31 @@ module.exports = {
 		  dnsSeeds: [
 		    'explorer.raptoreum.com'
 		  ]
-		}
+		},
+		PYRK : {
+          bitcoinjs : {
+              messagePrefix: '\x18PYRK Signed Message:\n',
+            bech32: 'pk',
+            bip32: {
+              public: 0x0488b21e,
+              private: 0x0488ade4,
+            },
+            pubKeyHash: 55,
+            scriptHash: 16,
+            wif: 183,
+          },
+          name: 'Pyrk',
+        alias: 'pyrk mainnet',
+        pubkeyhash: 55,
+        privatekey: 183,
+        scripthash: 16,
+        xpubkey: 0x0488b21e,
+        xprivkey: 0x0488ade4,
+        networkMagic: 0xb00d6cbe,
+        port: 8333,
+        dnsSeeds: [
+          'explorer.pyrk.org/'
+        ]
+      }
 	}
 };

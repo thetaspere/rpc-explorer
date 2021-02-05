@@ -151,6 +151,14 @@ function getChainTxStats(blockCount) {
 	});
 }
 
+function getDifficultyData(name, difficulty) {
+	return {
+			name : name,
+			diff : difficulty,
+			diffCal : utils.formatLargeNumber(difficulty, 3)
+	}
+}
+
 function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 	return new Promise(function(resolve, reject) {
 		var dataPoints = dataPtCount;
@@ -180,6 +188,14 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 
 			if (blockEnd < 0) {
 				blockEnd += getblockchaininfo.blocks;
+			}
+			getblockchaininfo.difficultiesData = [];
+			if(getblockchaininfo.difficulty) {
+				getblockchaininfo.difficultiesData.push(getDifficultyData("Difficulty", getblockchaininfo.difficulty));
+			} else if(getblockchaininfo.difficulties) {
+				for(var diffName in getblockchaininfo.difficulties) {
+					getblockchaininfo.difficultiesData.push(getDifficultyData(diffName + " diff",  getblockchaininfo.difficulties[diffName]));
+				}
 			}
 
 			var chainTxStatsIntervals = [];

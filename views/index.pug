@@ -163,20 +163,8 @@ block content
 								sup(id="chainworkExp") #{chainworkData[1].exponent}
 								span  hashes
 
-					div(class=networkSummaryColumnClass)
-						div(class="float-left", style="height: 40px; width: 40px; font-size: 12px;")
-							span
-								i(class="fas fa-dumbbell fa-2x mr-2", style="margin-top: 6px;")
-
-						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulty, 3);
-
-						span(class="font-weight-bold") Difficulty
-
-						p(class="lead")
-							span.mr-2.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulty).toLocaleString())
-								span(id="diffNum") #{difficultyData[0]}
-								span  x 10
-								sup(id="diffExp") #{difficultyData[1].exponent}
+					each difficultyData, index in getblockchaininfo.difficultiesData
+						include includes/difficulty-display.pug
 
 					if (getblockchaininfo.size_on_disk)
 						div(class=networkSummaryColumnClass)
