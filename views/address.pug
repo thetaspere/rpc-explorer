@@ -173,7 +173,7 @@ block content
 													div(class="summary-split-table-content monospace")
 														- var currencyValue = balance.unconfirmed / coinConfig.baseCurrencyUnit.multiplier;
 														include includes/value-display.pug
-
+									- console.log(addressDetails)
 									if (addressDetails && addressDetails.balanceSat)
 										div(class="row")
 											div(class="summary-split-table-label") Balance

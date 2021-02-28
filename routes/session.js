@@ -371,7 +371,7 @@ class Session {
 								result.addressDetails.assets[bal.assetName] = bal.balance;
 							}
 						} else {
-							result.addressDetails.balanceSet = balData.balance;
+							result.addressDetails.balanceSat = balData.balance;
 						}
 						resolve();
 					}).catch(reject);

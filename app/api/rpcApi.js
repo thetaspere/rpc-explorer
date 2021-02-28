@@ -186,7 +186,6 @@ function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName 
 				result.txids.push(addressDeltas[i].txid);
 				result.blockHeightsByTxid[addressDeltas[i].txid] = addressDeltas[i].height;
 			}
-			//console.log("getAddressDeltas ", result);
 			resolve({addressDeltas : result, errors : null});
 		}).catch(reject);
 	});
@@ -203,10 +202,11 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 		var promises = [];
 		if(assetSupported) {
 			promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName}]}));
+			promises.push(getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},true]}));
 		} else {
 			promises.push(getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]}));
+			promises.push(getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]}]}));
 		}
-		promises.push(getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]}));
 		Promise.all(promises).then(function(results) {
 			txidData = results[0];
 			if (sort == "desc") {
@@ -243,8 +243,12 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 }
 
 function getAddressBalance(address, scriptPubkey) {
-	var assetSupported = coins[config.coin].assetSupported ? true : false;
-	return getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},assetSupported]});
+	if (coins[config.coin].assetSupported) {
+		return getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]},true]});
+	} else {
+		return getRpcDataWithParams({method : "getaddressbalance", parameters: [{addresses : [address]}]});
+
+	}
 }
 function getAddressUTXOs(address, scriptPubkey) {
 	//var assetSupported = coins[config.coin].assetSupported ? true : false;
@@ -589,7 +593,6 @@ function getMasternodeReachableCount() {
 				}
 			}
 			var checkResult = await utils.checkIpsAsync();
-			console.log(checkResult);
 			resolve(checkResult);
 		}).catch(reject);
 	});

@@ -85,6 +85,7 @@ function executeMethod(method, ...args) {
 		if(funcMap) {
 			var func = funcMap[config.addressApi];
 			if(func) {
+			//	console.log("%s - %O", func, args);
 				promises.push(func.apply(null, args));
 			} else {
 				promises.push(new Promise(function(resolve, reject) {

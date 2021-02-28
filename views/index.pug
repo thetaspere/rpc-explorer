@@ -265,7 +265,8 @@ block content
 														td #{chainTxStatsLabels[index]}
 														if(item.window_tx_count)
 															td #{item.window_tx_count.toLocaleString()}
-														td #{new Decimal(item.txrate).toDecimalPlaces(4)}
+														- var txrate = item.txrate ? item.txrate : 0
+														td #{new Decimal(txrate).toDecimalPlaces(4)}
 
 
 								div(class="col-lg-6")

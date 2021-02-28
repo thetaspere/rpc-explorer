@@ -189,7 +189,7 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 			if (blockEnd < 0) {
 				blockEnd += getblockchaininfo.blocks;
 			}
-			
+
 			var chainTxStatsIntervals = [];
 			for (var i = 0; i < dataPoints; i++) {
 				chainTxStatsIntervals.push(parseInt(Math.max(10, getblockchaininfo.blocks - blockStart - i * (blockEnd - blockStart) / (dataPoints - 1) - 1)));
@@ -202,21 +202,25 @@ function getTxCountStats(dataPtCount, blockStart, blockEnd) {
 
 			Promise.all(promises).then(function(results) {
 				var txStats = {
-					txCounts: [],
-					txLabels: [],
-					txRates: []
-				};
-
-				for (var i = results.length - 1; i >= 0; i--) {
-					if (results[i].window_tx_count) {
-						txStats.txCounts.push( {x:(getblockchaininfo.blocks - results[i].window_block_count), y: (results[i].txcount - results[i].window_tx_count)} );
-						txStats.txRates.push( {x:(getblockchaininfo.blocks - results[i].window_block_count), y: (results[i].txrate)} );
-						txStats.txLabels.push(i);
-					}
-				}
-
-				resolve({txCountStats:txStats, getblockchaininfo:getblockchaininfo, totalTxCount:results[0].txcount});
-
+                txCounts: [],
+                txLabels: [],
+                txRates: []
+        };
+        for (var i = results.length - 1; i >= 0; i--) {
+                if (results[i].window_tx_count) {
+                        txStats.txCounts.push( {x:(getblockchaininfo.blocks - results[i].window_block_count), y: (results[i].txcount - results[i].window_tx_count)} );
+                        txStats.txRates.push( {x:(getblockchaininfo.blocks - results[i].window_block_count), y: (results[i].txrate)} );
+                        txStats.txLabels.push(i);
+                }
+        }
+        var txcount;
+        i = 0;
+        while(!txcount) {
+                txcount = results[i].txcount;
+                i++
+        }
+        var stats = {txCountStats:txStats, getblockchaininfo:getblockchaininfo, totalTxCount: txcount};
+        resolve(stats);
 			}).catch(function(err) {
 				reject(err);
 			});
