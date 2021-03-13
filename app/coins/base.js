@@ -114,6 +114,17 @@ class CoinBase {
 				{
 					name : "Size (bytes)"
 				}
+			],
+			rich_list_table_headers : [
+				{
+					name : "Rank"
+				},
+				{
+					name : "Address"
+				},
+				{
+					name : "Balance"
+				}
 			]
 		}
 	}
@@ -181,7 +192,7 @@ class CoinBase {
 					name : "getblocks",
 					uri : "getblocks",
 					api_source : "getBlocks",
-					method : "getBlockCount",
+					method : "getBlocks",
 					params : [
 						{
 		          name : "start",
@@ -200,7 +211,27 @@ class CoinBase {
 	          }
 					],
 					description : "Get current block height",
-					"return" : "block height as number"
+					"return" : "List of Block information"
+				},
+				{
+					name : "queryrichlist",
+					uri : "queryrichlist",
+					api_source : "queryRichList",
+					method : "queryRichList",
+					params : [
+						{
+		          name : "start",
+		          type : "number",
+		          description : "Begin row for query result"
+		        },
+	          {
+	            name : "limit",
+	            type : "number",
+	            description : "max result for the query"
+	          }
+					],
+					description : "Query rich list",
+					"return" : "List of Wallets with balance in descendants order"
 				},
 				{
 					name : "getnetworkhashes",

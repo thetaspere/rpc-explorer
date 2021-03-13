@@ -123,7 +123,22 @@ const HEADERS = {
 		},
 		{
 			data : "Size (bytes)",
-			className: "data-cell monospace text-right",
+			className: "data-cell monospace text-right"
+		}
+	],
+	rich_list_table_headers : [
+		{
+			data : "Rank",
+			className: "data-cell monospace text-left",
+		},
+		{
+			data : "Address",
+			className: "data-cell monospace text-left",
+			render: addressRedirectLink
+		},
+		{
+			data : "Balance",
+			className: "data-cell monospace text-left",
 		}
 	]
 }

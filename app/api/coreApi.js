@@ -965,6 +965,10 @@ function getRpcMethodHelp(methodName) {
 	});
 }
 
+function getOutputAddressBalance(fromHeight, toHeight) {
+	return rpcApi.getOutputAddressBalance(fromHeight, toHeight);
+}
+
 function getSupply() {
 	return miscCache.tryCache("getSupply", 1200000, function() {
 		return rpcApi.getSupply();
@@ -1027,5 +1031,6 @@ module.exports = {
 	smartnode : smartnode,
 	protx : protx,
 	quorum : quorum,
-	getMasternodeReachableCount : getMasternodeReachableCount
+	getMasternodeReachableCount : getMasternodeReachableCount,
+	getOutputAddressBalance : getOutputAddressBalance
 };

@@ -196,6 +196,8 @@ block content
 				a(id="tab-blocks-nav" data-toggle="tab", href=`#tab-blocks`, class="nav-link active", role="tab", onclick=`loadDataToTable("blocks-data", HEADERS.blocks_table_headers, "/api/getblocks", true, true)`) Blocks
 			li(class="nav-item")
 				a(data-toggle="tab", href=`#tab-transactions`, class="nav-link", role="tab", onclick=`loadDataToTable("transactions-table", HEADERS.transactions_table_headers,"/api/getlatesttxids?blocks=10")`) Latest Transactions
+			li(class="nav-item")
+				a(data-toggle="tab", href=`#tab-richlist`, class="nav-link", role="tab", onclick=`loadDataToTable("richlist-table", HEADERS.rich_list_table_headers, "/api/queryrichlist", true, false)`) Rich List
 			if(coinConfig.assetSupported)
 				li(class="nav-item")
 					a(data-toggle="tab", href=`#tab-assets`, class="nav-link", role="tab", onclick=`loadDataToTable("assets-table", HEADERS.asset_table_headers,"/api/queryassets", true, true)`) Assets
@@ -212,6 +214,12 @@ block content
 			div(id="tab-transactions", class="card mb-4 shadow-sm tab-pane", role="tabpanel")
 				- var tableId = "transactions-table";
 				- var headers = coinConfig.tableHeaders.transactions_table_headers;
+				- var lazyload = false;
+				- var clickTriggerId = null;
+				include ./includes/table-template.pug
+			div(id="tab-richlist", class="card mb-4 shadow-sm tab-pane", role="tabpanel")
+				- var tableId = "richlist-table";
+				- var headers = coinConfig.tableHeaders.rich_list_table_headers;
 				- var lazyload = false;
 				- var clickTriggerId = null;
 				include ./includes/table-template.pug

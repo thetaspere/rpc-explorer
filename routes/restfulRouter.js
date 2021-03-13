@@ -136,6 +136,57 @@ class RestfulRouter {
 		});
 	}
 
+	queryRichList(req) {
+		var query = this.parseQuery(req);
+		return new Promise((resolve, reject) => {
+			global.blockchainSync.db.countRichList().then(total => {
+				global.blockchainSync.db.queryRichList(query.start, query.limit).then(wallets => {
+					var walletRecords = [];
+					for(var i in wallets) {
+						walletRecords.push({
+							Rank :  query.start + Number(i) + 1,
+							Address : wallets[i].address,
+							Balance : Number((wallets[i].balance / 100000000).toFixed(8)).toLocaleString()
+						})
+					}
+					resolve({
+						data : walletRecords,
+						draw : query.draw,
+						recordsTotal : total,
+						recordsFiltered : total
+					});
+				}).catch(err => {
+					console.log(err);
+					reject(err);
+				});
+			}).catch(err => {
+				console.log(err);
+				reject(err);
+			});
+
+		});
+	}
+
+	parseQuery(req) {
+		var start = this.checkAndParseParams("number",req.query.start);
+		var limit = this.checkAndParseParams("number", req.query.length);
+		var searchTerm = this.checkAndParseParams("string", req.query.search.value);
+		var draw = req.query.draw;
+		if(!searchTerm || searchTerm.trim() === "") {
+			searchTerm =  "*";
+		}
+		searchTerm = searchTerm.trim().toUpperCase();
+		if(start < 0) {
+			start = 0;
+		}
+		return {
+			start : start,
+			limit : limit,
+			searchTerm : searchTerm,
+			draw : draw
+		}
+	}
+
 	queryAssets(req) {
 		var start = this.checkAndParseParams("number",req.query.start);
 		var limit = this.checkAndParseParams("number", req.query.length);

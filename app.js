@@ -34,7 +34,7 @@ var utils = require("./app/utils.js");
 var moment = require("moment");
 var Decimal = require('decimal.js');
 var bitcoinCore = require("bitcoin-core");
-//var BTCEventListener = require("./app/api/btcEventListeners.js");
+var BTCEventListener = require("./app/api/btcEventListeners.js");
 var pug = require("pug");
 var momentDurationFormat = require("moment-duration-format");
 var coreApi = require("./app/api/coreApi.js");
@@ -48,6 +48,7 @@ var auth = require('./app/auth.js');
 var package_json = require('./package.json');
 var Restful = require('./routes/restfulRouter.js');
 var translations = require("./translations.js");
+var BlockchainSync = require("./app/api/sync.js")
 global.appVersion = package_json.version;
 
 var crawlerBotUserAgentStrings = [ "Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot", "Sogou", "Exabot", "facebot", "ia_archiver" ];
@@ -217,13 +218,28 @@ app.continueStartup = function() {
 	};
 
 	global.rpcClientNoTimeout = new bitcoinCore(rpcClientNoTimeoutProperties);
-	/*var btcEventListener = new BTCEventListener({
+	var btcEventListener = new BTCEventListener({
 		ip : rpcCred.host,
-		zmq_port : 23024,
+		zmq_port : rpcCred.zmq_port,
 		network : coins.networks[global.coinConfig.ticker],
 		masternodeSupported : global.coinConfig.masternodeSupported
 	});
-	btcEventListener.listen();*/
+	btcEventListener.listen();
+
+	var mongoDBConfig = {
+		address : process.env.DB_URL,
+		port : process.env.DB_PORT,
+		user : process.env.DB_USERNAME,
+		password: process.env.DB_PASSWORD,
+		database : process.env.DB_DATABASE
+	}
+	global.blockchainSync = new BlockchainSync(mongoDBConfig);
+	global.blockchainSync.syncAddressBalance().then(result => {
+		console.log("addresss balance ", result);
+	}).catch(err => {
+		console.log(err);
+		utils.logError("32ugegdfsde", err);
+	});
 
 	if(global.coinConfig.masternodeSupported) {
 		utils.scheduleCheckIps();

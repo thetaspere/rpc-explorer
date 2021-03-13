@@ -37,6 +37,7 @@ These steps are for bitcoin but other supported bitcoins base coin should have s
 1. Install and run a full, archiving node - [instructions](https://bitcoin.org/en/full-node). Ensure that your bitcoin node has full transaction indexing enabled (`txindex=1`) and the RPC server enabled (`server=1`).
 2. Synchronize your node with the Bitcoin network.
 3. "Recent" version of Node.js (8+ recommended).
+4. Latest MongoDB to use to store addresses balances and exchange api information (future feature).
 
 ## Instructions
 
@@ -51,6 +52,18 @@ Open [http://127.0.0.1:3002/](http://127.0.0.1:3002/) to view the explorer.
 You may set configuration options in a `.env` file or using CLI args.
 See [configuration](#configuration) for details.
 
+## MongoDB setup
+Enter MongoDB cli:
+
+    $ mongo
+
+Create databse:
+
+    > use explorerdb
+
+Create user with read/write access:
+    > db.createUser( { user: "rpcexplorer", pwd: "3xp!0reR", roles: [ "readWrite" ] } )
+    
 ### Configuration
 
 Configuration options may be passed as environment variables

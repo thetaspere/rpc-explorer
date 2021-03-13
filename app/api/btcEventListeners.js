@@ -8,8 +8,9 @@ class BTCEventListener {
     this.socket = new zmq.Subscriber();
     this.socket.connect(`tcp://${config.ip}:${config.zmq_port}`);
     this.socket.subscribe("rawblock");
-		this.socket.subscribe("rawtx");
-    this.socket.subscribe("hashtx");
+    //this.socket.subscribe("hashblock");
+		//this.socket.subscribe("rawtx");
+    //this.socket.subscribe("hashtx");
     this.network = Bitcore.Networks.add(config.network);
     this.btcjsNetwork = config.network;
     this.masternodeSupported = config.masternodeSupported;
@@ -23,6 +24,7 @@ class BTCEventListener {
   }
   processMsg(topic, message) {
     var type = topic.toString();
+    console.log("type=", type);
 		if(type === 'rawtx') {
       if(this.masternodeSupported) {
         var tx = Dashcore.Transaction(message.toString('hex'));
@@ -30,7 +32,7 @@ class BTCEventListener {
       } else {
         var tx = DaemonUtils.TxDecoder(message, this.btcjsNetwork.bitcoinjs);
         console.dir(tx, { depth: null });
-    }
+      }
       // var tx = Bitcore.Transaction(message.toString('hex'));
       // for(var i in tx.outputs) {
       //   try {
@@ -52,9 +54,13 @@ class BTCEventListener {
       //   }
       // }
 		//	console.log("tx=%O",tx.toObject());
-		} else if(type === 'rawblock') {
-		//	this.blockHandler(message.toString('hex'));
-		}
+    } else if(type === 'rawblock') {
+      global.blockchainSync.syncAddressBalance().then(result => {
+    		console.log("addresss balance ", result);
+    	}).catch(err => {
+    		utils.logError("32ugegdfsde", err);
+    	});
+    } 
   }
 }
 

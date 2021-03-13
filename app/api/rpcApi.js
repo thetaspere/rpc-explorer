@@ -197,7 +197,7 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 		var balanceData = null;
 		var assetSupported = coins[config.coin].assetSupported ? true : false;
 		// getBlockCount().then(currentHeight => {
-		// 	promises.push(getRpcDataWithParams({method : "getaddresstxids", parameters: [{adddresses : [address]}]}));
+		// 	promises.push({method : "getaddresstxids", parameters: [{adddresses : [address]}]}));
 		// }).catch(reject);
 		var promises = [];
 		if(assetSupported) {
@@ -598,6 +598,114 @@ function getMasternodeReachableCount() {
 	});
 }
 
+function getOutputAddressBalance(fromHeight, endHeight) {
+	return new Promise((resolve, reject) => {
+		getOutputAddressForBlocks(fromHeight, endHeight).then(async addresses => {
+			console.log("found %s addresses", Object.keys(addresses).length);
+			var addressBalanceRequests = [];
+			var wallets = [];
+			var walletIndex = 0;
+			for(var address in addresses) {
+				addressBalanceRequests.push({method : "getaddressbalance", parameters: [{addresses : [address]}]});
+				wallets.push({
+					address : address,
+					balance : 0
+				});
+				if(addressBalanceRequests.length > 100) {
+					console.log("scanning address balance for the next %s addresses", addressBalanceRequests.length);
+					await lookForAddressBalance(addressBalanceRequests, wallets, walletIndex);
+					walletIndex += addressBalanceRequests.length;
+					addressBalanceRequests = [];
+				}
+			}
+			if(addressBalanceRequests.length > 0) {
+				console.log("scanning address balance for the next %s addresses", addressBalanceRequests.length);
+				await lookForAddressBalance(addressBalanceRequests, wallets, walletIndex);
+			}
+			resolve(wallets);
+		}).catch(reject);
+	});
+}
+
+function lookForAddressBalance(addressBalanceRequests, wallets, start) {
+	return new Promise((resolve, reject) => {
+		 getBatchRpcData(addressBalanceRequests).then(addressBalances => {
+			 for(var index in addressBalances) {
+				 var walletIndex = start + Number(index);
+				 wallets[walletIndex].balance = addressBalances[index].balance;
+			 }
+			 resolve(wallets);
+		 }).catch(reject);
+	});
+}
+
+function getOutputAddressForBlocks(fromHeight, endHeight) {
+	return new Promise(async (resolve, reject) => {
+		var blockCountLimit = 100;
+		var addresses = {};
+		console.log("Syncing Addresses from %s to %s blocks", fromHeight, endHeight);
+		for(var height = fromHeight; height < endHeight;) {
+			var blockHashRequests = [];
+			var roundEndHeight = height + blockCountLimit;
+			if(roundEndHeight > endHeight) {
+				roundEndHeight = endHeight;
+				blockCountLimit = roundEndHeight - height;
+			}
+			for(var i = 0; i < blockCountLimit; i++) {
+				blockHashRequests.push({method : "getblockhash", parameters : [height + i]});
+			}
+			try {
+				var blockHashes = await getBatchRpcData(blockHashRequests);
+				var blockRequests = [];
+				for(var index in blockHashes) {
+					blockRequests.push({method : "getblock", parameters : [blockHashes[index]]});
+				}
+				var blocks = await getBatchRpcData(blockRequests);
+				console.log("scanning transaction from %s to %s blocks", height, roundEndHeight);
+				var transactionRequests = [];
+				for(var bIndex in blocks) {
+					for(var txIndex in blocks[bIndex].tx) {
+
+						transactionRequests.push({method : "getrawtransaction", parameters : [blocks[bIndex].tx[txIndex], 1]});
+						if(transactionRequests.length > 100) {
+							await lookForTransactions(transactionRequests, addresses);
+							transactionRequests = [];
+						}
+					}
+				}
+				if(transactionRequests.length > 0) {
+					await lookForTransactions(transactionRequests, addresses);
+				}
+				height = roundEndHeight;
+			} catch(err) {
+				return reject(err);
+			}
+		}
+		resolve(addresses);
+	});
+}
+
+function lookForTransactions(transactionRequests, addresses) {
+	return new Promise((resolve, reject) => {
+		getBatchRpcData(transactionRequests).then(transactions => {
+			// console.log(transactions);
+			for(var j in transactions) {
+				if(transactions[j].vout) {
+					for(var vIndex in transactions[j].vout) {
+						var vout = transactions[j].vout[vIndex];
+						if(vout.scriptPubKey && vout.scriptPubKey.addresses) {
+							for(var aIndex in vout.scriptPubKey.addresses) {
+								addresses[vout.scriptPubKey.addresses[aIndex]] = 0;
+							}
+						}
+					}
+				}
+			}
+			resolve(addresses);
+		}).catch(reject);
+	});
+}
+
 function getRpcMethodHelp(methodName) {
 	return getRpcDataWithParams({method:"help", parameters:[methodName]});
 }
@@ -612,6 +720,32 @@ function getRpcData(cmd) {
 			client.command(cmd, function(err, result, resHeaders) {
 				if (err) {
 					utils.logError("32euofeege", err, {cmd:cmd});
+
+					reject(err);
+
+					callback();
+
+					return;
+				}
+
+				resolve(result);
+
+				callback();
+			});
+		};
+
+		rpcQueue.push({rpcCall:rpcCall});
+	});
+}
+
+function getBatchRpcData(requests) {
+	return new Promise(function(resolve, reject) {
+		debugLog(`RPC: ${JSON.stringify(requests)}`);
+
+		rpcCall = function(callback) {
+			global.rpcClient.command(requests, function(err, result, resHeaders) {
+				if (err != null) {
+					utils.logError("38eh39hdee", err, {result:result, headers:resHeaders});
 
 					reject(err);
 
@@ -694,5 +828,6 @@ module.exports = {
 	smartnode : smartnode,
 	protx : protx,
 	quorum : quorum,
-	getMasternodeReachableCount : getMasternodeReachableCount
+	getMasternodeReachableCount : getMasternodeReachableCount,
+	getOutputAddressBalance : getOutputAddressBalance
 };
