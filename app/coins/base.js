@@ -123,6 +123,9 @@ class CoinBase {
 					name : "Address"
 				},
 				{
+					name : "Label"
+				},
+				{
 					name : "Balance"
 				}
 			]

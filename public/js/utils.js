@@ -137,6 +137,10 @@ const HEADERS = {
 			render: addressRedirectLink
 		},
 		{
+			data : "Label",
+			className: "data-cell monospace text-left"
+		},
+		{
 			data : "Balance",
 			className: "data-cell monospace text-left",
 		}

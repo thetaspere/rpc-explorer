@@ -54,14 +54,15 @@ class MongoDB {
 	}
 
 	queryRichList(start, limit) {
-		return this.genericQuery(Wallet, {}, ['address','balance'],
-																														{
-																															skip : start,
-																															limit : limit,
-																															sort : {
-																																balance: -1
-																															}
-																														});
+		return this.genericQuery(Wallet, {},
+			['address', 'label', 'balance'],
+			{
+				skip : start,
+				limit : limit,
+				sort : {
+					balance: -1
+				}
+			});
 	}
 
   genericQuery(modelClass, query, selectFields = null, options = {}) {

@@ -146,6 +146,7 @@ class RestfulRouter {
 						walletRecords.push({
 							Rank :  query.start + Number(i) + 1,
 							Address : wallets[i].address,
+							Label : wallets[i].label,
 							Balance : Number((wallets[i].balance / 100000000).toFixed(8)).toLocaleString()
 						})
 					}
