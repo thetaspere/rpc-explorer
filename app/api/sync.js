@@ -6,9 +6,13 @@ const Async = require('async');
 class BlockchainSync {
   constructor(config) {
     this.db = new MongoDB(config);
+    this.syncing = false;
   }
 
   syncAddressBalance() {
+    if(this.syncing) {
+      return;
+    }
     var self = this;
     return new Promise((resolve, reject) => {
       Async.waterfall([
@@ -32,6 +36,7 @@ class BlockchainSync {
           (toSync, cb) => {
             var syncPromise = new Promise(async (resolve, reject) => {
               try {
+                self.syncing = true;
                 for(var i = toSync.lastSyncBlock; i < toSync.currentHeight;) {
                   var endHeight = i + 500;
                   if(endHeight > toSync.currentHeight) {
@@ -42,6 +47,7 @@ class BlockchainSync {
                   await self.db.saveWallets(wallets, {type : 'block', block : endHeight});
                   i = endHeight;
                 }
+                self.syncing = false;
                 resolve("synced");
               } catch(err) {
                 reject(err);
