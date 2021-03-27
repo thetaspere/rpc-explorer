@@ -2,6 +2,7 @@ const zmq = require('zeromq');
 const Bitcore = require('bitcore-lib');
 const Dashcore = require('@dashevo/dashcore-lib');
 const DaemonUtils = require('./DaemonUtils.js');
+const utils = require("./../utils.js");
 class BTCEventListener {
   constructor(config) {
     this.coreApi = config.coreApi;
@@ -60,7 +61,7 @@ class BTCEventListener {
     	}).catch(err => {
     		utils.logError("32ugegdfsde", err);
     	});
-    } 
+    }
   }
 }
 

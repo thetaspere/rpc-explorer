@@ -144,6 +144,29 @@ const HEADERS = {
 			data : "Balance",
 			className: "data-cell monospace text-left",
 		}
+	],
+	market_list_table_headers : [
+		{
+			data : "Exchange",
+			className: "data-cell monospace text-left"
+		},
+		{
+			data : "Pair",
+			className: "data-cell monospace text-left",
+			render: exchangeRedirectLink
+		},
+		{
+			data : "Price",
+			className: "data-cell monospace text-left"
+		},
+		{
+			data : "Change",
+			className: "data-cell monospace text-left"
+		},
+		{
+			data : "Volume",
+			className: "data-cell monospace text-left"
+		}
 	]
 }
 
@@ -177,6 +200,13 @@ function redirectLink(data, type, row, meta, baseUri) {
 	if(type === 'display'){
 		  var dataLink = data.replace(/,/g, "");
 			data = `<a href="${baseUri}/${dataLink}" target="_blank">${data}</a>`;
+	}
+	return data;
+}
+
+function exchangeRedirectLink(data, type, row, meta) {
+	if(type === 'display'){
+			data = `<a href="${data.website}" target="_blank">${data.id}</a>`;
 	}
 	return data;
 }

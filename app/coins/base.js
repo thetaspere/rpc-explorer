@@ -128,6 +128,23 @@ class CoinBase {
 				{
 					name : "Balance"
 				}
+			],
+			market_list_table_headers : [
+				{
+					name : "Exchange"
+				},
+				{
+					name : "Pair"
+				},
+				{
+					name : "Price"
+				},
+				{
+					name : "Change"
+				},
+				{
+					name : "Volume"
+				}
 			]
 		}
 	}
@@ -421,6 +438,13 @@ class CoinBase {
 					}],
 					description : "broadcast transaction",
 					"return" : "txid"
+				},
+			  {
+	        name : "getMarketList",
+	        uri : "getmarketlist",
+	        api_source : "getMarketList",
+	        description : "Get available markets from support exchanges",
+	        "return" : "Json representation of market list that can be display in a html table"
 				},
 				{
 					name : "getlatesttxids",

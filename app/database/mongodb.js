@@ -89,7 +89,7 @@ class MongoDB {
 				if(recordField === 'uniqueId') continue;
 				var modelField = modelFieldMap[recordField];
 				var recordValue = record[recordField];
-				if(recordValue === 0 || recordValue) {
+				if(recordValue !== undefined) {
 					toBeUpdateRecord[modelField] = recordValue;
 				}
 			}

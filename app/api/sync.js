@@ -10,11 +10,11 @@ class BlockchainSync {
   }
 
   syncAddressBalance() {
-    if(this.syncing) {
-      return;
-    }
     var self = this;
     return new Promise((resolve, reject) => {
+      if(this.syncing) {
+        return resolve("Address Syncing")
+      }
       Async.waterfall([
   				(cb) => {
   					rpcApi.getBlockCount().then(currentHeight => {

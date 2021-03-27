@@ -1,5 +1,6 @@
 var coreApi = require("./../app/api/coreApi.js");
 var addressApi = require("./../app/api/addressApi.js");
+var MarketAPI = require("./../app/api/MarketApi.js");
 //var sha256 = require("crypto-js/sha256");
 //var hexEnc = require("crypto-js/enc-hex");
 var utils = require('./../app/utils.js');
@@ -490,6 +491,16 @@ class RestfulRouter {
 				utils.logError("23t07ug2wghefud", err);
 				resolve({});
 			});
+		});
+	}
+
+	getMarketList(req) {
+		var self = this;
+		return new Promise((resolve, reject) => {
+			var marketApi = new MarketAPI({});
+			marketApi.getMarket(global.coinConfig.ticker).then(markets => {
+				resolve(markets);
+			}).catch(reject);
 		});
 	}
 
