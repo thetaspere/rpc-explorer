@@ -140,10 +140,10 @@ class CoinBase {
 					name : "Price"
 				},
 				{
-					name : "Change"
+					name : "Volume"
 				},
 				{
-					name : "Volume"
+					name : "Change"
 				}
 			]
 		}
@@ -438,13 +438,6 @@ class CoinBase {
 					}],
 					description : "broadcast transaction",
 					"return" : "txid"
-				},
-			  {
-	        name : "getMarketList",
-	        uri : "getmarketlist",
-	        api_source : "getMarketList",
-	        description : "Get available markets from support exchanges",
-	        "return" : "Json representation of market list that can be display in a html table"
 				},
 				{
 					name : "getlatesttxids",

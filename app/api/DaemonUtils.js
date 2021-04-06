@@ -76,7 +76,7 @@ module.exports = {
   TxDecoder  : function(rawtx, network) {
     var result = {};
     result.tx = bitcoinjs.Transaction.fromHex(rawtx);
-    console.log("result.tx=%O",result.tx);
+    //console.log("result.tx=%O",result.tx);
     result.network = network;
     result.format = this.decodeFormat(result.tx);
     result.inputs = this.decodeInput(result.tx);

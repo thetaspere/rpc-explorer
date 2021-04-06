@@ -197,8 +197,6 @@ block content
 			li(class="nav-item")
 				a(data-toggle="tab", href=`#tab-transactions`, class="nav-link", role="tab", onclick=`loadDataToTable("transactions-table", HEADERS.transactions_table_headers,"/api/getlatesttxids?blocks=10")`) Latest Transactions
 			li(class="nav-item")
-				a(data-toggle="tab", href=`#tab-market`, class="nav-link", role="tab", onclick=`loadDataToTable("market-table", HEADERS.market_list_table_headers,"/api/getmarketlist", false, false, true)`) Markets
-			li(class="nav-item")
 				a(data-toggle="tab", href=`#tab-richlist`, class="nav-link", role="tab", onclick=`loadDataToTable("richlist-table", HEADERS.rich_list_table_headers, "/api/queryrichlist", true, false)`) Rich List
 			if(coinConfig.assetSupported)
 				li(class="nav-item")
@@ -218,10 +216,6 @@ block content
 				- var headers = coinConfig.tableHeaders.transactions_table_headers;
 				- var lazyload = false;
 				- var clickTriggerId = null;
-				include ./includes/table-template.pug
-			div(id="tab-market", class="card mb-4 shadow-sm tab-pane", role="tabpanel")
-				- var tableId = "market-table";
-				- var headers = coinConfig.tableHeaders.market_list_table_headers;
 				include ./includes/table-template.pug
 			div(id="tab-richlist", class="card mb-4 shadow-sm tab-pane", role="tabpanel")
 				- var tableId = "richlist-table";

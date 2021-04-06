@@ -346,16 +346,23 @@ function getBlockByHash(blockHash) {
 
 	return new Promise(function(resolve, reject) {
 		getRpcDataWithParams({method:"getblock", parameters:[blockHash]}).then(function(block) {
-			getRawTransaction(block.tx[0]).then(function(tx) {
-				block.coinbaseTx = tx;
+			if(block.tx) {
+				getRawTransaction(block.tx[0]).then(function(tx) {
+					block.coinbaseTx = tx;
+					block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
+					block.miner = utils.getMinerFromCoinbaseTx(tx);
+
+					resolve(block);
+
+				}).catch(function(err) {
+					reject(err);
+				});
+			} else {
+				block.coinbaseTx = "";
 				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
-				block.miner = utils.getMinerFromCoinbaseTx(tx);
-
+				block.miner = "";
 				resolve(block);
-
-			}).catch(function(err) {
-				reject(err);
-			});
+			}
 		}).catch(function(err) {
 			reject(err);
 		});

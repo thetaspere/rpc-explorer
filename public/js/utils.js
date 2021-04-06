@@ -160,11 +160,11 @@ const HEADERS = {
 			className: "data-cell monospace text-left"
 		},
 		{
-			data : "Change",
+			data : "Volume",
 			className: "data-cell monospace text-left"
 		},
 		{
-			data : "Volume",
+			data : "Change",
 			className: "data-cell monospace text-left"
 		}
 	]

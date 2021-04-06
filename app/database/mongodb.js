@@ -3,6 +3,8 @@ var debug = require('debug');
 var debugLog = debug("mongo_exp");
 const {Wallet, WALLET_FIELD_MAP} = require("./model/wallet.js");
 const {SyncTracker, SYNC_TRACKER_FIELD_MAP} = require("./model/SyncTracker.js");
+const {ExchangeApi, EXCHANGE_API_FIELD_MAP} = require("./model/exchangeApi.js");
+
 
 class MongoDB {
 	constructor(dbConfig) {
@@ -18,6 +20,14 @@ class MongoDB {
 		this.db = mongoose.connection;
   }
 
+	getExchanges() {
+		return this.genericQuery(ExchangeApi, {});
+	}
+
+	saveExchange(exchange) {
+		return self.genericSaveUpdate(ExchangeApi, exchange, {name : exchange.name}, WALLET_FIELD_MAP);
+	}
+
 	saveWallets(wallets, lastSyncTracker) {
 		var self = this;
 		return new Promise(async (resolve, reject) => {
@@ -25,7 +35,7 @@ class MongoDB {
 			for(var index in wallets) {
 				try {
 					//console.log("saving %s", wallets[index].address);
-					await self.genericSaveUpdate(Wallet, wallets[index], {address : wallets[index].address}, WALLET_FIELD_MAP);
+					await self.genericSaveUpdate(Wallet, wallets[index], {address : wallets[index].address}, EXCHANGE_API_FIELD_MAPEXCHANGE_API_FIELD_MAP);
 				} catch(err) {
 					console.log(err);
 				}
