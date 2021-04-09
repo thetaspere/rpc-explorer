@@ -25,7 +25,7 @@ class MongoDB {
 	}
 
 	saveExchange(exchange) {
-		return self.genericSaveUpdate(ExchangeApi, exchange, {name : exchange.name}, WALLET_FIELD_MAP);
+		return self.genericSaveUpdate(ExchangeApi, exchange, {name : exchange.name}, EXCHANGE_API_FIELD_MAP);
 	}
 
 	saveWallets(wallets, lastSyncTracker) {
@@ -35,7 +35,7 @@ class MongoDB {
 			for(var index in wallets) {
 				try {
 					//console.log("saving %s", wallets[index].address);
-					await self.genericSaveUpdate(Wallet, wallets[index], {address : wallets[index].address}, EXCHANGE_API_FIELD_MAPEXCHANGE_API_FIELD_MAP);
+					await self.genericSaveUpdate(Wallet, wallets[index], {address : wallets[index].address}, WALLET_FIELD_MAP);
 				} catch(err) {
 					console.log(err);
 				}
