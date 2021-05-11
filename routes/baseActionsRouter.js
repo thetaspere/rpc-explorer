@@ -544,9 +544,9 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 
 	}).catch(function(err) {
-		res.locals.userMessage = "Failed to load transaction with txid=" + txid + ": " + err;
+		res.locals.message = "Failed to load transaction with txid=" + txid + ": " + err;
 
-		res.render("transaction");
+		res.render("error");
 
 		next();
 	});
