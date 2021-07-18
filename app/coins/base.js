@@ -245,7 +245,7 @@ class CoinBase {
 		          description : "Begin row for query result"
 		        },
 	          {
-	            name : "limit",
+	            name : "length",
 	            type : "number",
 	            description : "max result for the query"
 	          }

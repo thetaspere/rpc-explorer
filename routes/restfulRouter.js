@@ -172,7 +172,8 @@ class RestfulRouter {
 	parseQuery(req) {
 		var start = this.checkAndParseParams("number",req.query.start);
 		var limit = this.checkAndParseParams("number", req.query.length);
-		var searchTerm = this.checkAndParseParams("string", req.query.search.value);
+		var searchTerm = req.query.search ? this.checkAndParseParams("string", req.query.search.value) : "";
+
 		var draw = req.query.draw;
 		if(!searchTerm || searchTerm.trim() === "") {
 			searchTerm =  "*";

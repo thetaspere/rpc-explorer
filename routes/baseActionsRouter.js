@@ -747,9 +747,9 @@ router.get("/rpc-browser", function(req, res, next) {
 					next();
 				}
 			}).catch(function(err) {
-				res.locals.userMessage = "Error loading help content for method " + req.query.method + ": " + err;
+				res.locals.message = "Error loading help content for method " + req.query.method + ": " + err;
 
-				res.render("browser");
+				res.render("error");
 
 				next();
 			});
