@@ -331,7 +331,7 @@ function getBlockByHeight(blockHeight) {
 
 function getBlock(blockHeight) {
 	return new Promise(function(resolve, reject) {
-		getRpcDataWithParams({method:"getblockhash", parameters:[blockHeight]}).then(function(blockhash) {
+		getRpcDataWithParams({method:"getblockhash", parameters:[Number(blockHeight)]}).then(function(blockhash) {
 			getRpcDataWithParams({method:"getblock", parameters:[blockhash]}).then(function(block) {
 				resolve(block);
 			}).catch(reject);
