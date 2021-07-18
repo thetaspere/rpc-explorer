@@ -19,6 +19,7 @@ class RestfulRouter {
 				var method = api.method ? api.method : api.name
 				self.triggerApiCall(api.api_source, method, req).then(result => {
 					if(result instanceof Object) {
+						res.set('Content-Type', 'application/json');
 						res.send(JSON.stringify(result, null, 4));
 					} else {
 						res.send(result.toString());
