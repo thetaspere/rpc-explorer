@@ -22,6 +22,7 @@ class RestfulRouter {
 						res.set('Content-Type', 'application/json');
 						res.send(JSON.stringify(result, null, 4));
 					} else {
+						res.set('Content-Type', 'text/plain');
 						res.send(result.toString());
 					}
 					next();
