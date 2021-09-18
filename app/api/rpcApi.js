@@ -359,7 +359,7 @@ function getBlockByHash(blockHash) {
 				});
 			} else {
 				block.coinbaseTx = "";
-				block.totalFees = utils.getBlockTotalFeesFromCoinbaseTxAndBlockHeight(tx, block.height);
+				block.totalFees = 0;
 				block.miner = "";
 				resolve(block);
 			}
