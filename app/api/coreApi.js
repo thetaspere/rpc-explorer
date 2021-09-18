@@ -793,9 +793,10 @@ function getBlockByHashWithTransactions(blockHash, txLimit, txOffset) {
 			if (txOffset > 0) {
 				txids.push(block.tx[0]);
 			}
-
-			for (var i = txOffset; i < Math.min(txOffset + txLimit, block.tx.length); i++) {
-				txids.push(block.tx[i]);
+			if(block.tx) {
+				for (var i = txOffset; i < Math.min(txOffset + txLimit, block.tx.length); i++) {
+					txids.push(block.tx[i]);
+				}
 			}
 
 			getRawTransactions(txids).then(function(transactions) {
