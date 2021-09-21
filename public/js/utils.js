@@ -469,7 +469,7 @@ function updateSupply() {
 }
 
 function updateMarketCap() {
-	routineUpdate("/api/marketcap","supply", 610000);
+	routineUpdate("/api/marketcap","totalmarketcap", 610000);
 }
 
 function updateLockByMN() {
