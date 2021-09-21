@@ -26,7 +26,6 @@ block content
 		- DecimalRounded = Decimal.clone({ precision: 4, rounding: 2 })
 
 		- var totalInputValue = new Decimal(0);
-		- console.log(result.getrawtransaction);
 		if (result.getrawtransaction.vin.length > 0 && result.getrawtransaction.vin[0].coinbase)
 			- totalInputValue = totalInputValue.plus(new Decimal(coinConfig.blockRewardFunction(result.getblock.height)));
 		each txInput, txInputIndex in result.txInputs

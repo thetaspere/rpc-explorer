@@ -429,6 +429,14 @@ class CoinBase {
 					"return" : "current coin supply as number"
 				},
 				{
+					name : "marketcap",
+					uri : "marketcap",
+					api_source : "core",
+					method : "getMarketCap",
+					description : "Get current market cap",
+					"return" : "current coin market cap ฿ value / $ value. i.e ฿1/$4400"
+				},
+				{
 					name : "broadcast",
 					uri : "broadcast",
 					api_source : "core",

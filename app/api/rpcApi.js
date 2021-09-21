@@ -485,6 +485,41 @@ function getHelp() {
 	return getRpcData("help");
 }
 
+function totalCoinLockedByMN() {
+	return new Promise(async (resolve, reject) => {
+		try {
+			var currentHeight = await getBlockCount();
+			var currentCollateralAmount = await global.coinConfig.masternodeCollateral(currentHeight);
+			if(global.coinConfig.isFixedCollateral) {
+				var mnCount = await masternode("count", global.coinConfig.masternodeCommand);
+				resolve(Number(mnCount.total)*Number(mnCount));
+			} else {
+				var mnList = await masternode("list", global.coinConfig.masternodeCommand);
+				var collateralsTransactionsRequests = [];
+				var outputs = [];
+				var totalLocked = 0;
+				for(var mn in mnList) {
+					var output = mn.split("-");
+					outputs.push(output);
+					collateralsTransactionsRequests.push({method : "getrawtransaction", parameters : [output[0], 1]});
+					if(outputs.length >= 100) {
+						var collateralsTransactions = await getBatchRpcData(collateralsTransactionsRequests);
+						for(var index in collateralsTransactions) {
+							var collateralsTransaction = collateralsTransactions[index];
+							totalLocked += Number(collateralsTransaction.vout[outputs[index][1]].value);
+						}
+						collateralsTransactionsRequests = [];
+						outputs = [];
+					}
+				}
+				resolve(totalLocked);
+			}
+		} catch(e) {
+			reject(e);
+		}
+	});
+}
+
 function smartnode(command) {
 		return masternode(command, smartnode);
 }
@@ -836,5 +871,6 @@ module.exports = {
 	protx : protx,
 	quorum : quorum,
 	getMasternodeReachableCount : getMasternodeReachableCount,
-	getOutputAddressBalance : getOutputAddressBalance
+	getOutputAddressBalance : getOutputAddressBalance,
+	totalCoinLockedByMN : totalCoinLockedByMN
 };

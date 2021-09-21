@@ -9,4 +9,4 @@ if(difficultyData)
       span.mr-2.border-dotted(data-toggle="tooltip", title=parseFloat(difficultyData.diff).toLocaleString())
         span(id=difficultyData.name+"Num") #{difficultyData.diffCal[0]}
         span  x 10
-        sup(id=difficultyData.name+"Exp") #{difficultyData.diffCal[1].exponent}
+        sup(id=difficultyData.name+"Exp") #{difficultyData.diffCal[1].exponent ? difficultyData.diffCal[1].exponent : 0}

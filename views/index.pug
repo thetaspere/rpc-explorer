@@ -62,12 +62,12 @@ block content
 			- networkSummaryItemCount++;
 
 		if (global.exchangeRates)
-			- networkSummaryItemCount++;
+			- networkSummaryItemCount+= 2;
 
 		if (txStats)
 			- networkSummaryItemCount++;
 		if (masternodeStats)
-			- networkSummaryItemCount += 2;
+			- networkSummaryItemCount += 3;
 
 		- var networkSummaryColumnClass = "col-md-4";
 		if (networkSummaryItemCount > 6)
@@ -120,11 +120,20 @@ block content
 						div(class=networkSummaryColumnClass)
 							div(class="float-left", style="height: 40px; width: 40px;")
 								span
-									i(class="fas fa-calculator fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
+									i(class="fas fa-network-wired fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
 
 							span(class="font-weight-bold") Reachable #{coinConfig.masternodeName}
 							p(id="mnreachable" class="lead")
 								div(class="spinner-border lazyload", loadurl=`/api/getmasternodereachablecount`, loadeleid="mnreachable", role="status")
+									span(class="sr-only") Loading...
+						div(class=networkSummaryColumnClass)
+							div(class="float-left", style="height: 40px; width: 40px;")
+								span
+									i(class="fas fa-lock fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
+
+							span(class="font-weight-bold") Locked By #{coinConfig.masternodeName}
+							p(id="mntotallocked" class="lead")
+								div(class="spinner-border lazyload", loadurl=`/api/gettotallockedcoins`, loadeleid="mntotallocked", role="status")
 									span(class="sr-only") Loading...
 					if (txStats)
 						div(class=networkSummaryColumnClass)
@@ -188,6 +197,15 @@ block content
 								p(id="price" class="lead") #{utils.formatExchangedCurrency(1.0, "btc", "฿", 8)}/#{utils.formatExchangedCurrency(1.0, "usd", "$", 6)}
 							else
 								p(id="price" class="lead") -
+						div(class=networkSummaryColumnClass)
+							div(class="float-left", style="height: 40px; width: 40px;")
+								span
+									i(class="fas fa-lock fa-2x mr-2", style="margin-top: 6px; margin-left: 3px;")
+
+							span(class="font-weight-bold") Marketcap
+							p(id="totalmarketcap" class="lead")
+								div(class="spinner-border lazyload", loadurl=`/api/marketcap`, loadeleid="totalmarketcap", role="status")
+									span(class="sr-only") Loading...
 
 
 		//include includes/tools-card.pug

@@ -7,6 +7,7 @@ class AssetBase extends CoinBase {
     var self = this;
     this.addProperties({
       masternodeSupported : true,
+      isFixedCollateral : true,
       masternodeName: "Masternode",
       masternodeCommand: masternodeCommand,
     	api : function() {
@@ -85,6 +86,13 @@ class AssetBase extends CoinBase {
         description : "Get " + this.properties.masternodeCommand + " count",
         "return" : "enabledCount/total"
       }, {
+        name : "gettotallockedcoins",
+        uri : "gettotallockedcoins",
+        api_source: "core",
+        method : "totalCoinLockedByMN",
+        description : "Get total coins that are locked by " + this.properties.masternodeCommand + ".",
+        "return" : "Total coin lock value and total lock % in following format. totalLockedValue/% "
+      },{
         name : "protx",
         uri : "protx",
         api_source : "core",

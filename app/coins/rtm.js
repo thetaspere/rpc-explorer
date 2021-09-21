@@ -11,6 +11,7 @@ Raptoreum.addProperties({
 	nodeUrl:"https://github.com/Raptoreum/Raptoreum/releases",
 	demoSiteUrl: "https://btc.chaintools.io",
 	masternodeName: "Smartnode",
+	isFixedCollateral : false,
 	miningPoolsConfigUrls:[
 		"https://raw.githubusercontent.com/RTMcom/Blockchain-Known-Pools/master/pools.json",
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
@@ -88,16 +89,63 @@ Raptoreum.addProperties({
 		{name: "Twitter", url:"https://twitter.com/Raptoreum", imgUrl:"/img/logo/twitter.svg"},
 		{name: "Github", url:"https://github.com/Raptor3um/Raptoreum", imgUrl:"/img/logo/github.png"}
 	],
+
 	blockRewardFunction:function(blockHeight) {
-		var eras = [ new Decimal8(5000) ];
-		for (var i = 1; i < 34; i++) {
-			var previous = eras[i - 1];
-			eras.push(new Decimal8(previous).dividedBy(2));
+		blockHeight = Number(blockHeight);
+		var nSubsidy = 5000; // (declaring the reward variable and its original/default amount)
+		var owlings = 21262; // amount of blocks between 2 owlings
+		var multiplier; // integer number of owlings
+		var tempHeight; // number of blocks since last anchor
+		if (blockHeight < 720) {
+			nSubsidy = 4;
+		} else if ( (blockHeight > 553531) && (blockHeight < 2105657) ){
+			tempHeight = blockHeight - 553532;
+			multiplier = tempHeight / owlings;
+			nSubsidy -= (multiplier*10 +10);
+		} else if ( (blockHeight > 2105657) && (blockHeight < 5273695) ) {
+			tempHeight = blockHeight - 2105658;
+			multiplier = tempHeight / owlings;
+			nSubsidy -= (multiplier*20 + 750);
+		} else if ( (blockHeight > 5273695) && (blockHeight < 7378633) ) {
+			tempHeight = blockHeight - 5273696;
+			multiplier = tempHeight / owlings;
+			nSubsidy -= (multiplier*10 + 3720);
+		} else if ( (blockHeight > 7378633) && (blockHeight < 8399209) ){
+			tempHeight = blockHeight - 7378634;
+			multiplier = tempHeight / owlings;
+			nSubsidy -= (multiplier * 5 + 4705);
+		} else if ( (blockHeight > 8399209) && (blockHeight < 14735285) ){
+			nSubsidy = 55;
+		} else if ( (blockHeight > 14735285) && (blockHeight < 15798385) ){
+		   tempHeight = blockHeight - 14735286;
+		   multiplier = tempHeight / owlings;
+		   nSubsidy -= (multiplier + 4946);
+		} else if ( (blockHeight > 15798385) && (blockHeight < 25844304) ){
+			nSubsidy = 5;
+		} else if (blockHeight > 125844304) {
+			nSubsidy = 0.001;
 		}
+		return nSubsidy;
+	},
 
-		var index = Math.floor(blockHeight / 2100000);
+	masternodeReward : function(blockHeight, blockReward) {
+		return blockReward * 0.2
+	},
 
-		return eras[index];
+	masternodeCollateral : function(blockHeight) {
+		var collaterals = new Map();
+		collaterals.set(88720, 600000);
+		collaterals.set(132720, 800000);
+		collaterals.set(176720, 1000000);
+		collaterals.set(220720, 1250000);
+		collaterals.set(264720,1500000);
+		collaterals.set(Number.MAX_SAFE_INTEGER, 1800000);
+		for(const [collateralHeight, collateralValue] of collaterals.entries()) {
+			if(Number(collateralHeight) >= Number(blockHeight)) {
+				return collateralValue;
+			}
+			return collateralValue;
+		}
 	}
 });
 

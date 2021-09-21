@@ -203,11 +203,14 @@ function addThousandsSeparators(x) {
 	return parts.join(".");
 }
 
-function formatExchangedCurrency(amount, exchangeType, symbol="$", decimal=2) {
+function formatExchangedCurrency(amount, exchangeType, symbol="$", decimal=2, toLocaleString = false) {
 	if (global.exchangeRates != null && global.exchangeRates[exchangeType.toLowerCase()] != null) {
 		var dec = new Decimal(amount);
-		dec = dec.times(global.exchangeRates[exchangeType.toLowerCase()]);
-		return symbol + Number(dec).toFixed(decimal);
+		dec = Number(dec.times(global.exchangeRates[exchangeType.toLowerCase()])).toFixed(decimal);
+		if(toLocaleString) {
+			dec = Number(dec).toLocaleString();
+		}
+		return symbol + dec;
 	}
 
 	return "";
@@ -591,17 +594,16 @@ function getDifficultyData(name, difficulty) {
 }
 
 function getStatsSummary(json) {
-	//console.log("getStatsSummary %O", json)
+	//console.log("getStatsSummary %O", json.getblockchaininfo.difficultiesData)
 	var hashrateData = formatLargeNumber(json.miningInfo.networkhashps, 3);
 	var mempoolBytesData = formatLargeNumber(json.mempoolInfo.usage, 2);
 	var chainworkData = formatLargeNumber(parseInt("0x" + json.getblockchaininfo.chainwork), 2);
 	var difficultiesData = {};
-	for(var index in json.difficultiesData) {
-		diffData =  json.difficultiesData[index];
+	for(var index in json.getblockchaininfo.difficultiesData) {
+		diffData =  json.getblockchaininfo.difficultiesData[index];
 		difficultiesData[diffData.name + "Num"] = diffData.diffCal[0];
 		difficultiesData[diffData.name + "Exp"] = diffData.diffCal[1].exponent;
 	}
-
 	var sizeData;
 	if(json.getblockchaininfo.size_on_disk) {
 		sizeData = formatLargeNumber(json.getblockchaininfo.size_on_disk, 2);

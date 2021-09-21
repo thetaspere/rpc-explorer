@@ -13,7 +13,7 @@ var Decimal = require("decimal.js");
 // choose one of the below: RPC to a node, or mock data while testing
 var rpcApi = require("./rpcApi.js");
 //var rpcApi = require("./mockApi.js")
-var miscCache = new Cache(process.env.MAX_MISC_CACHE ? process.env.MAX_MISC_CACHE : 50);
+var miscCache = new Cache(process.env.MAX_MISC_CACHE ? process.env.MAX_MISC_CACHE : 100);
 var blockCache = new Cache(process.env.MAX_BLOCK_CACHE ? process.env.MAX_BLOCK_CACHE : 50);
 var txCache = new Cache(process.env.MAX_TX_CACHE ? process.env.MAX_TX_CACHE : 200);
 var assetsCache =  new Cache(process.env.MAX_ASSET_CACHE ? process.env.MAX_ASSET_CACHE : 100);
@@ -71,7 +71,33 @@ function getMiningInfo() {
 function getUptimeSeconds() {
 	return miscCache.tryCache("getUptimeSeconds", 1000, rpcApi.getUptimeSeconds);
 }
+function getMarketCap() {
+	return miscCache.tryCache("getMarketCap", 1200000, () => {
+		return new Promise(async (resolve, reject) => {
+			try {
+				var supply = Number(await getSupply());
+				var marketCap = `${utils.formatExchangedCurrency(supply, "btc", "฿", 2, true)}/${utils.formatExchangedCurrency(supply, "usd", "$", 2, true)}`
+				resolve(marketCap);
+			} catch(e) {
+				reject(e);
+			}
+		});
+	});
+}
+function totalCoinLockedByMN() {
+	return miscCache.tryCache("totalCoinLockedByMN", 60000, () => {
+		return new Promise(async (resolve, reject) => {
+			try {
+				var totalCoinLocked = await rpcApi.totalCoinLockedByMN();
+				var supply = await getSupply();
+				resolve(`${Number(totalCoinLocked).toLocaleString()} / ${Number(totalCoinLocked * 100.00 / supply).toFixed(2)}%`);
+			} catch(e) {
+				reject(e);
+			}
+		});
+	});
 
+}
 function getNetworkHash(height) {
 	return chartingCache.tryCache("getNetworkHash-" + height, 86400000, () => {
 		return rpcApi.getNetworkHash(height);
@@ -1033,5 +1059,7 @@ module.exports = {
 	protx : protx,
 	quorum : quorum,
 	getMasternodeReachableCount : getMasternodeReachableCount,
-	getOutputAddressBalance : getOutputAddressBalance
+	getOutputAddressBalance : getOutputAddressBalance,
+	totalCoinLockedByMN : totalCoinLockedByMN,
+	getMarketCap : getMarketCap
 };

@@ -334,7 +334,6 @@ function checkAndPadLocale(url) {
 
 function loadDataToTable(id, headers, loadUrl, paging, searching, ordering) {
 	loadUrl = checkAndPadLocale(loadUrl);
-	console.log("Headers ", headers);
 	if ( ! $.fn.DataTable.isDataTable(`#${id}`) ) {
 		var table;
 		if(paging) {
@@ -469,6 +468,14 @@ function updateSupply() {
 	routineUpdate("/api/supply","supply", 600000);
 }
 
+function updateMarketCap() {
+	routineUpdate("/api/marketcap","supply", 610000);
+}
+
+function updateLockByMN() {
+	routineUpdate("/api/totalCoinLockedByMN","mntotallocked", 1810000);
+}
+
 function updateMasternodeCount() {
 	routineUpdate("/api/getmasternodecount","mncount", 1800000);
 }
@@ -481,7 +488,6 @@ function updateMasternodeReachableCount() {
 function updateStats() {
 	setInterval( function() {
 		var checkEle = $("#hashrate");
-		console.log("hashrate element %d", checkEle.length);
 		var uri = checkAndPadLocale("/ext/summary");
 		if(checkEle && checkEle.length > 0) {
 			$.ajax({url: uri, success: function(json){
