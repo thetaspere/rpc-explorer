@@ -512,6 +512,13 @@ function totalCoinLockedByMN() {
 						outputs = [];
 					}
 				}
+				if(collateralsTransactionsRequests.length > 0) {
+					var collateralsTransactions = await getBatchRpcData(collateralsTransactionsRequests);
+					for(var index in collateralsTransactions) {
+						var collateralsTransaction = collateralsTransactions[index];
+						totalLocked += Number(collateralsTransaction.vout[outputs[index][1]].value);
+					}
+				}
 				resolve(totalLocked);
 			}
 		} catch(e) {
