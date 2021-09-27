@@ -1061,5 +1061,6 @@ module.exports = {
 	getMasternodeReachableCount : getMasternodeReachableCount,
 	getOutputAddressBalance : getOutputAddressBalance,
 	totalCoinLockedByMN : totalCoinLockedByMN,
-	getMarketCap : getMarketCap
+	getMarketCap : getMarketCap,
+	getAddresessBalance : rpcApi.getAddresessBalance
 };

@@ -20,6 +20,10 @@ class MongoDB {
 		this.db = mongoose.connection;
   }
 
+	getAllRichList() {
+		return this.genericQuery(Wallet, {}, ['address', 'label', 'balance']);
+	}
+
 	getExchanges() {
 		return this.genericQuery(ExchangeApi, {});
 	}
@@ -40,8 +44,10 @@ class MongoDB {
 					console.log(err);
 				}
 			}
-			console.log("updating lastSync %O", lastSyncTracker);
-			await self.saveLastSync(lastSyncTracker);
+			if(lastSyncTracker) {
+				console.log("updating lastSync %O", lastSyncTracker);
+				await self.saveLastSync(lastSyncTracker);
+			}
 			resolve(true);
 		});
 	}
@@ -55,7 +61,7 @@ class MongoDB {
 		return new Promise( (resolve, reject) => {
 				self.genericQuery(SyncTracker, {type : "block"}).then(syncTracker => {
 					resolve(syncTracker.length > 0 ? syncTracker[0].block : 0);
-				}).catch9reject;
+				}).catch(reject);
 		});
 
 	}

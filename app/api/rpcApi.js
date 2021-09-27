@@ -250,6 +250,20 @@ function getAddressBalance(address, scriptPubkey) {
 
 	}
 }
+
+function getAddresessBalance(addresses, scriptPubkeys) {
+	var requests = []
+	for(var index in addresses) {
+		if (coins[config.coin].assetSupported) {
+			requests.push({method : "getaddressbalance", parameters: [{addresses : [addresses[index]]},true]});
+		} else {
+			requests.push({method : "getaddressbalance", parameters: [{addresses : [addresses[index]]}]});
+		}
+	}
+	return getBatchRpcData(requests);
+}
+
+
 function getAddressUTXOs(address, scriptPubkey) {
 	//var assetSupported = coins[config.coin].assetSupported ? true : false;
 	return getRpcDataWithParams({method : "getaddressutxos", parameters: [{addresses : [address]}]});
@@ -865,6 +879,7 @@ module.exports = {
 	getAddressDetails : getAddressDetails,
 	getAddressUTXOs : getAddressUTXOs,
 	getAddressBalance : getAddressBalance,
+	getAddresessBalance : getAddresessBalance,
 	getAddressDeltas : getAddressDeltas,
 	getTotalAssetAddresses : getTotalAssetAddresses,
 	getAssetAddresses : getAssetAddresses,
