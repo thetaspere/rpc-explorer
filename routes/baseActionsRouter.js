@@ -151,56 +151,56 @@ router.get("/peers", function(req, res, next) {
 	});
 });
 
-router.post("/connect", function(req, res, next) {
-	var host = req.body.host;
-	var port = req.body.port;
-	var username = req.body.username;
-	var password = req.body.password;
-
-	res.cookie('rpc-host', host);
-	res.cookie('rpc-port', port);
-	res.cookie('rpc-username', username);
-
-	req.session.host = host;
-	req.session.port = port;
-	req.session.username = username;
-
-	var newClient = new bitcoinCore({
-		host: host,
-		port: port,
-		username: username,
-		password: password,
-		timeout: 30000
-	});
-
-	debugLog("created new rpc client: " + newClient);
-
-	global.rpcClient = newClient;
-
-	req.session.userMessage = "<strong>Connected via RPC</strong>: " + username + " @ " + host + ":" + port;
-	req.session.userMessageType = "success";
-
-	res.redirect("/");
-});
-
-router.get("/disconnect", function(req, res, next) {
-	res.cookie('rpc-host', "");
-	res.cookie('rpc-port', "");
-	res.cookie('rpc-username', "");
-
-	req.session.host = "";
-	req.session.port = "";
-	req.session.username = "";
-
-	debugLog("destroyed rpc client.");
-
-	global.rpcClient = null;
-
-	req.session.userMessage = "Disconnected from node.";
-	req.session.userMessageType = "success";
-
-	res.redirect("/");
-});
+// router.post("/connect", function(req, res, next) {
+// 	var host = req.body.host;
+// 	var port = req.body.port;
+// 	var username = req.body.username;
+// 	var password = req.body.password;
+//
+// 	res.cookie('rpc-host', host);
+// 	res.cookie('rpc-port', port);
+// 	res.cookie('rpc-username', username);
+//
+// 	req.session.host = host;
+// 	req.session.port = port;
+// 	req.session.username = username;
+//
+// 	var newClient = new bitcoinCore({
+// 		host: host,
+// 		port: port,
+// 		username: username,
+// 		password: password,
+// 		timeout: 30000
+// 	});
+//
+// 	debugLog("created new rpc client: " + newClient);
+//
+// 	global.rpcClient = newClient;
+//
+// 	req.session.userMessage = "<strong>Connected via RPC</strong>: " + username + " @ " + host + ":" + port;
+// 	req.session.userMessageType = "success";
+//
+// 	res.redirect("/");
+// });
+//
+// router.get("/disconnect", function(req, res, next) {
+// 	res.cookie('rpc-host', "");
+// 	res.cookie('rpc-port', "");
+// 	res.cookie('rpc-username', "");
+//
+// 	req.session.host = "";
+// 	req.session.port = "";
+// 	req.session.username = "";
+//
+// 	debugLog("destroyed rpc client.");
+//
+// 	global.rpcClient = null;
+//
+// 	req.session.userMessage = "Disconnected from node.";
+// 	req.session.userMessageType = "success";
+//
+// 	res.redirect("/");
+// });
 
 router.get("/changeSetting", function(req, res, next) {
 	if (req.query.name) {
