@@ -47,6 +47,26 @@
 			"RA5LMTDGQyPNXLUmUTf3NwRa7NtUkaGjc3" : {
 				"name" : "p2pool",
 				"link" : "http://p2pool.co/"
+			},
+			"RLwJL8HmGWxzFHrEbi9557LGHXVG1o17wL" : {
+				"name" : "chialeafpool",
+				"link" : "https://pool.chialeaf.org/"
+			},
+			"RTYwL5VUoKeyWon66TUSvXiMgsNQZxnUM6" : {
+				"name" : "011data",
+				"link" : "https://raptorna.011data.com/"
+			},
+			"R9ZM1dbyjTDjGP3geBRy7UHah6dQLMvuMV" : {
+				"name" : "solopools.net",
+				"link" : "https://solopools.net/site/mining"
+			},
+			"RNPnmnLYZvQJMB9qunEEWLaWCxrqzptS3N" : {
+				"name" : "ausminer",
+				"link" : "https://watc.ausminers.com/"
+			},
+			"RC5ApfF99EQ24TWdj5qZAWHZjUdnM7XkK7" : {
+				"name" : "rtm.rocks",
+				"link" : "https://rtm.rocks/"
 			}
   },
 
