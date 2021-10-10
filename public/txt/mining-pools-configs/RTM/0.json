@@ -67,6 +67,22 @@
 			"RC5ApfF99EQ24TWdj5qZAWHZjUdnM7XkK7" : {
 				"name" : "rtm.rocks",
 				"link" : "https://rtm.rocks/"
+			},
+			"RRmfBicumTGj9nFhTiKHvMgRrecu4FLock" : {
+				"name" : "flockpool",
+				"link" : "https://flockpool.com/"
+			},
+			"RFXjMgbKWJBVamHgcn1SghARdptUkFGqYC" : {
+				"name" : "Just4DNS",
+				"link" : "https://pool.just4dns.co.uk/"
+			},
+			"RRizDpZ2pcZuhBEG5JK8c7HNSJyEoFzMNt" : {
+				"name" : "raptoreumemporium",
+				"link" : "https://raptoreumemporium.com/"
+			},
+			"RRHrv4Di4tEoWmRdwSC9bxkahqUvE3gehD" : {
+				"name" : "bugminer",
+				"link" : "bugminer.org"
 			}
   },
 
