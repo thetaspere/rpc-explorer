@@ -172,6 +172,16 @@ function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName 
 			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]});
 		}
 		promise.then(addressDeltas => {
+			var txids = {};
+			var uniqueDelta = [];
+			for (var index in addressDeltas) {
+				var txid = addressDeltas[index].txid;
+				if(!txids[txid]) {
+					txids[txid] = 1;
+					uniqueDelta.push(addressDeltas[index]);
+				}
+			}
+			addressDeltas = uniqueDelta;
 			if (sort == "desc") {
 				addressDeltas.reverse();
 			}

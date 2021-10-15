@@ -317,6 +317,7 @@ class Session {
 	renderTransactions(assetSupported) {
 		var cacheKey;
 		var query = this.res.locals;
+		//console.log(query);
 		if(assetSupported) {
 			cacheKey = `address-transaction-view-${query.address}-${query.assetName}-${query.sort}-${query.limit}-${query.offset}`
 		} else {
