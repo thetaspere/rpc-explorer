@@ -12,7 +12,7 @@
         "name" : "rpool",
         "link" : "https://r-pool.net/"
       },
-      "RCohPoc1nHYvEmKkSvsKHWUVm7ZXZpWAfv" : {
+      "RSGuBdiLgMHiU47n5F2fjc9sz5YGuTYids" : {
         "name" : "rplant",
         "link" : "https://pool.rplant.xyz/"
       },
@@ -87,6 +87,18 @@
 			"RKrQvnxTowFjv54KDc6bWee292MYvdHRD7" : {
 				"name" : "gpool.me",
 				"link" : "https://gpool.me"
+			},
+			"RB7GTDj8fcac5K6X41r2sKxjEznA5Yy3JW" : {
+				"name" : "coinminerz",
+				"link" : "https://coinminerz.com/raptoreum"
+			},
+			"RGBXP8mLc21vuopDbzhfB3tXnXGyi1omjM" : {
+				"name" : "minersmine",
+				"link" : "https://minersmine.com/site/mining"
+			},
+			"RV8usweXR74GgtoPLvZgN2AQJ1S6FNH62W" : {
+				"name" : "murkapool",
+				"link" : "https://murkapool.it/site/mining"
 			}
   },
 
@@ -598,6 +610,10 @@
     "/Tangpool/": {
       "name": "Tangpool",
       "link": "http://www.tangpool.com/"
-    }
+    },
+		"pool.rplant.xyz" : {
+			"name" : "rplant",
+			"link" : "https://pool.rplant.xyz/"
+		},
   }
 }
