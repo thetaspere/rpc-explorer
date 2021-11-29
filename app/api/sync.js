@@ -87,14 +87,14 @@ class BlockchainSync {
             });
   				},
           (currentHeight, cb) => {
-            if(currentHeight % 7200 === 0) {
-              self.resyncExistingAddresses().then(result => {
-                cb(null, result);
-              }).catch(err => {
-                self.syncing = false;
-                cb(err, null);
-              });
-            } else {
+            // if(currentHeight % 7200 === 0) {
+            //   self.resyncExistingAddresses().then(result => {
+            //     cb(null, result);
+            //   }).catch(err => {
+            //     self.syncing = false;
+            //     cb(err, null);
+            //   });
+            // } else {
             self.db.getAddressBalanceLastSyncBlock().then(lastSyncBlock => {
                 if(currentHeight <= lastSyncBlock) {
                   cb("Address Balance Synced", null);
@@ -105,7 +105,7 @@ class BlockchainSync {
                   });
                 }
               });
-            }
+            // }
           },
           (toSync, cb) => {
             if(!toSync.lastSyncBlock) {
