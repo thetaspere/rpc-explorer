@@ -324,8 +324,11 @@ class RestfulRouter {
 				coreApi.getBlocksByHeight(blockHeights).then(blocks => {
 					var result = [];
 					for(var i in blocks) {
+						if(!blocks[i].tx) {
+							continue;
+						}
 						var blockTime = moment.utc(new Date(parseInt(blocks[i].time) * 1000));
-						var currencyValue = blocks[i].tx ? new Decimal(blocks[i].totalFees).dividedBy(blocks[i].tx.length) : 0;
+						var currencyValue =new Decimal(blocks[i].totalFees).dividedBy(blocks[i].tx.length);
 						var currencyFormatInfo = utils.getCurrencyFormatInfo(req.session.currencyFormatType);
 						var value = {
 							amount : 0,
@@ -347,7 +350,7 @@ class RestfulRouter {
 							Timestamp : blockTime.format("Y-MM-DD HH:mm:ss"),
 							Age : moment.duration(moment.utc(new Date()).diff(blockTime)).format(),
 							Miner : blocks[i].miner ? blocks[i].miner : {name : "?"},
-							Transactions : blocks[i].tx ? blocks[i].tx.length.toLocaleString() : 0,
+							Transactions : blocks[i].tx.length.toLocaleString(),
 							"Average Fee" : value,
 							"Size (bytes)" : blocks[i].size.toLocaleString(),
 							"Weight (wu)" : blocks[i].weight ? {
@@ -356,6 +359,9 @@ class RestfulRouter {
 								maxWeight : coins[config.coin].maxBlockWeight
 							} : {}
 						});
+					}
+					if(result.length === 0) {
+						console.log("getBlocksByHeight %O is not return any result", blockHeights);
 					}
 					resolve(result);
 				}).catch(reject);
