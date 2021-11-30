@@ -347,7 +347,7 @@ class RestfulRouter {
 							Timestamp : blockTime.format("Y-MM-DD HH:mm:ss"),
 							Age : moment.duration(moment.utc(new Date()).diff(blockTime)).format(),
 							Miner : blocks[i].miner ? blocks[i].miner : {name : "?"},
-							Transactions : blocks[i].tx.length.toLocaleString(),
+							Transactions : blocks[i].tx ? blocks[i].tx.length.toLocaleString() : 0,
 							"Average Fee" : value,
 							"Size (bytes)" : blocks[i].size.toLocaleString(),
 							"Weight (wu)" : blocks[i].weight ? {
