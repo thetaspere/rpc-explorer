@@ -457,7 +457,6 @@ function loadLazyContainers() {
 			if(loadEleId) {
 				ele.remove();
 			}
-			console.log("loadUrl=",loadUrl);
 			ajaxUpdate(loadUrl, paranetEle);
 		}
 	}

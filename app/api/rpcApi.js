@@ -168,7 +168,6 @@ function getAddressDeltas(address, scriptPubkey, sort, limit, offset, start, num
 	if(assetSupported) {
 		promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName, start : start, end : start + numBlock - 1}]});
 	} else {
-		console.log("start=%s, end = %s", start, ( start + numBlock - 1));
 		promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], start : start, end : start + numBlock - 1}]});
 	}
 	return promise;
@@ -582,6 +581,31 @@ function masternode(command, masternodeCommand = "masternode") {
 	});
 }
 
+function getRawTransactions(txids) {
+	return new Promise(async (resolve, reject) => {
+		result = [];
+		var rawRequests = [];
+		try {
+			for(var i in txids) {
+				if((i+1) % 10)  {
+					rawRequests.push({method : "getrawtransaction", parameters : [txids[i], 1]});
+				} else {
+					var rawResults = await getBatchRpcData(rawRequests);
+					result.push(...rawResults);
+					rawRequests = [];
+				}
+			}
+			if(rawRequests.length > 0) {
+				var rawResults = await getBatchRpcData(rawRequests);
+				result.push(...rawResults);
+			}
+		} catch(err) {
+			reject(err);
+		};
+		resolve(result);
+	})
+}
+
 function protx(command, params) {
 	return new Promise((resolve, reject) => {
 		var possibleCommand = ["list", "info", "diff"];
@@ -882,6 +906,7 @@ module.exports = {
 	getBlockByHeight: getBlockByHeight,
 	getBlockByHash: getBlockByHash,
 	getRawTransaction: getRawTransaction,
+	getRawTransactions : getRawTransactions,
 	getUtxo: getUtxo,
 	getMempoolTxDetails: getMempoolTxDetails,
 	getRawMempool: getRawMempool,

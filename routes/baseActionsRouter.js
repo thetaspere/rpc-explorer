@@ -40,7 +40,6 @@ var routing = function(path, method, sessionMethod, args = null, hashNext = true
 
 router.get("/", function(req, res, next) {
 	var session = new Session(req,res,next);
-	console.log(req.locale);
 	if(session.isRenderConnect()) {
 		return;
 	}

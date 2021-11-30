@@ -9,6 +9,8 @@ var coins = require("../coins.js");
 var redisCache = require("../redisCache.js");
 var Cache = require("./../cache.js");
 var Decimal = require("decimal.js");
+var crypto = require('crypto');
+var sha256 = crypto.createHash('sha256');
 
 // choose one of the below: RPC to a node, or mock data while testing
 var rpcApi = require("./rpcApi.js");
@@ -684,6 +686,14 @@ function getRawTransaction(req) {
 	return txCache.tryCache("getRawTransaction-" + txid, 3600000, rpcApiFunction, shouldCacheTransaction);
 }
 
+function getRawTransactions(txids) {
+	var txidsHash = crypto.createHash('sha256').update(txids + "").digest('hex');
+	return txCache.tryCache("getRawTransactions-" + txidsHash, 360000, function() {
+		return rpcApi.getRawTransactions(txids);
+	});
+
+}
+
 function getTxUtxos(tx) {
 	return new Promise(function(resolve, reject) {
 		var promises = [];
@@ -773,22 +783,6 @@ function quorum(req) {
 	-${nullableValue(quorumHash)}-${nullableValue(id)}-${nullableValue(msgHash)}-${nullableValue(skshare)}`;
 	return miscCache.tryCache(cacheKey, 60000, function() {
 		return rpcApi.quorum(command, req.query);
-	});
-}
-
-function getRawTransactions(txids) {
-	return new Promise(function(resolve, reject) {
-		var promises = [];
-		for (var i = 0; i < txids.length; i++) {
-			promises.push(getRawTransaction({query : {txid : txids[i]}}));
-		}
-
-		Promise.all(promises).then(function(results) {
-			resolve(results);
-
-		}).catch(function(err) {
-			reject(err);
-		});
 	});
 }
 
