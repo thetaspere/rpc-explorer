@@ -148,7 +148,8 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 }
 
 function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName) {
-	return miscCache.tryCache(`getAddressDeltas-${address}-${assetName}-${sort}-${limit}-${offset}`, 300000, function() {
+	//for now address deltas rpc does not do paging so there isn't a need to use limit and offset as cache key
+	return miscCache.tryCache(`getAddressDeltas-${address}-${assetName}-${sort}`, 300000, function() {
 		return rpcApi.getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName);
 	});
 }

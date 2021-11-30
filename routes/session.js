@@ -110,7 +110,8 @@ class Session {
 				txInputsByTransaction : null,
 				blockHeightsByTxid : {},
 			});
-			coreApi.getRawTransactionsWithInputs(txids).then(function(rawTxResult) {
+			console.log("getting getRawTransactionsWithInputs")
+			coreApi.getRawTransactionsWithInputs(txids, 10).then(function(rawTxResult) {
 				result.transactions = rawTxResult.transactions;
 				result.txInputsByTransaction = rawTxResult.txInputsByTransaction;
 				// for coinbase txs, we need the block height in order to calculate subsidy to display
@@ -148,7 +149,7 @@ class Session {
 						});
 					}));
 				}
-
+				console.log("getting blockHeightsPromises")
 				Promise.all(blockHeightsPromises).then(function() {
 					self.processRawTx(result, assetName, rawTxResult);
 					resolve();
@@ -235,7 +236,8 @@ class Session {
 					var addrScripthash = hexEnc.stringify(sha256(hexEnc.parse(validateaddressResult.scriptPubKey)));
 					addrScripthash = addrScripthash.match(/.{2}/g).reverse().join("");
 					result.electrumScripthash = addrScripthash;
-					addressApi.getAddressDeltas(address, validateaddressResult.scriptPubKey, result.sort,
+					console.log("getting getAddressDeltas")
+					coreApi.getAddressDeltas(address, validateaddressResult.scriptPubKey, result.sort,
 																			result.limit, result.offset, assetName).then(addressResult => {
 						var addressDetails = addressResult.addressDeltas;
 						if (addressResult.errors) {
@@ -255,7 +257,9 @@ class Session {
 									result.blockHeightsByTxid = addressDetails.blockHeightsByTxid;
 								}
 								result.txids = txids;
+								console.log("getting getTransactionsDetail")
 								self.getTransactionsDetail(txids, assetName).then(() => {
+									console.log("done getTransactionsDetail")
 									resolve();
 								}).catch(reject);
 

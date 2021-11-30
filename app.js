@@ -214,7 +214,7 @@ app.continueStartup = function() {
 		port: rpcCred.port,
 		username: rpcCred.username,
 		password: rpcCred.password,
-		timeout: 0
+		timeout: 20000
 	};
 
 	global.rpcClientNoTimeout = new bitcoinCore(rpcClientNoTimeoutProperties);

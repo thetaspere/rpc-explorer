@@ -99,7 +99,7 @@ div(class="row monospace")
 									a(href=("/tx/" + tx.txid)) transactions details
 
 							div(class="tx-io-value")
-								- var currencyValue = new Decimal(totalIOValues.output).minus(new Decimal(totalIOValues.input));
+								- var currencyValue = Number(totalIOValues.output) - Number(totalIOValues.input);
 								- var tokenName = assetName;
 								include ./value-display.pug
 				hr
