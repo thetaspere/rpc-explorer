@@ -325,7 +325,7 @@ class RestfulRouter {
 					var result = [];
 					for(var i in blocks) {
 						var blockTime = moment.utc(new Date(parseInt(blocks[i].time) * 1000));
-						var currencyValue = new Decimal(blocks[i].totalFees).dividedBy(blocks[i].tx.length);
+						var currencyValue = blocks[i].tx ? new Decimal(blocks[i].totalFees).dividedBy(blocks[i].tx.length) : 0;
 						var currencyFormatInfo = utils.getCurrencyFormatInfo(req.session.currencyFormatType);
 						var value = {
 							amount : 0,
