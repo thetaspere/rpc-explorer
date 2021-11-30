@@ -122,14 +122,14 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 	return executeMethod("addressDetails", address, scriptPubkey, sort, limit, offset, assetName);
 }
 
-function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName) {
+function getAddressDeltas(address, scriptPubkey, sort, limit, offset, start, numBlock, assetName) {
 	if(config.addressApi === "daemonRPC") {
 		scriptPubkey = null;
 	}
 	if(scriptPubkey) {
 		address = null;
 	}
-	return executeMethod("addressDeltas", address, scriptPubkey, sort, limit, offset, assetName);
+	return executeMethod("addressDeltas", address, scriptPubkey, sort, limit, offset, start, numBlock, assetName);
 }
 
 function getAddressUTXOs(address, scriptPubkey) {

@@ -162,14 +162,23 @@ function broadcast(req) {
 	return getRpcDataWithParams({method:"sendrawtransaction", parameters:[rawtxhex]});
 }
 
-function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName = coins[config.coin].ticker) {
-	return new Promise(function(resolve, reject) {
+function getAddressDeltas(address, scriptPubkey, sort, limit, offset, start, numBlock, assetName = coins[config.coin].ticker) {
+	var assetSupported = coins[config.coin].assetSupported ? true : false;
+	var promise;
+	if(assetSupported) {
+		promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName, start : start, end : start + numBlock - 1}]});
+	} else {
+		console.log("start=%s, end = %s", start, ( start + numBlock - 1));
+		promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], start : start, end : start + numBlock - 1}]});
+	}
+	return promise;
+	/*return new Promise(function(resolve, reject) {
 		var assetSupported = coins[config.coin].assetSupported ? true : false;
 		var promise;
 		if(assetSupported) {
 			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], assetName : assetName}]});
 		} else {
-			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address]}]});
+			promise = getRpcDataWithParams({method : "getaddressdeltas", parameters: [{addresses : [address], start : start, end : offset + numBlock}]});
 		}
 		promise.then(addressDeltas => {
 			var txids = {};
@@ -198,7 +207,7 @@ function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName 
 			}
 			resolve({addressDeltas : result, errors : null});
 		}).catch(reject);
-	});
+	});*/
 }
 
 function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName = coins[config.coin].ticker) {

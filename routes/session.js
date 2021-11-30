@@ -44,6 +44,8 @@ class Session {
 
 	parseAddressRequest(assetSupported) {
 		var limit = this.config.site.addressTxPageSize;
+		var startBlock = 1;
+		var numBlocks = 10000;
 		var offset = 0;
 		var sort = "desc";
 		var assetName;
@@ -59,11 +61,21 @@ class Session {
 			sort =this. req.query.sort;
 		}
 
+		if (this.req.query.startBlock) {
+			startBlock = parseInt(this.req.query.startBlock);
+		}
+		if (this.req.query.numBlocks) {
+			numBlocks = parseInt(this.req.query.numBlocks);
+		}
+
+
 		var address = this.req.params.address;
 		this.res.locals.address = address;
 		this.res.locals.limit = limit;
 		this.res.locals.offset = offset;
 		this.res.locals.sort = sort;
+		this.res.locals.startBlock = startBlock;
+		this.res.locals.numBlocks = numBlocks;
 		this.res.locals.transactions = [];
 		this.res.locals.addressApiSupport = addressApi.getCurrentAddressApiFeatureSupport();
 		this.res.locals.result = {};
@@ -235,7 +247,7 @@ class Session {
 					addrScripthash = addrScripthash.match(/.{2}/g).reverse().join("");
 					result.electrumScripthash = addrScripthash;
 					coreApi.getAddressDeltas(address, validateaddressResult.scriptPubKey, result.sort,
-																			result.limit, result.offset, assetName).then(addressResult => {
+																			result.limit, result.offset, result.startBlock, result.numBlocks, assetName).then(addressResult => {
 						var addressDetails = addressResult.addressDeltas;
 						if (addressResult.errors) {
 							result.addressDetailsErrors = addressResult.errors;
@@ -320,7 +332,7 @@ class Session {
 		if(assetSupported) {
 			cacheKey = `address-transaction-view-${query.address}-${query.assetName}-${query.sort}-${query.limit}-${query.offset}`
 		} else {
-			cacheKey = `address-transaction-view-${query.address}-${query.sort}-${query.limit}-${query.offset}`
+			cacheKey = `address-transaction-view-${query.address}-${query.sort}-${query.limit}-${query.offset}-${query.startBlock}-${query.numBlocks}`
 		}
 		this.renderDynamicView(query, "includes/address-transaction.pug", cacheKey, this.getAddressMetaData.bind(this));
 	}
@@ -333,7 +345,15 @@ class Session {
 	renderAddressPage(assetSupported) {
 		this.parseAddressRequest(assetSupported);
 		var self = this;
-		this.getAddressSummary().then(() => {
+		this.getAddressSummary().then(async () => {
+			var currentBlock;
+			try {
+				currentBlock = await coreApi.getBlockCount();
+			} catch(err) {
+				currentBlock = 0;
+			}
+			self.res.locals.numBlocks = 10000;
+			self.res.locals.startBlock = currentBlock ? currentBlock - self.res.locals.numBlocks + 1 : 0;
 			qrcode.toDataURL(this.res.locals.address, function(err, url) {
 				if (err) {
 					self.res.locals.pageErrors.push(utils.logError("93ygfew0ygf2gf2", err));

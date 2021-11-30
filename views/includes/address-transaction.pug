@@ -147,7 +147,7 @@ div(class="card mb-3 shadow-sm")
         - pageCount++;
       - }
       - var paginationUrlFunction = function(x) {
-        - var pageUrl = paginationBaseUrl + "&limit=" + limit + "&offset=" + ((x - 1) * limit);
+        - var pageUrl = paginationBaseUrl + "&limit=" + limit + "&offset=" + ((x - 1) * limit) + "&startBlock=" + startBlock + "&numBlocks=" + numBlocks;
         - if(dynamicContainerId) {
         -   return `javascript:ajaxUpdate("${pageUrl}", "${dynamicContainerId}")`
         -}

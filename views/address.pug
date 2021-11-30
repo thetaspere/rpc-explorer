@@ -216,6 +216,15 @@ block content
 												else
 													i(class="fas fa-times text-warning")
 
+									div(class="row input-group input-group-sm")
+										div(class="summary-split-table-label") Start Block
+										div(class="summary-split-table-content monospace")
+											input(id="startBlock", type="text", class="form-control form-control-sm", name="startBlock", placeholder="start block height", value=`${startBlock}`, onkeyup=`searchTransactions(event, "${paginationBaseUrl}", "trans-history", "startBlock", "numBlocks")`)
+										div(class="summary-split-table-label") For # Blocks
+										div(class="summary-split-table-content monospace")
+											input(id="numBlocks" type="text", class="form-control form-control-sm", name="numBlocks", placeholder="for number of blocks", value=`${numBlocks}`, onkeyup=`searchTransactions(event, "${paginationBaseUrl}", "trans-history", "startBlock", "numBlocks")`)
+
+
 					if (false)
 						div(class="card mb-3 shadow-sm")
 							div(class="card-header")
@@ -263,7 +272,7 @@ block content
 											span(class="sr-only") Loading...
 					else
 						div(id="trans-history" class="card mb-3 shadow-sm")
-							div(class="spinner-border lazyload", loadurl=`${paginationBaseUrl}`, role="status")
+							div(class="spinner-border lazyload", loadurl=`${paginationBaseUrl}&startBlock=${startBlock}&numBlocks=${numBlocks}`, role="status")
 								span(class="sr-only") Loading...
 				div(id="tab-json", class="tab-pane", role="tabpanel")
 					div(class="highlight")

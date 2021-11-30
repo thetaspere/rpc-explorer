@@ -434,6 +434,15 @@ function displayPopup(popupId, contentEleId, title, contentLoadFunc, ...args) {
 	}
 }
 
+function searchTransactions(event, transactionViewUrl, parentContainerId, startInputId, numInputId) {
+	if(event.keyCode === 13) {
+		var startBlock =  $(`#${startInputId}`).val();
+		var numBlocks =  $(`#${numInputId}`).val();
+		var parentEle = (parentContainerId instanceof Object) ? parentContainerId : $(`#${parentContainerId}`);
+		ajaxUpdate(`${transactionViewUrl}&limit=10&offset=0&startBlock=${startBlock}&numBlocks=${numBlocks}`, parentEle);
+	}
+}
+
 function loadLazyContainers() {
 	var lazyElements = $(".lazyload");
 	for(var i=0; i < lazyElements.length; i++) {
@@ -473,7 +482,7 @@ function updateMarketCap() {
 }
 
 function updateLockByMN() {
-	routineUpdate("/api/totalCoinLockedByMN","mntotallocked", 1810000);
+	routineUpdate("/api/gettotallockedcoins","mntotallocked", 1810000);
 }
 
 function updateMasternodeCount() {

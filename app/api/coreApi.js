@@ -147,10 +147,41 @@ function getAddressDetails(address, scriptPubkey, sort, limit, offset, assetName
 	});
 }
 
-function getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName) {
+function getAddressDeltas(address, scriptPubkey, sort, limit, offset, start, numBlock, assetName) {
 	//for now address deltas rpc does not do paging so there isn't a need to use limit and offset as cache key
-	return miscCache.tryCache(`getAddressDeltas-${address}-${assetName}-${sort}`, 300000, function() {
-		return rpcApi.getAddressDeltas(address, scriptPubkey, sort, limit, offset, assetName);
+
+	return miscCache.tryCache(`getAddressDeltas-${address}-${assetName}-${sort}-${limit}-${offset}-${start}-${numBlock}`, 300000, function() {
+		return new Promise((resolve, reject) => {
+			miscCache.tryCache(`getAddressDeltas-${address}-${assetName}--${start}-${numBlock}`, 100000, function() {
+				return rpcApi.getAddressDeltas(address, scriptPubkey, sort, limit, offset, start, numBlock, assetName);
+			}).then(addressDeltas => {
+				var txids = {};
+				var uniqueDelta = [];
+				for (var index in addressDeltas) {
+					var txid = addressDeltas[index].txid;
+					if(!txids[txid]) {
+						txids[txid] = 1;
+						uniqueDelta.push(addressDeltas[index]);
+					}
+				}
+				addressDeltas = uniqueDelta;
+				if (sort == "desc") {
+					addressDeltas.reverse();
+				}
+				var end = Math.min(addressDeltas.length, limit + offset);
+				var result = {
+					txCount : addressDeltas.length,
+					txids : [],
+					blockHeightsByTxid : {}
+				}
+				addressDeltas = addressDeltas.slice(offset, end);
+				for (var i in addressDeltas) {
+					result.txids.push(addressDeltas[i].txid);
+					result.blockHeightsByTxid[addressDeltas[i].txid] = addressDeltas[i].height;
+				}
+				resolve({addressDeltas : result, errors : null});
+			}).catch(reject);
+		});
 	});
 }
 
