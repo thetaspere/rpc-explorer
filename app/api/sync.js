@@ -108,7 +108,7 @@ class BlockchainSync {
             // }
           },
           (toSync, cb) => {
-            if(!toSync.lastSyncBlock) {
+            if(!toSync.lastSyncBlock && toSync.lastSyncBlock != 0) {
               return cb (null, toSync);
             }
             var syncPromise = new Promise(async (resolve, reject) => {
