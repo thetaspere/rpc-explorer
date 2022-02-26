@@ -218,13 +218,13 @@ app.continueStartup = function() {
 	};
 
 	global.rpcClientNoTimeout = new bitcoinCore(rpcClientNoTimeoutProperties);
-	var btcEventListener = new BTCEventListener({
-		ip : rpcCred.host,
-		zmq_port : rpcCred.zmq_port,
-		network : coins.networks[global.coinConfig.ticker],
-		masternodeSupported : global.coinConfig.masternodeSupported
-	});
-	btcEventListener.listen();
+	// var btcEventListener = new BTCEventListener({
+	// 	ip : rpcCred.host,
+	// 	zmq_port : rpcCred.zmq_port,
+	// 	network : coins.networks[global.coinConfig.ticker],
+	// 	masternodeSupported : global.coinConfig.masternodeSupported
+	// });
+	// btcEventListener.listen();
 
 	var mongoDBConfig = {
 		address : process.env.DB_URL,
@@ -233,13 +233,13 @@ app.continueStartup = function() {
 		password: process.env.DB_PASSWORD,
 		database : process.env.DB_DATABASE
 	}
-	global.blockchainSync = new BlockchainSync(mongoDBConfig);
-	global.blockchainSync.syncAddressBalance().then(result => {
-		console.log("addresss balance ", result);
-	}).catch(err => {
-		console.log(err);
-		utils.logError("32ugegdfsde", err);
-	});
+	// global.blockchainSync = new BlockchainSync(mongoDBConfig);
+	// global.blockchainSync.syncAddressBalance().then(result => {
+	// 	console.log("addresss balance ", result);
+	// }).catch(err => {
+	// 	console.log(err);
+	// 	utils.logError("32ugegdfsde", err);
+	//});
 
 	if(global.coinConfig.masternodeSupported) {
 		utils.scheduleCheckIps();

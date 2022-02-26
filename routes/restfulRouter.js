@@ -1,14 +1,15 @@
-var coreApi = require("./../app/api/coreApi.js");
-var addressApi = require("./../app/api/addressApi.js");
-var MarketAPI = require("./../app/api/MarketApi.js");
+const coreApi = require("./../app/api/coreApi.js");
+const addressApi = require("./../app/api/addressApi.js");
+const MarketAPI = require("./../app/api/MarketApi.js");
 //var sha256 = require("crypto-js/sha256");
 //var hexEnc = require("crypto-js/enc-hex");
-var utils = require('./../app/utils.js');
-var PageRender = require('./../app/pageRender.js');
-var coins = require("./../app/coins.js");
-var config = require("./../app/config.js");
-var Decimal = require("decimal.js");
-var moment = require('moment');
+const utils = require('./../app/utils.js');
+const PageRender = require('./../app/pageRender.js');
+const coins = require("./../app/coins.js");
+const config = require("./../app/config.js");
+const Decimal = require("decimal.js");
+const moment = require('moment');
+const request = require('request').defaults({ rejectUnauthorized: false });
 
 class RestfulRouter {
 	constructor(router, apiProperties) {
@@ -142,32 +143,31 @@ class RestfulRouter {
 	queryRichList(req) {
 		var query = this.parseQuery(req);
 		return new Promise((resolve, reject) => {
-			global.blockchainSync.db.countRichList().then(total => {
-				global.blockchainSync.db.queryRichList(query.start, query.limit).then(wallets => {
-					var walletRecords = [];
-					for(var i in wallets) {
-						walletRecords.push({
-							Rank :  query.start + Number(i) + 1,
-							Address : wallets[i].address,
-							Label : wallets[i].label,
-							Balance : Number((wallets[i].balance / 100000000).toFixed(8)).toLocaleString()
-						})
-					}
-					resolve({
-						data : walletRecords,
-						draw : query.draw,
-						recordsTotal : total,
-						recordsFiltered : total
-					});
-				}).catch(err => {
-					console.log(err);
-					reject(err);
+			if(!query.limit) {
+				query.limit = 10;
+			}
+			if(query.start < 0) {
+				query.start = 0;
+			}
+			request(`${process.env.CHAIN_API_URL}/${global.coinConfig.ticker}/richlist?page=${query.start/query.limit}&size=${query.limit}&sort=balance,desc`, { json: true }, (err, res, body) => {
+			  if (err) { return reject(err); }
+				let wallets = body.content;
+				var walletRecords = [];
+				for(let i in wallets) {
+					walletRecords.push({
+						Rank :  query.start + Number(i) + 1,
+						Address : wallets[i].address,
+						Label : wallets[i].label ? wallets[i].label : "",
+						Balance : Number(wallets[i].balance).toLocaleString()
+					})
+				}
+				resolve({
+					data : walletRecords,
+					draw : query.draw,
+					recordsTotal : body.totalElements,
+					recordsFiltered : body.totalElements
 				});
-			}).catch(err => {
-				console.log(err);
-				reject(err);
 			});
-
 		});
 	}
 
