@@ -155,7 +155,11 @@
 			"RFRd27eNoFSCzMn5Nm3sBTYBVVnoc1jk7a" : {
 				"name" : "ravenmine",
 				"link" : "https://pool.ravenmine.co/"
-			}
+			},
+			"RUveYpGXR24ZEjtynvgP78jC2dzLqMbWNc" : {
+				"name" : "Mining Madness",
+				"link" : "https://miningmadness.com/"
+			},
   },
 
 	"coinbase_tags": {
