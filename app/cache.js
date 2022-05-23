@@ -33,7 +33,6 @@ class Cache {
           resolve(result);
 
         }).catch(function(err) {
-          console.log(err);
           reject(err);
         });
       };

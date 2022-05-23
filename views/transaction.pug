@@ -31,7 +31,7 @@ block content
 		each txInput, txInputIndex in result.txInputs
 			if (txInput)
 				- var vout = txInput.vout[result.getrawtransaction.vin[txInputIndex].vout];
-				if (vout.value)
+				if (vout && vout.value)
 					- totalInputValue = totalInputValue.plus(new Decimal(vout.value));
 
 		- var totalOutputValue = new Decimal(0);
@@ -137,7 +137,7 @@ block content
 										div(class="summary-split-table-label") Locktime
 										div(class="summary-split-table-content monospace")
 											if (result.getrawtransaction.locktime < 500000000)
-												span Spendable in block
+												span Spendable in block 
 												a(href=("/block-height/" + result.getrawtransaction.locktime)) #{result.getrawtransaction.locktime.toLocaleString()}
 												span  or later
 												a(href="https://bitcoin.org/en/developer-guide#locktime-and-sequence-number", data-toggle="tooltip", title="More info about locktime", target="_blank")

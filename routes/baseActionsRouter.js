@@ -524,6 +524,9 @@ router.get("/tx/:transactionId", function(req, res, next) {
 					res.locals.result.txInputs = txInputs;
 
 					resolve();
+				}).catch(err => {
+					res.locals.pageErrors.push(utils.logError("0q83hreuwgd", err));
+					reject(err);
 				});
 			});
 		}));
@@ -535,8 +538,9 @@ router.get("/tx/:transactionId", function(req, res, next) {
 
 		}).catch(function(err) {
 			res.locals.pageErrors.push(utils.logError("1237y4ewssgt", err));
+			res.locals.message = "Failed to load some part of transaction with txid=" + txid + " and reload may help. error: " + err;
 
-			res.render("transaction");
+			res.render("error");
 
 			next();
 		});

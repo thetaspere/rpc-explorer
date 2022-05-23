@@ -414,7 +414,6 @@ function getRawTransaction(txid) {
 			getBlockchainInfo().then(function(blockchainInfoResult) {
 				var result = coins[config.coin].genesisCoinbaseTransaction;
 				result.confirmations = blockchainInfoResult.blocks;
-
 				resolve(result);
 
 			}).catch(function(err) {
@@ -428,7 +427,6 @@ function getRawTransaction(txid) {
 
 					return;
 				}
-
 				resolve(result);
 
 			}).catch(function(err) {
@@ -599,10 +597,10 @@ function getRawTransactions(txids) {
 				var rawResults = await getBatchRpcData(rawRequests);
 				result.push(...rawResults);
 			}
+			resolve(result);
 		} catch(err) {
 			reject(err);
 		};
-		resolve(result);
 	})
 }
 
@@ -814,7 +812,9 @@ function lookForTransactions(transactionRequests, addresses) {
 
 function getRpcMethodHelp(methodName) {
 	return getRpcDataWithParams({method:"help", parameters:[methodName]});
+
 }
+
 
 function getRpcData(cmd) {
 	return new Promise(function(resolve, reject) {
@@ -844,6 +844,41 @@ function getRpcData(cmd) {
 	});
 }
 
+function batchRpcCommand(requests, callback, resolve, reject, retry = 2) {
+	global.rpcClient.command(requests, function(err, result, resHeaders) {
+		if (err != null) {
+			if(retry <= 1) {
+				utils.logError("38eh39hdee", err, {result:result, headers:resHeaders});
+				reject(err);
+				callback();
+			} else {
+				setTimeout(() => {
+					retry--;
+					batchRpcCommand(requests, callback, resolve, reject, retry);
+				}, 10);
+			}
+			return;
+		}
+		for(var r of result) {
+			if(r == null || r.code && r.code < 0) {
+				if(retry <= 1) {
+					reject(r);
+					callback();
+				} else {
+					setTimeout(() => {
+						retry--;
+						batchRpcCommand(requests, callback, resolve, reject, retry);
+					}, 10);
+				}
+				return;
+			}
+		}
+		resolve(result);
+
+		callback();
+	});
+}
+
 function getBatchRpcData(requests) {
 	return new Promise(function(resolve, reject) {
 		debugLog(`RPC: ${JSON.stringify(requests)}`);
@@ -852,14 +887,17 @@ function getBatchRpcData(requests) {
 			global.rpcClient.command(requests, function(err, result, resHeaders) {
 				if (err != null) {
 					utils.logError("38eh39hdee", err, {result:result, headers:resHeaders});
-
 					reject(err);
-
 					callback();
-
 					return;
 				}
-
+				for(var r of result) {
+					if(r == null || r.code && r.code < 0) {
+						reject(r);
+						callback();
+						return;
+					}
+				}
 				resolve(result);
 
 				callback();
@@ -870,26 +908,34 @@ function getBatchRpcData(requests) {
 	});
 }
 
+function singeRpcCommand(request, callback, resolve, reject, retry = 2) {
+	global.rpcClient.command([request], function(err, result, resHeaders) {
+		if (err != null) {
+			utils.logError("38eh39hdee", err, {result:result, headers:resHeaders});
+			if(retry <= 1) {
+				reject(err);
+				callback();
+			} else {
+				setTimeout(() => {
+					retry--;
+					singeRpcCommand(request, callback, resolve, reject, retry);
+    		}, 10);
+			}
+			return;
+		}
+
+		resolve(result[0]);
+
+		callback();
+	});
+}
+
 function getRpcDataWithParams(request) {
 	return new Promise(function(resolve, reject) {
 		debugLog(`RPC: ${JSON.stringify(request)}`);
 
 		rpcCall = function(callback) {
-			global.rpcClient.command([request], function(err, result, resHeaders) {
-				if (err != null) {
-					utils.logError("38eh39hdee", err, {result:result, headers:resHeaders});
-
-					reject(err);
-
-					callback();
-
-					return;
-				}
-
-				resolve(result[0]);
-
-				callback();
-			});
+			singeRpcCommand(request, callback, resolve, reject);
 		};
 
 		rpcQueue.push({rpcCall:rpcCall});
