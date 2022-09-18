@@ -2,32 +2,32 @@ var Decimal = require("decimal.js");
 Decimal8 = Decimal.clone({ precision:8, rounding:8 });
 var MasternodeBase = require("./masternodeBase.js");
 
-var Raptoreum = new MasternodeBase("Raptoreum", "RTM", "raptoreum", ["sat", "satoshi"], "smartnode");
+var Raptoreum = new MasternodeBase("Theta", "FITA", "theta", ["sat", "satoshi"], "smartnode");
 Raptoreum.addProperties({
-	logoUrl:"/img/logo/rtm.svg",
-	siteTitle:"Raptoreum Explorer",
-	siteDescriptionHtml:"<b>RTM Explorer</b> is <a href='https://github.com/Raptoreum/RTM-rpc-explorer). If you run your own [Raptoreum Full Node](https://github.com/Raptoreum/Raptoreum/releases), **RTM Explorer** can easily run alongside it, communicating via RPC calls. See the project [ReadMe](https://github.com/Raptoreum/RTM-rpc-explorer) for a list of features and instructions for running.",
-	nodeTitle:"Raptoreum Full Node",
-	nodeUrl:"https://github.com/Raptoreum/Raptoreum/releases",
+	logoUrl:"/img/logo/theta.png",
+	siteTitle:"Theta Explorer",
+	siteDescriptionHtml:"<b>FITA Explorer</b> is <a href='https://github.com/thetaspere/rpc-explorer). If you run your own [Theta Full Node](https://github.com/thetaspere/theta/releases), **FITA Explorer** can easily run alongside it, communicating via RPC calls. See the project [ReadMe](https://github.com/thetaspere/rpc-explorer) for a list of features and instructions for running.",
+	nodeTitle:"Theta Full Node",
+	nodeUrl:"https://github.com/thetaspere/rpc-explorer",
 	demoSiteUrl: "https://btc.chaintools.io",
 	masternodeName: "Smartnode",
 	isFixedCollateral : false,
 	miningPoolsConfigUrls:[
-		"https://raw.githubusercontent.com/RTMcom/Blockchain-Known-Pools/master/pools.json",
+		"https://raw.githubusercontent.com/thetaspere/Blockchain-Known-Pools/master/pools.json",
 		"https://raw.githubusercontent.com/blockchain/Blockchain-Known-Pools/master/pools.json"
 	],
 	targetBlockTimeSeconds: 60,
 	currencyUnitsByName:{
-		"RTM": Raptoreum.properties.currencyUnits[0],
-		"mRTM": Raptoreum.properties.currencyUnits[1],
+		"FITA": Raptoreum.properties.currencyUnits[0],
+		"mFITA": Raptoreum.properties.currencyUnits[1],
 		"pits": Raptoreum.properties.currencyUnits[2],
 		"rap": Raptoreum.properties.currencyUnits[3]
 	},
 	//baseCurrencyUnit: currencyUnits[3],
 	//defaultCurrencyUnit:currencyUnits[0],
 	//feeSatoshiPerByteBucketMaxima: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 50, 75, 100, 150],
-	genesisBlockHash: "000000f049bef9fec0179131874c54c76c0ff59f695db30a4f0da52072c99492",
-	genesisCoinbaseTransactionId: "f0cc5f92b11a6655a4939fc239e8bf960cd0453b87b5a0820ab36904279341a5",
+	genesisBlockHash: "f4c6228191209d4f070b706f785d822ae10085eb992d5dae46752727e45c39a8",
+	genesisCoinbaseTransactionId: "f4c6228191209d4f070b706f785d822ae10085eb992d5dae46752727e45c39a8",
 	genesisCoinbaseTransaction: {
 		"hex": "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0804ffff001d02fd04ffffffff0100f2052a01000000434104f5eeb2b10c944c6b9fbcfff94c35bdeecd93df977882babc7f3a2cf7f5c81d3b09a68db7f0e04f21de5d4230e75e6dbe7ad16eefe0d4325a62067dc6f369446aac00000000",
 		"txid": "f0cc5f92b11a6655a4939fc239e8bf960cd0453b87b5a0820ab36904279341a5",
@@ -84,7 +84,7 @@ Raptoreum.addProperties({
 	],
 
 	relatedSites : [
-		{name: "Official Website", url:"https://Raptoreum.com/", imgUrl:"/img/logo/rtm.svg"},
+		{name: "Official Website", url:"https://thetaspere.com/", imgUrl:"/img/logo/rtm.svg"},
 		{name: "Discord", url:"https://discord.gg/2T8xG7e", imgUrl:"/img/logo/discord.svg"},
 		{name: "Twitter", url:"https://twitter.com/Raptoreum", imgUrl:"/img/logo/twitter.svg"},
 		{name: "Github", url:"https://github.com/Raptor3um/Raptoreum", imgUrl:"/img/logo/github.png"}
