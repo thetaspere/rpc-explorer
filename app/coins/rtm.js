@@ -84,10 +84,10 @@ Raptoreum.addProperties({
 	],
 
 	relatedSites : [
-		{name: "Official Website", url:"https://thetaspere.com/", imgUrl:"/img/logo/rtm.svg"},
-		{name: "Discord", url:"https://discord.gg/2T8xG7e", imgUrl:"/img/logo/discord.svg"},
-		{name: "Twitter", url:"https://twitter.com/Raptoreum", imgUrl:"/img/logo/twitter.svg"},
-		{name: "Github", url:"https://github.com/Raptor3um/Raptoreum", imgUrl:"/img/logo/github.png"}
+		{name: "Official Website", url:"https://thetaspere.com/", imgUrl:"/img/logo/fita.png"},
+		{name: "Discord", url:"https://discord.gg/3hCrHQa8hn", imgUrl:"/img/logo/discord.svg"},
+		{name: "Twitter", url:"https://twitter.com/thetaspere", imgUrl:"/img/logo/twitter.svg"},
+		{name: "Github", url:"https://github.com/thetaspere", imgUrl:"/img/logo/github.png"}
 	],
 
 	blockRewardFunction:function(blockHeight) {
